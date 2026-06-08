@@ -33,12 +33,12 @@ export function UnitPickerModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col justify-end bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex flex-col justify-start bg-black/70 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
         className="panel panel-glow mx-auto flex w-full max-w-2xl flex-col"
-        style={{ maxHeight: '85dvh' }}
+        style={{ maxHeight: '88dvh', marginTop: 'max(0.5rem, env(safe-area-inset-top))' }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between gap-3 px-4 py-3">
