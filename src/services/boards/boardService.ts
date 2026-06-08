@@ -74,6 +74,8 @@ export interface ParsedBoard {
   width: number
   height: number
   imageSize: number
+  /** Column spacing / approximate hex pitch in image-pixel space. */
+  tileSize: number
   /** Centered crop matching TacticusDB's in-game framing (trims decorative margins). */
   view: ViewBox
   bossSize: BossSize
@@ -220,6 +222,7 @@ export function parseBoard(board: BoardData, spawnPointsSet = 0): ParsedBoard {
     width: board.Width,
     height: board.Height,
     imageSize: IMAGE_SIZE,
+    tileSize: V,
     view,
     bossSize,
     bossStart,
