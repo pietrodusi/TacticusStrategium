@@ -14,11 +14,18 @@
  *      (Width/Height, Tiles[][] with TileId/Elevation/Rotation/ForceUnplayable,
  *      SpawnPoints/SpawnPointGroups/SpawnPointSets).
  *   3. For each boardId: GET /images/board/{boardId}_Visual.jpeg -> map background.
+ *   4. GET the /bosses page chunk -> extract the static unitId->portrait-stem map
+ *      (nested by character/summon/boss/npc). Portraits live at
+ *      /images/characters/portrait_{stem}.png and RoundPortrait_{stem}.png.
+ *   5. Build a boss picker index from the "Boss" encounters (distinct boss unit ->
+ *      its maps, faction, image stem, size).
  *
  * Output:
  *   public/data/guildBossSeasonConfigs.json   (master index)
  *   public/data/boards/{boardId}.json         (per-map tile data)
  *   public/data/boards-manifest.json          (list of boards + metadata)
+ *   public/data/imageStems.json               (unitId -> portrait stem, by type)
+ *   public/data/bosses.json                   (boss picker index)
  *   public/images/maps/{boardId}_Visual.jpeg  (map backgrounds)
  *
  * Re-run any time to refresh. Idempotent: re-downloads everything by default,
@@ -28,7 +35,7 @@
  *   node scripts/dump-tacticusdb.mjs [--no-images] [--skip-existing] [--concurrency=8]
  */
 
-import { mkdir, writeFile, access } from 'node:fs/promises';
+import { mkdir, writeFile, access, readFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -126,6 +133,113 @@ function collectBoards(seasonConfig) {
   return [...byBoard.values()].sort((a, b) => a.boardId.localeCompare(b.boardId));
 }
 
+async function fetchText(url) {
+  const res = await fetch(url);
+  if (!res.ok) {
+    const err = new Error(`HTTP ${res.status}`);
+    err.status = res.status;
+    throw err;
+  }
+  return res.text();
+}
+
+async function readJson(path) {
+  try {
+    return JSON.parse(await readFile(path, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Extract the static `unitId -> portrait stem` map that TacticusDB embeds in
+ * the /bosses page chunk (`JSON.parse('{...}')`, nested by character/summon/
+ * boss/npc). The chunk hash changes between deploys, so discover it from the
+ * page HTML rather than hard-coding it.
+ */
+async function fetchImageStems() {
+  const html = await fetchText(`${BASE}/bosses`);
+  const chunk = html.match(/static\/chunks\/app\/bosses\/page-[a-f0-9]+\.js/);
+  if (!chunk) throw new Error('could not locate the /bosses page chunk in HTML');
+  const js = await fetchText(`${BASE}/_next/${chunk[0]}`);
+  // Each embedded map is a JS string literal: JSON.parse('{...}'). Single quotes
+  // inside are escaped as \'. Pick the object that has both `character` and `boss`.
+  const re = /JSON\.parse\('(\{(?:[^'\\]|\\.)*\})'\)/g;
+  let m;
+  while ((m = re.exec(js)) !== null) {
+    let obj;
+    try {
+      obj = JSON.parse(m[1].replace(/\\'/g, "'").replace(/\\\\/g, '\\'));
+    } catch {
+      continue;
+    }
+    if (obj && obj.character && obj.boss) return obj;
+  }
+  throw new Error('image-stem map not found in /bosses chunk');
+}
+
+/** "TervigonLeviathan" -> "Tervigon Leviathan". */
+function splitCamel(s) {
+  return s
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
+}
+
+/**
+ * Build the boss picker index: one entry per distinct unit that appears in a
+ * "Boss" encounter, with the maps it's fought on, faction, image stem and size.
+ */
+async function buildBossIndex(seasonConfig, stems) {
+  const byUnit = new Map();
+  for (const season of seasonConfig) {
+    for (const tier of season.tiers ?? []) {
+      for (const set of tier.sets ?? []) {
+        for (const enc of set.encounters ?? []) {
+          if (enc.guildBossEncounterType !== 'Boss' || !enc.unitId) continue;
+          const unitId = enc.unitId.split(':')[0]; // strip the ":1" rank suffix
+          if (!byUnit.has(unitId)) {
+            byUnit.set(unitId, { unitId, bossType: enc.bossType, boardIds: new Set() });
+          }
+          if (enc.boardId) byUnit.get(unitId).boardIds.add(enc.boardId);
+        }
+      }
+    }
+  }
+
+  // Faction is handy for grouping the picker; pull it transiently (not saved —
+  // unit stats stay live-fetched by the app).
+  let units = {};
+  try {
+    units = await fetchWithRetry(`${BASE}/api/data/guildBossUnits`);
+  } catch {
+    /* faction is optional */
+  }
+
+  const bosses = [];
+  for (const b of byUnit.values()) {
+    const boardIds = [...b.boardIds].sort();
+    let bossSize = null;
+    for (const bid of boardIds) {
+      const board = await readJson(join(BOARDS_DIR, `${bid}.json`));
+      const size = board?.BossPlatforms?.[0]?.Size;
+      if (size) {
+        bossSize = size;
+        break;
+      }
+    }
+    bosses.push({
+      unitId: b.unitId,
+      bossType: b.bossType ?? null,
+      name: b.bossType ? splitCamel(b.bossType) : b.unitId,
+      faction: units[b.unitId]?.FactionId ?? null,
+      imageStem: stems.boss?.[b.unitId] ?? null,
+      bossSize,
+      boardIds,
+    });
+  }
+  return bosses.sort((a, b) => a.unitId.localeCompare(b.unitId));
+}
+
 // --- main -------------------------------------------------------------------
 async function main() {
   const t0 = Date.now();
@@ -151,8 +265,9 @@ async function main() {
       const outPath = join(BOARDS_DIR, `${b.boardId}.json`);
       let board;
       if (SKIP_EXISTING && (await exists(outPath))) {
+        const existing = await readJson(outPath);
         boardsOk++;
-        return { ...b, width: null, height: null, skipped: true };
+        return { ...b, width: existing?.Width ?? null, height: existing?.Height ?? null, skipped: true };
       }
       try {
         board = await fetchWithRetry(`${BASE}/board/${b.boardId}.json`);
@@ -212,6 +327,36 @@ async function main() {
     })),
   };
   await writeFile(join(DATA_DIR, 'boards-manifest.json'), JSON.stringify(manifest, null, 2));
+
+  // 4) image-stem map + 5) boss index ---------------------------------------
+  console.log('\n▸ Extracting portrait stems + boss index ...');
+  let stems = null;
+  let bossCount = 0;
+  let bossesNoImage = 0;
+  try {
+    stems = await fetchImageStems();
+    await writeFile(join(DATA_DIR, 'imageStems.json'), JSON.stringify(stems, null, 2));
+    const counts = Object.entries(stems)
+      .map(([k, v]) => `${k}:${Object.keys(v).length}`)
+      .join(', ');
+    console.log(`  ✓ imageStems.json (${counts})`);
+  } catch (err) {
+    console.log(`  ✗ image stems (${err.message})`);
+  }
+  if (stems) {
+    const bosses = await buildBossIndex(seasonConfig, stems);
+    bossCount = bosses.length;
+    bossesNoImage = bosses.filter((b) => !b.imageStem).length;
+    await writeFile(
+      join(DATA_DIR, 'bosses.json'),
+      JSON.stringify({ generatedFrom: BASE, bossCount, bosses }, null, 2),
+    );
+    console.log(
+      `  ✓ bosses.json (${bossCount} bosses` +
+        (bossesNoImage ? `, ${bossesNoImage} without an image stem` : '') +
+        ')',
+    );
+  }
 
   // summary -----------------------------------------------------------------
   const secs = ((Date.now() - t0) / 1000).toFixed(1);

@@ -1,0 +1,215 @@
+{
+  "generatedFrom": "https://tacticusdb.com",
+  "bossCount": 16,
+  "bosses": [
+    {
+      "unitId": "GuildBoss10Boss1AdmecBelisarius",
+      "bossType": "BelisariusRW",
+      "name": "Belisarius RW",
+      "faction": "AdeptusMechanicus",
+      "imageStem": "guild_belisarius",
+      "bossSize": 3,
+      "boardIds": [
+        "GB_Belisarius_01",
+        "GB_Belisarius_02",
+        "GB_Belisarius_03",
+        "GB_Belisarius_04"
+      ]
+    },
+    {
+      "unitId": "GuildBoss11Boss1TauRiptide",
+      "bossType": "Riptide",
+      "name": "Riptide",
+      "faction": "Tau",
+      "imageStem": "guild_riptide",
+      "bossSize": 7,
+      "boardIds": [
+        "GB_Riptide_01",
+        "GB_Riptide_02",
+        "GB_Riptide_03"
+      ]
+    },
+    {
+      "unitId": "GuildBoss12Boss1DarkaLion",
+      "bossType": "Lion",
+      "name": "Lion",
+      "faction": "DarkAngels",
+      "imageStem": "guild_lion",
+      "bossSize": 3,
+      "boardIds": [
+        "GB_Lion_01",
+        "GB_Lion_02"
+      ]
+    },
+    {
+      "unitId": "GuildBoss1Boss1TyranTervigonLeviathan",
+      "bossType": "TervigonLeviathan",
+      "name": "Tervigon Leviathan",
+      "faction": "Tyranids",
+      "imageStem": "guild_tervigon",
+      "bossSize": 3,
+      "boardIds": [
+        "GB_01",
+        "GB_05"
+      ]
+    },
+    {
+      "unitId": "GuildBoss1Boss2TyranTervigonKronos",
+      "bossType": "TervigonKronos",
+      "name": "Tervigon Kronos",
+      "faction": "Tyranids",
+      "imageStem": "guild_tervigon_02",
+      "bossSize": 3,
+      "boardIds": [
+        "GB_01",
+        "GB_02",
+        "GB_06"
+      ]
+    },
+    {
+      "unitId": "GuildBoss1Boss3TyranTervigonGorgon",
+      "bossType": "TervigonGorgon",
+      "name": "Tervigon Gorgon",
+      "faction": "Tyranids",
+      "imageStem": "guild_tervigon_03",
+      "bossSize": 3,
+      "boardIds": [
+        "GB_03",
+        "GB_04"
+      ]
+    },
+    {
+      "unitId": "GuildBoss2Boss1TyranHiveTyrantLeviathan",
+      "bossType": "HiveTyrantLeviathan",
+      "name": "Hive Tyrant Leviathan",
+      "faction": "Tyranids",
+      "imageStem": "guild_tyrant",
+      "bossSize": 3,
+      "boardIds": [
+        "GB_02",
+        "GB_05"
+      ]
+    },
+    {
+      "unitId": "GuildBoss2Boss2TyranHiveTyrantKronos",
+      "bossType": "HiveTyrantKronos",
+      "name": "Hive Tyrant Kronos",
+      "faction": "Tyranids",
+      "imageStem": "guild_tyrant_02",
+      "bossSize": 3,
+      "boardIds": [
+        "GB_03",
+        "GB_06"
+      ]
+    },
+    {
+      "unitId": "GuildBoss2Boss3TyranHiveTyrantGorgon",
+      "bossType": "HiveTyrantGorgon",
+      "name": "Hive Tyrant Gorgon",
+      "faction": "Tyranids",
+      "imageStem": "guild_tyrant_03",
+      "bossSize": 3,
+      "boardIds": [
+        "GB_03",
+        "GB_04"
+      ]
+    },
+    {
+      "unitId": "GuildBoss3Boss1NecroSilentKing",
+      "bossType": "SilentKing",
+      "name": "Silent King",
+      "faction": "Necrons",
+      "imageStem": "necro_silentking",
+      "bossSize": 1,
+      "boardIds": [
+        "GB_SK_01",
+        "GB_SK_02",
+        "GB_SK_03"
+      ]
+    },
+    {
+      "unitId": "GuildBoss4Boss1OrksGhazghkull",
+      "bossType": "Ghazghkull",
+      "name": "Ghazghkull",
+      "faction": "Orks",
+      "imageStem": "guild_ghazghkull",
+      "bossSize": 3,
+      "boardIds": [
+        "GB_Dakka_01",
+        "GB_Dakka_02",
+        "GB_Dakka_03",
+        "GB_Dakka_03_1",
+        "GB_Dakka_04",
+        "GB_Dakka_05"
+      ]
+    },
+    {
+      "unitId": "GuildBoss5Boss1DeathMortarion",
+      "bossType": "Mortarion",
+      "name": "Mortarion",
+      "faction": "DeathGuard",
+      "imageStem": "guild_mortarion",
+      "bossSize": 7,
+      "boardIds": [
+        "GB_Mortarion_02",
+        "GB_Mortarion_03"
+      ]
+    },
+    {
+      "unitId": "GuildBoss6Boss1TyranScreamerKiller",
+      "bossType": "ScreamerKiller",
+      "name": "Screamer Killer",
+      "faction": "Tyranids",
+      "imageStem": "guild_screamerkiller",
+      "bossSize": 3,
+      "boardIds": [
+        "GB_Screamer_01",
+        "GB_Screamer_03",
+        "GB_Screamer_04"
+      ]
+    },
+    {
+      "unitId": "GuildBoss7Boss1AstraRogaldorn",
+      "bossType": "RogalDorn",
+      "name": "Rogal Dorn",
+      "faction": "AstraMilitarum",
+      "imageStem": "guild_rogaldorn",
+      "bossSize": 7,
+      "boardIds": [
+        "GB_RogalDorn_01",
+        "GB_RogalDorn_02",
+        "GB_RogalDorn_03",
+        "GB_RogalDorn_04",
+        "GB_RogalDorn_05",
+        "GB_RogalDorn_06"
+      ]
+    },
+    {
+      "unitId": "GuildBoss8Boss1EldarAvatar",
+      "bossType": "AvatarOfKhaine",
+      "name": "Avatar Of Khaine",
+      "faction": "Aeldari",
+      "imageStem": "guild_avatar",
+      "bossSize": 7,
+      "boardIds": [
+        "GB_Khaine_01",
+        "GB_Khaine_02",
+        "GB_Khaine_03",
+        "GB_Khaine_04",
+        "GB_Khaine_05"
+      ]
+    },
+    {
+      "unitId": "GuildBoss9Boss1ThousMagnus",
+      "bossType": "Magnus",
+      "name": "Magnus",
+      "faction": "ThousandSons",
+      "imageStem": "guild_magnus",
+      "bossSize": 7,
+      "boardIds": [
+        "GB_Magnus_01",
+        "GB_Magnus_03"
+      ]
+    }
+  ]
+}
