@@ -79,6 +79,24 @@ export function HomePage() {
           body="Plot movements turn by turn so the whole guild advances as one cohesive battle line."
         />
       </section>
+
+      {/* Community */}
+      <section className="rise mt-12 w-full max-w-sm" style={{ animationDelay: '760ms' }}>
+        <div className="panel riveted flex flex-col items-center gap-4 p-6 text-center">
+          <img
+            src={asset('God_icon.png')}
+            alt="GOD cluster"
+            className="w-full max-w-[240px] rounded-lg bg-white p-3 shadow-lg"
+            draggable={false}
+          />
+          <div>
+            <p className="display text-lg font-bold uppercase tracking-[0.08em] text-bone">
+              Made by the <span className="text-teal-bright">GOD</span> cluster
+            </p>
+            <p className="mt-1 text-sm text-ash">Italy&apos;s biggest Tacticus community</p>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
