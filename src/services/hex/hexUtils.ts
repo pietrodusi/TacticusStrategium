@@ -107,8 +107,13 @@ export function hexNeighbors(hex: HexCoord): HexCoord[] {
 }
 
 /**
- * All hexes occupied by a boss token.
- * @param rotation degrees (0/60/120/180/240/300) for 3-hex bosses.
+ * All hexes occupied by a boss token. `center` is the anchor (where the image
+ * sits — the bottom-left hex). +q is right, +r is down.
+ * - size 1: just the anchor.
+ * - size 3: two 90° orientations (toggled by rotation % 180):
+ *     A (0°)  — anchor + the hex above + the upper-right hex → 2 left, 1 right.
+ *     B (90°) — anchor + the two right-column hexes          → 1 left, 2 right.
+ * - size 7: anchor + all 6 neighbours (flower).
  */
 export function getBossOccupiedHexes(
   center: HexCoord,
@@ -117,27 +122,23 @@ export function getBossOccupiedHexes(
 ): HexCoord[] {
   if (size === 1) return [center]
 
-  const directions: HexCoord[] = [
-    { q: 1, r: 0 }, // 0°
-    { q: 1, r: -1 }, // 60°
-    { q: 0, r: -1 }, // 120°
-    { q: -1, r: 0 }, // 180°
-    { q: -1, r: 1 }, // 240°
-    { q: 0, r: 1 }, // 300°
-  ]
-
-  if (size === 7) {
-    // Center + all 6 neighbors (flower).
-    return [center, ...directions.map((d) => ({ q: center.q + d.q, r: center.r + d.r }))]
+  if (size === 3) {
+    if (rotation % 180 === 0) {
+      return [center, { q: center.q, r: center.r - 1 }, { q: center.q + 1, r: center.r - 1 }]
+    }
+    return [center, { q: center.q + 1, r: center.r }, { q: center.q + 1, r: center.r - 1 }]
   }
 
-  // size === 3: center + 2 adjacent hexes selected by rotation.
-  const idx = Math.floor((((rotation % 360) + 360) % 360) / 60)
-  return [
-    center,
-    { q: center.q + directions[idx].q, r: center.r + directions[idx].r },
-    { q: center.q + directions[(idx + 1) % 6].q, r: center.r + directions[(idx + 1) % 6].r },
+  // size === 7: center + all 6 neighbours.
+  const directions: HexCoord[] = [
+    { q: 1, r: 0 },
+    { q: 1, r: -1 },
+    { q: 0, r: -1 },
+    { q: -1, r: 0 },
+    { q: -1, r: 1 },
+    { q: 0, r: 1 },
   ]
+  return [center, ...directions.map((d) => ({ q: center.q + d.q, r: center.r + d.r }))]
 }
 
 export function hexEquals(a: HexCoord, b: HexCoord): boolean {

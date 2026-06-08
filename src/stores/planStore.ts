@@ -49,7 +49,6 @@ interface PlanState {
   prevTurn: () => void
   placeToken: (id: string, pos: TokenPos) => void
   removeToken: (id: string) => void
-  rotateBoss: (id: string) => void
   /** Set a hex colour at the current turn, or erase it when color is null. */
   setPaint: (hexKey: string, color: string | null) => void
   resetPlan: () => void
@@ -99,14 +98,6 @@ export const usePlanStore = create<PlanState>()(
           const positions = { ...s.positions }
           delete positions[id]
           return { positions }
-        }),
-
-      rotateBoss: (id) =>
-        set((s) => {
-          const cur = posAtTurn(s.positions[id], s.currentTurn)
-          if (!cur) return s
-          const next: TokenPos = { q: cur.q, r: cur.r, rot: ((cur.rot ?? 0) + 60) % 360 }
-          return { positions: { ...s.positions, [id]: { ...s.positions[id], [s.currentTurn]: next } } }
         }),
 
       setPaint: (hexKey, color) =>

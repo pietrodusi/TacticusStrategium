@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   getBossOccupiedHexes,
   hexDistance,
-  hexEquals,
   hexKey,
   hexNeighbors,
   hexRound,
@@ -57,18 +56,23 @@ describe('getBossOccupiedHexes', () => {
     expect(new Set(hexes.map(hexKey)).size).toBe(7)
   })
 
-  it('returns 3 contiguous hexes for size 3 and rotates with the angle', () => {
+  it('size 3 has two 90° orientations anchored on the same hex', () => {
     const a = getBossOccupiedHexes(center, 3, 0)
-    const b = getBossOccupiedHexes(center, 3, 180)
+    const b = getBossOccupiedHexes(center, 3, 90)
     expect(a).toHaveLength(3)
     expect(b).toHaveLength(3)
-    // Center is shared; the two wings differ between opposite rotations.
+    // The anchor (image hex) is shared; both stay adjacent to it.
+    expect(a[0]).toEqual(center)
+    expect(b[0]).toEqual(center)
     expect(a.every((h) => hexDistance(center, h) <= 1)).toBe(true)
-    expect(a.slice(1).some((h) => b.slice(1).some((g) => hexEquals(h, g)))).toBe(false)
+    expect(b.every((h) => hexDistance(center, h) <= 1)).toBe(true)
+    const set = (hs: HexCoord[]) => new Set(hs.map(hexKey))
+    expect(set(a)).not.toEqual(set(b))
   })
 
-  it('normalizes negative rotations', () => {
-    expect(getBossOccupiedHexes(center, 3, -360)).toEqual(getBossOccupiedHexes(center, 3, 0))
+  it('size 3 rotation is a 180°-periodic toggle', () => {
+    expect(getBossOccupiedHexes(center, 3, 180)).toEqual(getBossOccupiedHexes(center, 3, 0))
+    expect(getBossOccupiedHexes(center, 3, 270)).toEqual(getBossOccupiedHexes(center, 3, 90))
   })
 })
 

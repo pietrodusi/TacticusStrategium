@@ -34,7 +34,7 @@ const ringColor = (type: TrayDef['type']) =>
 export function BoardPage() {
   const navigate = useNavigate()
   const { bossUnitId, boardId, team, machineOfWar, currentTurn, positions, paint } = usePlanStore()
-  const { setCurrentTurn, placeToken, removeToken, rotateBoss, setPaint } = usePlanStore()
+  const { setCurrentTurn, placeToken, removeToken, setPaint } = usePlanStore()
 
   const bosses = useBosses()
   const { roster, machinesOfWar } = useRoster()
@@ -228,8 +228,19 @@ export function BoardPage() {
               {/* Selected-unit actions */}
               {selectedDef && tool === 'move' && (
                 <div className="ml-auto flex items-center gap-2">
-                  {selectedDef.type === 'boss' && selectedDef.size > 1 && (
-                    <ToolButton onClick={() => rotateBoss(selectedDef.id)} icon={<RotateCw size={15} />} label="Rotate" />
+                  {selectedDef.type === 'boss' && selectedDef.size === 3 && (
+                    <ToolButton
+                      onClick={() => {
+                        if (!board.data) return
+                        const cur =
+                          posAtTurn(positions[selectedDef.id], currentTurn) ??
+                          { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation }
+                        const rot = (cur.rot ?? 0) % 180 === 0 ? 90 : 0
+                        placeToken(selectedDef.id, { q: cur.q, r: cur.r, rot })
+                      }}
+                      icon={<RotateCw size={15} />}
+                      label="Rotate"
+                    />
                   )}
                   {selectedDef.type !== 'boss' && (
                     <ToolButton
