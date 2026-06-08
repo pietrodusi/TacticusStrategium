@@ -58,11 +58,21 @@ export interface ParsedCell {
   spawnIndex?: number
 }
 
+/** Crop rectangle (in image-pixel space) for the trimmed in-game view. */
+export interface ViewBox {
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
 export interface ParsedBoard {
   id: string
   width: number
   height: number
   imageSize: number
+  /** Centered crop matching TacticusDB's in-game framing (trims decorative margins). */
+  view: ViewBox
   bossSize: BossSize
   bossStart: HexCoord
   bossRotation: number
@@ -122,6 +132,12 @@ export function parseBoard(board: BoardData, spawnPointsSet = 0): ParsedBoard {
   const q = ROW_FACTOR * V
   const hexW = V * HEX_SCALE_X
   const hexH = q * HEX_SCALE_Y
+
+  // In-game framing: center-crop to (Width+2) columns wide, full height minus
+  // one tile (half a tile trimmed top and bottom). Matches TacticusDB's GR view.
+  const cropW = (board.Width + 2) * V
+  const cropH = IMAGE_SIZE - V
+  const view: ViewBox = { x: (IMAGE_SIZE - cropW) / 2, y: V / 2, w: cropW, h: cropH }
 
   const byOffset = new Map<string, ParsedCell>()
 
@@ -192,6 +208,7 @@ export function parseBoard(board: BoardData, spawnPointsSet = 0): ParsedBoard {
     width: board.Width,
     height: board.Height,
     imageSize: IMAGE_SIZE,
+    view,
     bossSize,
     bossStart,
     bossRotation,

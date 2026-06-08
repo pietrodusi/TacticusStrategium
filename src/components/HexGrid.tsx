@@ -7,13 +7,15 @@ import { mapImageUrl } from '../services/paths'
  */
 export function HexGrid({ board, showGrid = true }: { board: ParsedBoard; showGrid?: boolean }) {
   const size = board.imageSize
+  const { x, y, w, h } = board.view
   return (
     <svg
-      viewBox={`0 0 ${size} ${size}`}
+      viewBox={`${x} ${y} ${w} ${h}`}
       className="h-auto w-full touch-none select-none rounded-lg"
       role="img"
       aria-label={`Map ${board.id}`}
     >
+      {/* Full image; the viewBox crops to TacticusDB's in-game framing. */}
       <image href={mapImageUrl(board.id)} x={0} y={0} width={size} height={size} />
       {showGrid && (
         <g>
