@@ -216,8 +216,9 @@ export function BoardPage() {
               <TabBtn active={tab === 'enemies'} onClick={() => setTab('enemies')}>Enemies</TabBtn>
             </div>
 
-            {/* Tray */}
-            <div className="no-scrollbar flex min-h-[4.5rem] gap-2 overflow-x-auto">
+            {/* Tray — min-height reserves room for the horizontal scrollbar so the
+                row is the same height whether or not a tab overflows. */}
+            <div className="flex min-h-[5.75rem] gap-2 overflow-x-auto">
               {tab === 'allies' ? (
                 <>
                   {teamDefs.map((d) => (

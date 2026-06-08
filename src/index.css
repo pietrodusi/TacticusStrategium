@@ -279,13 +279,6 @@
   .glow-teal {
     filter: drop-shadow(0 0 18px rgba(44, 208, 216, 0.45));
   }
-  /* Scrollable but no visible scrollbar (keeps row heights consistent). */
-  .no-scrollbar {
-    scrollbar-width: none;
-  }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
 }
 
 @keyframes sigil-pulse {
