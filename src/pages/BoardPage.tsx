@@ -217,7 +217,7 @@ export function BoardPage() {
             </div>
 
             {/* Tray */}
-            <div className="flex min-h-[4.5rem] gap-2 overflow-x-auto pb-1">
+            <div className="no-scrollbar flex min-h-[4.5rem] gap-2 overflow-x-auto">
               {tab === 'allies' ? (
                 <>
                   {teamDefs.map((d) => (
