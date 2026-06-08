@@ -14,8 +14,10 @@ export function TurnSelector({ phase, onChange }: { phase: number; onChange: (p:
   const enemy = phase >= 2 && phase % 2 === 0
 
   const pressTurn = (k: number) => {
-    if (turn === k) onChange(enemy ? 2 * k - 1 : 2 * k) // toggle player ↔ enemy
-    else onChange(2 * k - 1) // jump to this turn's player phase
+    if (turn !== k) onChange(2 * k - 1) // jump to this turn's player phase
+    else if (enemy) onChange(2 * k - 1) // enemy → player
+    else if (2 * k <= MAX_PHASE) onChange(2 * k) // player → enemy (when that phase exists)
+    // else: last turn, player-only — no toggle
   }
 
   return (

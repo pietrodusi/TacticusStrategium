@@ -9,10 +9,11 @@ export interface TokenPos {
 }
 
 const TEAM_SIZE = 5
-/** Battle phases as a flat index: 0 = S (deployment), then per turn k (1..5):
- *  player phase = 2k-1, enemy phase = 2k. So S,1,1E,2,2E,…,5,5E → 0..10. */
-export const TURN_COUNT = 5
-export const MAX_PHASE = TURN_COUNT * 2 // 10
+/** Battle phases as a flat index: 0 = S (deployment), then per turn k:
+ *  player phase = 2k-1, enemy phase = 2k. The final turn (6) is player-only — no
+ *  enemy phase — so S,1,1E,2,2E,…,5,5E,6 → 0..11. */
+export const TURN_COUNT = 6
+export const MAX_PHASE = TURN_COUNT * 2 - 1 // 11 (last turn has no enemy phase)
 const emptyTeam = (): (string | null)[] => Array(TEAM_SIZE).fill(null)
 
 /**
