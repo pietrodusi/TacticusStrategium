@@ -163,24 +163,41 @@ export function HexGrid({
           return c ? <polygon key={`p-${key}`} points={pointsOf(c)} fill={color} stroke={color} strokeWidth={1.5} /> : null
         })}
 
-      {/* Boss footprints (follow the pointer while dragging) */}
+      {/* Boss footprints — merged into one shape (outline only on outer edges).
+          Follows the pointer while dragging. */}
       {tokens
         .filter((t) => t.size > 1)
         .map((t) => {
           const hex =
             draggingId === t.id && previewHex ? { q: previewHex.q, r: previewHex.r } : t.pos
-          return getBossOccupiedHexes(hex, t.size as 1 | 3 | 7, t.pos.rot ?? 0).map((hx) => {
-            const c = cellByAxial.get(hexKey(hx))
-            return c ? (
-              <polygon
-                key={`bf-${t.id}-${hx.q}-${hx.r}`}
-                points={pointsOf(c)}
-                fill="rgba(207,70,50,0.32)"
-                stroke="rgba(207,70,50,0.85)"
-                strokeWidth={2}
-              />
-            ) : null
-          })
+          const cells = getBossOccupiedHexes(hex, t.size as 1 | 3 | 7, t.pos.rot ?? 0)
+            .map((hx) => cellByAxial.get(hexKey(hx)))
+            .filter((c): c is ParsedCell => !!c)
+          if (cells.length === 0) return null
+          return (
+            <g key={`bf-${t.id}`}>
+              {cells.map((c) => (
+                <polygon
+                  key={`${c.q},${c.r}`}
+                  points={cornersToPoints(c.cornersFull)}
+                  fill="rgba(207,70,50,0.32)"
+                  stroke="none"
+                />
+              ))}
+              {footprintEdges(cells).map((s, i) => (
+                <line
+                  key={i}
+                  x1={s.x1}
+                  y1={s.y1}
+                  x2={s.x2}
+                  y2={s.y2}
+                  stroke="rgba(207,70,50,0.9)"
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                />
+              ))}
+            </g>
+          )
         })}
 
       {/* Movement arrows */}
@@ -211,7 +228,55 @@ export function HexGrid({
 }
 
 function pointsOf(c: ParsedCell): string {
-  return c.corners.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')
+  return cornersToPoints(c.corners)
+}
+
+function cornersToPoints(corners: Point[]): string {
+  return corners.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')
+}
+
+const HEX_DIRS: HexCoord[] = [
+  { q: 1, r: 0 },
+  { q: 1, r: -1 },
+  { q: 0, r: -1 },
+  { q: -1, r: 0 },
+  { q: -1, r: 1 },
+  { q: 0, r: 1 },
+]
+
+/** Boundary edges of a set of cells: every edge not shared with another cell in the set. */
+function footprintEdges(cells: ParsedCell[]): { x1: number; y1: number; x2: number; y2: number }[] {
+  const byKey = new Map(cells.map((c) => [hexKey({ q: c.q, r: c.r }), c]))
+  const segs: { x1: number; y1: number; x2: number; y2: number }[] = []
+  for (const c of cells) {
+    const internal = new Set<number>()
+    for (const d of HEX_DIRS) {
+      const n = byKey.get(hexKey({ q: c.q + d.q, r: c.r + d.r }))
+      if (!n) continue
+      // The shared edge is the one whose midpoint is nearest the two centres' midpoint.
+      const tx = (c.center.x + n.center.x) / 2
+      const ty = (c.center.y + n.center.y) / 2
+      let bi = -1
+      let bd = Infinity
+      for (let i = 0; i < 6; i++) {
+        const a = c.cornersFull[i]
+        const b = c.cornersFull[(i + 1) % 6]
+        const dd = ((a.x + b.x) / 2 - tx) ** 2 + ((a.y + b.y) / 2 - ty) ** 2
+        if (dd < bd) {
+          bd = dd
+          bi = i
+        }
+      }
+      if (bi >= 0) internal.add(bi)
+    }
+    for (let i = 0; i < 6; i++) {
+      if (internal.has(i)) continue
+      const a = c.cornersFull[i]
+      const b = c.cornersFull[(i + 1) % 6]
+      segs.push({ x1: a.x, y1: a.y, x2: b.x, y2: b.y })
+    }
+  }
+  return segs
 }
 
 function Arrow({ from, to, color, shorten }: { from: Point; to: Point; color: string; shorten: number }) {
@@ -220,8 +285,9 @@ function Arrow({ from, to, color, shorten }: { from: Point; to: Point; color: st
   const len = Math.hypot(dx, dy) || 1
   const ux = dx / len
   const uy = dy / len
-  const sx = from.x + ux * shorten
-  const sy = from.y + uy * shorten
+  // Start at the (previous) hex centre; stop short of the target token.
+  const sx = from.x
+  const sy = from.y
   const ex = to.x - ux * shorten
   const ey = to.y - uy * shorten
   const head = shorten * 0.95

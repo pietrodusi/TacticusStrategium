@@ -53,7 +53,10 @@ export interface ParsedCell {
   q: number
   r: number
   center: Point
+  /** Padded hexagon corners (grid cells have a small gap between them). */
   corners: Point[]
+  /** Full-size hexagon corners (tile seamlessly — used to merge boss footprints). */
+  cornersFull: Point[]
   terrain: BoardData['Tiles'][number]['Tile'][number]['TileId']
   elevation: number
   isPlayable: boolean
@@ -95,12 +98,12 @@ function tdbToAxial(col: number, row: number, boardHeight: number): HexCoord {
  * TacticusDB's `.hexagonal` clip-path
  *   polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%)
  * i.e. side points at ±0.5w, top/bottom edges at ±0.25w inset to ±0.433h,
- * then scaled by HEX_PADDING so neighbours don't overlap.
+ * then scaled by `pad` (HEX_PADDING for grid cells, 1 for seamless tiling).
  */
-function hexBoxCorners(cx: number, cy: number, w: number, h: number): Point[] {
-  const sx = 0.5 * HEX_PADDING // left/right side points
-  const tx = 0.25 * HEX_PADDING // top/bottom edge half-width
-  const ty = 0.433 * HEX_PADDING // top/bottom edge inset (6.7% from box edge)
+function hexBoxCorners(cx: number, cy: number, w: number, h: number, pad: number): Point[] {
+  const sx = 0.5 * pad // left/right side points
+  const tx = 0.25 * pad // top/bottom edge half-width
+  const ty = 0.433 * pad // top/bottom edge inset (6.7% from box edge)
   return [
     { x: cx - tx * w, y: cy - ty * h },
     { x: cx + tx * w, y: cy - ty * h },
@@ -175,7 +178,8 @@ export function parseBoard(board: BoardData, spawnPointsSet = 0): ParsedBoard {
         q: axial.q,
         r: axial.r,
         center,
-        corners: hexBoxCorners(center.x, center.y, hexW, hexH),
+        corners: hexBoxCorners(center.x, center.y, hexW, hexH, HEX_PADDING),
+        cornersFull: hexBoxCorners(center.x, center.y, hexW, hexH, 1),
         terrain: tile.TileId,
         elevation: tile.Elevation,
         isPlayable: !isBlock && !isUnplayable,
