@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { Brush, ChevronDown, LogOut, Move, RotateCw, Trash2 } from 'lucide-react'
+import { Brush, ChevronDown, LogOut, RotateCw, Trash2 } from 'lucide-react'
 import { usePlanStore, posAtTurn, MAX_TURN } from '../stores/planStore'
 import { useBosses, useRoster } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
 import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
 import { UnitImage } from '../components/UnitImage'
 import { TurnSelector } from '../components/plan/TurnSelector'
-import { hexKey } from '../services/hex/hexUtils'
 import { bossDisplayName } from '../utils/format'
 import type { HexCoord } from '../types/strategium'
 import type { Unit } from '../types/units'
@@ -35,7 +34,7 @@ const ringColor = (type: TrayDef['type']) =>
 export function BoardPage() {
   const navigate = useNavigate()
   const { bossUnitId, boardId, team, machineOfWar, currentTurn, positions, paint } = usePlanStore()
-  const { setCurrentTurn, placeToken, removeToken, rotateBoss, paintHex } = usePlanStore()
+  const { setCurrentTurn, placeToken, removeToken, rotateBoss, setPaint } = usePlanStore()
 
   const bosses = useBosses()
   const { roster, machinesOfWar } = useRoster()
@@ -125,11 +124,8 @@ export function BoardPage() {
     setSelectedId(null)
   }
 
+  // Only fires in Move mode (painting is handled by drag inside HexGrid).
   const handleHex = (hex: HexCoord) => {
-    if (tool === 'paint') {
-      paintHex(hexKey(hex), paintColor)
-      return
-    }
     if (selectedId) placeAt(selectedId, hex)
   }
 
@@ -162,16 +158,19 @@ export function BoardPage() {
             movements={movements}
             paint={paint[currentTurn]}
             selectedTokenId={selectedId}
+            painting={tool === 'paint'}
             onHexClick={handleHex}
-            onTokenClick={(id) => {
-              setTool('move')
-              setSelectedId((cur) => (cur === id ? null : id))
-            }}
+            onTokenClick={(id) => setSelectedId((cur) => (cur === id ? null : id))}
             onTokenMove={(id, hex) => placeAt(id, hex)}
+            onPaint={(key, erase) => setPaint(key, erase ? null : paintColor)}
           />
         )}
         <p className="pointer-events-none absolute left-3 top-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-ash/50">
-          {tool === 'paint' ? 'Paint — tap hexes' : selectedDef ? `Move ${selectedDef.name}` : 'Select a unit'}
+          {tool === 'paint'
+            ? 'Paint — drag to mark, drag painted to erase'
+            : selectedDef
+              ? `Move ${selectedDef.name}`
+              : 'Select a unit'}
         </p>
       </div>
 
@@ -202,8 +201,15 @@ export function BoardPage() {
 
             {/* Tools row */}
             <div className="flex flex-wrap items-center gap-2">
-              <ToolButton active={tool === 'move'} onClick={() => setTool('move')} icon={<Move size={15} />} label="Move" />
-              <ToolButton active={tool === 'paint'} onClick={() => setTool('paint')} icon={<Brush size={15} />} label="Paint" />
+              <ToolButton
+                active={tool === 'paint'}
+                onClick={() => {
+                  setTool((t) => (t === 'paint' ? 'move' : 'paint'))
+                  setSelectedId(null)
+                }}
+                icon={<Brush size={15} />}
+                label="Paint"
+              />
 
               {tool === 'paint' && (
                 <div className="flex items-center gap-1.5">

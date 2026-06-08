@@ -28,9 +28,12 @@ interface Props {
   /** hexKey → color, for the current turn. */
   paint?: Record<string, string>
   selectedTokenId?: string | null
+  /** When true, dragging paints/erases hexes instead of moving tokens. */
+  painting?: boolean
   onHexClick?: (hex: HexCoord) => void
   onTokenClick?: (id: string) => void
   onTokenMove?: (id: string, hex: HexCoord) => void
+  onPaint?: (hexKey: string, erase: boolean) => void
 }
 
 const GRID_STROKE = 'rgba(255,215,0,0.5)'
@@ -51,9 +54,11 @@ export function HexGrid({
   movements = [],
   paint,
   selectedTokenId,
+  painting = false,
   onHexClick,
   onTokenClick,
   onTokenMove,
+  onPaint,
 }: Props) {
   const size = board.imageSize
   const { x, y, w, h } = board.view
@@ -66,6 +71,7 @@ export function HexGrid({
   }, [board.cells])
 
   const [drag, setDrag] = useState<DragState | null>(null)
+  const [paintStroke, setPaintStroke] = useState<{ erase: boolean; last: string | null } | null>(null)
 
   const toImage = (e: React.PointerEvent<SVGSVGElement>): Point | null => {
     const ctm = e.currentTarget.getScreenCTM()
@@ -96,23 +102,47 @@ export function HexGrid({
   const onPointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
     const p = toImage(e)
     if (!p) return
+    e.currentTarget.setPointerCapture(e.pointerId)
+    if (painting) {
+      const cell = nearestCell(p)
+      const key = cell ? hexKey({ q: cell.q, r: cell.r }) : null
+      // The whole stroke erases if it starts on a painted hex, else it paints.
+      const erase = key ? !!paint?.[key] : false
+      setPaintStroke({ erase, last: key })
+      if (key) onPaint?.(key, erase)
+      return
+    }
     const tokenId =
       (e.target as Element).closest('[data-token-id]')?.getAttribute('data-token-id') ?? null
-    e.currentTarget.setPointerCapture(e.pointerId)
     setDrag({ id: tokenId, ix: p.x, iy: p.y, sx: p.x, sy: p.y, moved: false })
   }
 
   const onPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
-    if (!drag) return
     const p = toImage(e)
     if (!p) return
+    if (painting) {
+      if (!paintStroke) return
+      const cell = nearestCell(p)
+      if (!cell) return
+      const key = hexKey({ q: cell.q, r: cell.r })
+      if (key !== paintStroke.last) {
+        onPaint?.(key, paintStroke.erase)
+        setPaintStroke({ ...paintStroke, last: key })
+      }
+      return
+    }
+    if (!drag) return
     const moved = drag.moved || Math.hypot(p.x - drag.sx, p.y - drag.sy) > board.tileSize * 0.35
     setDrag({ ...drag, ix: p.x, iy: p.y, moved })
   }
 
   const onPointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
-    if (!drag) return
     e.currentTarget.releasePointerCapture?.(e.pointerId)
+    if (painting) {
+      setPaintStroke(null)
+      return
+    }
+    if (!drag) return
     const cell = nearestCell({ x: drag.ix, y: drag.iy })
     if (drag.id) {
       if (!drag.moved) onTokenClick?.(drag.id)
@@ -135,7 +165,10 @@ export function HexGrid({
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
-      onPointerCancel={() => setDrag(null)}
+      onPointerCancel={() => {
+        setDrag(null)
+        setPaintStroke(null)
+      }}
     >
       <image href={mapImageUrl(board.id)} x={0} y={0} width={size} height={size} />
 
