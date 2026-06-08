@@ -12,13 +12,16 @@ const TEAM_SIZE = 5
 export const MAX_TURN = 5 // turn 0 = deployment, 1–5 = the raid turns
 const emptyTeam = (): (string | null)[] => Array(TEAM_SIZE).fill(null)
 
-/** Effective position of a token at `turn` — the most recent move at or before it. */
+/**
+ * Effective position of a token at `turn` — the most recent entry at or before it.
+ * A `null` entry is an explicit "removed from here on" marker.
+ */
 export function posAtTurn(
-  byTurn: Record<number, TokenPos> | undefined,
+  byTurn: Record<number, TokenPos | null> | undefined,
   turn: number,
 ): TokenPos | null {
   if (!byTurn) return null
-  for (let t = turn; t >= 0; t--) if (byTurn[t]) return byTurn[t]
+  for (let t = turn; t >= 0; t--) if (t in byTurn) return byTurn[t]
   return null
 }
 
@@ -31,8 +34,8 @@ interface PlanState {
 
   // ── Planning ──
   currentTurn: number
-  /** tokenId → (turn → position). Sparse: a move is recorded only at its turn. */
-  positions: Record<string, Record<number, TokenPos>>
+  /** tokenId → (turn → position | null). Sparse; null = removed from that turn on. */
+  positions: Record<string, Record<number, TokenPos | null>>
   /** turn → (hexKey → color). Per-turn hex annotations. */
   paint: Record<number, Record<string, string>>
   /** Spawn instances (summons / boss minions). instanceId → its source unit + side. */
@@ -51,10 +54,10 @@ interface PlanState {
   nextTurn: () => void
   prevTurn: () => void
   placeToken: (id: string, pos: TokenPos) => void
-  removeToken: (id: string) => void
+  /** Remove a token from the current turn onward; earlier turns keep it. */
+  removeFromTurn: (id: string) => void
   /** Create a spawn instance; returns its instanceId. */
   addInstance: (unitId: string, side: 'ally' | 'enemy') => string
-  removeInstance: (id: string) => void
   /** Set a hex colour at the current turn, or erase it when color is null. */
   setPaint: (hexKey: string, color: string | null) => void
   resetPlan: () => void
@@ -99,11 +102,24 @@ export const usePlanStore = create<PlanState>()(
           positions: { ...s.positions, [id]: { ...s.positions[id], [s.currentTurn]: pos } },
         })),
 
-      removeToken: (id) =>
+      // Remove from the current turn onward. Earlier turns keep the token; if it
+      // has no earlier presence, drop it entirely (and its instance, if any).
+      removeFromTurn: (id) =>
         set((s) => {
+          const byTurn = { ...(s.positions[id] ?? {}) }
+          for (const k of Object.keys(byTurn)) {
+            if (Number(k) >= s.currentTurn) delete byTurn[Number(k)]
+          }
+          const hasPast = Object.values(byTurn).some((p) => p !== null)
+          if (hasPast) {
+            byTurn[s.currentTurn] = null // "removed from here on" marker
+            return { positions: { ...s.positions, [id]: byTurn } }
+          }
           const positions = { ...s.positions }
           delete positions[id]
-          return { positions }
+          const instances = { ...s.instances }
+          delete instances[id]
+          return { positions, instances }
         }),
 
       addInstance: (unitId, side) => {
@@ -112,15 +128,6 @@ export const usePlanStore = create<PlanState>()(
         set((s) => ({ instanceSeq: seq, instances: { ...s.instances, [id]: { unitId, side } } }))
         return id
       },
-
-      removeInstance: (id) =>
-        set((s) => {
-          const instances = { ...s.instances }
-          delete instances[id]
-          const positions = { ...s.positions }
-          delete positions[id]
-          return { instances, positions }
-        }),
 
       setPaint: (hexKey, color) =>
         set((s) => {

@@ -39,7 +39,7 @@ const PAINT_COLORS = [
 export function BoardPage() {
   const navigate = useNavigate()
   const { bossUnitId, boardId, team, machineOfWar, currentTurn, positions, paint, instances } = usePlanStore()
-  const { setCurrentTurn, placeToken, removeToken, addInstance, removeInstance, setPaint } = usePlanStore()
+  const { setCurrentTurn, placeToken, removeFromTurn, addInstance, setPaint, resetPlan } = usePlanStore()
 
   const bosses = useBosses()
   const { roster, machinesOfWar } = useRoster()
@@ -169,7 +169,7 @@ export function BoardPage() {
     <div className="fixed inset-0 flex flex-col overflow-hidden bg-abyss" style={{ height: '100dvh' }}>
       {/* Top bar */}
       <div className="z-10 flex items-center justify-between gap-3 border-b border-iron bg-abyss/85 px-3 py-2 backdrop-blur" style={{ paddingTop: 'max(0.5rem, env(safe-area-inset-top))' }}>
-        <button onClick={() => navigate('/plan')} className="flex items-center gap-1.5 text-sm text-ash transition-colors hover:text-teal-bright">
+        <button onClick={() => { resetPlan(); navigate('/plan') }} className="flex items-center gap-1.5 text-sm text-ash transition-colors hover:text-teal-bright">
           <LogOut size={16} className="rotate-180" />
           <span className="uppercase tracking-[0.1em]">Exit</span>
         </button>
@@ -272,8 +272,7 @@ export function BoardPage() {
                   {selectedDef.type !== 'boss' && (
                     <ToolButton
                       onClick={() => {
-                        if (instances[selectedDef.id]) removeInstance(selectedDef.id)
-                        else removeToken(selectedDef.id)
+                        removeFromTurn(selectedDef.id)
                         setSelectedId(null)
                       }}
                       icon={<Trash2 size={15} />}
