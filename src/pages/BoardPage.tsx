@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { Brush, ChevronDown, LogOut, Plus, RotateCw, Trash2 } from 'lucide-react'
-import { usePlanStore, posAtTurn, MAX_TURN } from '../stores/planStore'
+import { usePlanStore, posAtTurn } from '../stores/planStore'
 import { useBosses, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
 import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
@@ -291,7 +291,7 @@ export function BoardPage() {
             <ChevronDown size={16} className={`transition-transform ${dockOpen ? '' : 'rotate-180'}`} />
             Tools
           </button>
-          <TurnSelector turn={currentTurn} max={MAX_TURN} onChange={setCurrentTurn} />
+          <TurnSelector phase={currentTurn} onChange={setCurrentTurn} />
         </div>
       </div>
     </div>

@@ -9,7 +9,10 @@ export interface TokenPos {
 }
 
 const TEAM_SIZE = 5
-export const MAX_TURN = 5 // turn 0 = deployment, 1–5 = the raid turns
+/** Battle phases as a flat index: 0 = S (deployment), then per turn k (1..5):
+ *  player phase = 2k-1, enemy phase = 2k. So S,1,1E,2,2E,…,5,5E → 0..10. */
+export const TURN_COUNT = 5
+export const MAX_PHASE = TURN_COUNT * 2 // 10
 const emptyTeam = (): (string | null)[] => Array(TEAM_SIZE).fill(null)
 
 /**
@@ -93,8 +96,8 @@ export const usePlanStore = create<PlanState>()(
       reset: () =>
         set({ bossUnitId: null, boardId: null, team: emptyTeam(), machineOfWar: null, ...EMPTY_PLAN }),
 
-      setCurrentTurn: (turn) => set({ currentTurn: Math.max(0, Math.min(MAX_TURN, turn)) }),
-      nextTurn: () => set((s) => ({ currentTurn: Math.min(MAX_TURN, s.currentTurn + 1) })),
+      setCurrentTurn: (turn) => set({ currentTurn: Math.max(0, Math.min(MAX_PHASE, turn)) }),
+      nextTurn: () => set((s) => ({ currentTurn: Math.min(MAX_PHASE, s.currentTurn + 1) })),
       prevTurn: () => set((s) => ({ currentTurn: Math.max(0, s.currentTurn - 1) })),
 
       placeToken: (id, pos) =>
