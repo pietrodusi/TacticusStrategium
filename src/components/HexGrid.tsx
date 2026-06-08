@@ -18,7 +18,7 @@ export function HexGrid({ board, showGrid = true }: { board: ParsedBoard; showGr
       {showGrid && (
         <g>
           {board.cells.map((cell) => (
-            <HexCell key={`${cell.q},${cell.r}`} cell={cell} />
+            <HexCell key={`${cell.col},${cell.row}`} cell={cell} />
           ))}
         </g>
       )}
