@@ -4,10 +4,11 @@ import { mapImageUrl, unitPortraitUrl } from '../services/paths'
 import { getBossOccupiedHexes, hexKey } from '../services/hex/hexUtils'
 import type { HexCoord, Point } from '../types/strategium'
 import type { TokenPos } from '../stores/planStore'
+import { RING_COLOR, type TokenKind } from './tokenColors'
 
 export interface BoardToken {
   id: string
-  type: 'character' | 'mow' | 'boss'
+  type: TokenKind
   stem: string | null
   name: string
   size: number // 1 | 3 | 7
@@ -349,7 +350,7 @@ function TokenMarker({
   dragging: boolean
 }) {
   const clipId = `clip-${token.id.replace(/[^a-zA-Z0-9]/g, '')}`
-  const ring = token.type === 'boss' ? '#cf4632' : token.type === 'mow' ? '#b88f4d' : '#2cd0d8'
+  const ring = RING_COLOR[token.type]
   return (
     <g data-token-id={token.id} className="cursor-grab" style={{ opacity: dragging ? 0.85 : 1 }}>
       <circle cx={center.x} cy={center.y} r={r} fill="#0b0d11" />

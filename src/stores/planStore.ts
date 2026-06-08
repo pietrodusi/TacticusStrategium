@@ -35,6 +35,9 @@ interface PlanState {
   positions: Record<string, Record<number, TokenPos>>
   /** turn → (hexKey → color). Per-turn hex annotations. */
   paint: Record<number, Record<string, string>>
+  /** Spawn instances (summons / boss minions). instanceId → its source unit + side. */
+  instances: Record<string, { unitId: string; side: 'ally' | 'enemy' }>
+  instanceSeq: number
 
   // ── Setup actions ──
   selectBoss: (unitId: string) => void
@@ -49,16 +52,19 @@ interface PlanState {
   prevTurn: () => void
   placeToken: (id: string, pos: TokenPos) => void
   removeToken: (id: string) => void
+  /** Create a spawn instance; returns its instanceId. */
+  addInstance: (unitId: string, side: 'ally' | 'enemy') => string
+  removeInstance: (id: string) => void
   /** Set a hex colour at the current turn, or erase it when color is null. */
   setPaint: (hexKey: string, color: string | null) => void
   resetPlan: () => void
 }
 
-const EMPTY_PLAN = { currentTurn: 0, positions: {}, paint: {} }
+const EMPTY_PLAN = { currentTurn: 0, positions: {}, paint: {}, instances: {}, instanceSeq: 0 }
 
 export const usePlanStore = create<PlanState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       bossUnitId: null,
       boardId: null,
       team: emptyTeam(),
@@ -98,6 +104,22 @@ export const usePlanStore = create<PlanState>()(
           const positions = { ...s.positions }
           delete positions[id]
           return { positions }
+        }),
+
+      addInstance: (unitId, side) => {
+        const seq = get().instanceSeq + 1
+        const id = `inst-${seq}`
+        set((s) => ({ instanceSeq: seq, instances: { ...s.instances, [id]: { unitId, side } } }))
+        return id
+      },
+
+      removeInstance: (id) =>
+        set((s) => {
+          const instances = { ...s.instances }
+          delete instances[id]
+          const positions = { ...s.positions }
+          delete positions[id]
+          return { instances, positions }
         }),
 
       setPaint: (hexKey, color) =>

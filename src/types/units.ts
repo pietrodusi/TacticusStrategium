@@ -33,3 +33,15 @@ export interface Unit {
   faction: string | null
   stem: string | null
 }
+
+/** public/data/spawns.json — which units each character/boss can spawn. */
+export interface SpawnUnit {
+  name: string
+  faction: string | null
+  stem: string | null
+  kind: 'summon' | 'npc'
+}
+export interface SpawnsData {
+  byUnit: Record<string, string[]>
+  units: Record<string, SpawnUnit>
+}

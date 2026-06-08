@@ -11,11 +11,13 @@ export function UnitImage({
   alt,
   round = true,
   className = '',
+  style,
 }: {
   stem: string | null
   alt: string
   round?: boolean
   className?: string
+  style?: React.CSSProperties
 }) {
   const sources = stem
     ? round
@@ -29,7 +31,7 @@ export function UnitImage({
 
   if (sources.length === 0 || idx >= sources.length) {
     return (
-      <div className={`grid place-items-center bg-steel-2 text-ash ${className}`} aria-label={alt}>
+      <div className={`grid place-items-center bg-steel-2 text-ash ${className}`} style={style} aria-label={alt}>
         {alt.charAt(0)}
       </div>
     )
@@ -40,6 +42,7 @@ export function UnitImage({
       alt={alt}
       loading="lazy"
       className={className}
+      style={style}
       onError={() => setState({ stem, idx: idx + 1 })}
     />
   )

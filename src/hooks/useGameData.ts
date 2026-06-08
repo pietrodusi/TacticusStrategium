@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { asset } from '../services/paths'
-import type { BossIndex, ImageStems, Unit } from '../types/units'
+import type { BossIndex, ImageStems, SpawnsData, Unit } from '../types/units'
 import type { TacticusCharacter } from '../services/tacticusdb/client'
 import { useCharacters } from './useTacticusData'
 
@@ -11,6 +11,17 @@ export const useBosses = () =>
     queryFn: async (): Promise<BossIndex> => {
       const res = await fetch(asset('data/bosses.json'))
       if (!res.ok) throw new Error(`bosses ${res.status}`)
+      return res.json()
+    },
+  })
+
+/** Bundled per-unit spawn lists + identities (public/data/spawns.json). */
+export const useSpawns = () =>
+  useQuery({
+    queryKey: ['spawns'],
+    queryFn: async (): Promise<SpawnsData> => {
+      const res = await fetch(asset('data/spawns.json'))
+      if (!res.ok) throw new Error(`spawns ${res.status}`)
       return res.json()
     },
   })
