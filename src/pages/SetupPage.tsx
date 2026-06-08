@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { ChevronRight, Plus, X } from 'lucide-react'
 import { useBosses, useRoster } from '../hooks/useGameData'
 import { usePlanStore } from '../stores/planStore'
-import { mapImageUrl, unitPortraitUrl } from '../services/paths'
+import { mapImageUrl } from '../services/paths'
 import { bossDisplayName, factionLabel } from '../utils/format'
 import type { BossIndexEntry, Unit } from '../types/units'
 import { UnitPickerModal } from '../components/plan/UnitPickerModal'
+import { UnitImage } from '../components/UnitImage'
 
 type PickerTarget = { kind: 'team'; index: number } | { kind: 'mow' }
 
@@ -169,18 +170,11 @@ function BossTile({
         active ? 'border-teal bg-teal/5 panel-glow' : 'border-iron hover:border-brass-dim'
       }`}
     >
-      {boss.imageStem ? (
-        <img
-          src={unitPortraitUrl(boss.imageStem, true)}
-          alt={boss.name}
-          loading="lazy"
-          className={`h-14 w-14 rounded-full object-cover ring-1 ${active ? 'ring-teal' : 'ring-iron'}`}
-        />
-      ) : (
-        <div className="grid h-14 w-14 place-items-center rounded-full bg-steel-2 text-ash">
-          {boss.name.charAt(0)}
-        </div>
-      )}
+      <UnitImage
+        stem={boss.imageStem}
+        alt={boss.name}
+        className={`h-14 w-14 rounded-full object-cover ring-1 ${active ? 'ring-teal' : 'ring-iron'}`}
+      />
       <span className="text-center text-[0.68rem] font-semibold leading-tight text-bone">
         {bossDisplayName(boss.bossType, boss.name)}
       </span>
@@ -241,18 +235,11 @@ function UnitSlot({
           onClick={onClick}
           className="flex aspect-square w-full flex-col items-center justify-center gap-1 rounded-lg border border-brass-dim bg-steel p-1"
         >
-          {unit.stem ? (
-            <img
-              src={unitPortraitUrl(unit.stem, true)}
-              alt={unit.name}
-              loading="lazy"
-              className="h-10 w-10 rounded-full object-cover"
-            />
-          ) : (
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-steel-2 text-xs text-ash">
-              {unit.name.charAt(0)}
-            </div>
-          )}
+          <UnitImage
+            stem={unit.stem}
+            alt={unit.name}
+            className="h-10 w-10 rounded-full object-cover"
+          />
           <span className="line-clamp-1 w-full px-0.5 text-center text-[0.6rem] leading-tight text-bone">
             {unit.name}
           </span>

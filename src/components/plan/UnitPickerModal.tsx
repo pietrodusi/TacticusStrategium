@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Search, X } from 'lucide-react'
 import type { Unit } from '../../types/units'
-import { unitPortraitUrl } from '../../services/paths'
 import { factionLabel } from '../../utils/format'
+import { UnitImage } from '../UnitImage'
 
 export function UnitPickerModal({
   title,
@@ -89,7 +89,11 @@ export function UnitPickerModal({
                     : 'border-iron hover:border-teal hover:bg-steel-2'
                 }`}
               >
-                <Avatar unit={u} />
+                <UnitImage
+                  stem={u.stem}
+                  alt={u.name}
+                  className="h-14 w-14 rounded-full object-cover ring-1 ring-iron"
+                />
                 <span className="text-center text-[0.7rem] leading-tight text-bone">{u.name}</span>
               </button>
             )
@@ -100,24 +104,6 @@ export function UnitPickerModal({
         </div>
       </div>
     </div>
-  )
-}
-
-function Avatar({ unit }: { unit: Unit }) {
-  if (!unit.stem) {
-    return (
-      <div className="grid h-14 w-14 place-items-center rounded-full bg-steel-2 text-sm text-ash">
-        {unit.name.charAt(0)}
-      </div>
-    )
-  }
-  return (
-    <img
-      src={unitPortraitUrl(unit.stem, true)}
-      alt={unit.name}
-      loading="lazy"
-      className="h-14 w-14 rounded-full object-cover ring-1 ring-iron"
-    />
   )
 }
 
