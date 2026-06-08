@@ -23,6 +23,9 @@ const ROW_FACTOR = 1.02 // q = ROW_FACTOR * tileSize
 // The hex cell is drawn slightly larger than its V×q box (Tailwind scale-x-125 / scale-y-110).
 const HEX_SCALE_X = 1.25
 const HEX_SCALE_Y = 1.1
+// Shrinks each cell toward its center so adjacent hexes don't touch/overlap.
+// 1.0 = TacticusDB's exact interlocking shape; lower = visible gap between hexes.
+const HEX_PADDING = 0.92
 
 interface Calibration {
   tileSize: number
@@ -85,15 +88,24 @@ function tdbToAxial(col: number, row: number, boardHeight: number): HexCoord {
   return { q: col, r: flippedRow - Math.floor(col / 2) }
 }
 
-/** Flat-top hexagon corners for a cell box of w × h centered at (cx, cy). */
+/**
+ * Hexagon corners for a cell box of w × h centered at (cx, cy), matching
+ * TacticusDB's `.hexagonal` clip-path
+ *   polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%)
+ * i.e. side points at ±0.5w, top/bottom edges at ±0.25w inset to ±0.433h,
+ * then scaled by HEX_PADDING so neighbours don't overlap.
+ */
 function hexBoxCorners(cx: number, cy: number, w: number, h: number): Point[] {
+  const sx = 0.5 * HEX_PADDING // left/right side points
+  const tx = 0.25 * HEX_PADDING // top/bottom edge half-width
+  const ty = 0.433 * HEX_PADDING // top/bottom edge inset (6.7% from box edge)
   return [
-    { x: cx - 0.25 * w, y: cy - 0.5 * h },
-    { x: cx + 0.25 * w, y: cy - 0.5 * h },
-    { x: cx + 0.5 * w, y: cy },
-    { x: cx + 0.25 * w, y: cy + 0.5 * h },
-    { x: cx - 0.25 * w, y: cy + 0.5 * h },
-    { x: cx - 0.5 * w, y: cy },
+    { x: cx - tx * w, y: cy - ty * h },
+    { x: cx + tx * w, y: cy - ty * h },
+    { x: cx + sx * w, y: cy },
+    { x: cx + tx * w, y: cy + ty * h },
+    { x: cx - tx * w, y: cy + ty * h },
+    { x: cx - sx * w, y: cy },
   ]
 }
 
