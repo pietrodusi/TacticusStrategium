@@ -12,6 +12,10 @@ export const mapImageUrl = (boardId: string) => asset(`images/maps/${boardId}_Vi
 export const liveMapImageUrl = (boardId: string) =>
   `https://tacticusdb.com/images/board/${boardId}_Visual.jpeg`
 
-/** Boss portrait on the Snowprint CDN. */
-export const bossPortraitUrl = (guildBossUnitKey: string) =>
+/** Boss splash art on the Snowprint CDN (large preview). */
+export const bossSplashUrl = (guildBossUnitKey: string) =>
   `https://cdn.ezekiel.snowprintstudios.com/${guildBossUnitKey}_BattlePreviewPopUp.png`
+
+/** Unit portrait (character/summon/boss/npc) by image stem. Round is best for tokens. */
+export const unitPortraitUrl = (stem: string, round = false) =>
+  `https://tacticusdb.com/images/characters/${round ? 'RoundPortrait_' : 'portrait_'}${stem}.png`
