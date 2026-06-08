@@ -1,0 +1,1322 @@
+{
+  "generatedFrom": "https://tacticusdb.com/api/data/guildBossSeasonConfigsConverted",
+  "seasonCount": 5,
+  "boardCount": 108,
+  "boards": [
+    {
+      "boardId": "GB_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 8,
+      "bossTypes": [
+        "TervigonLeviathan",
+        "TervigonKronos"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 7,
+      "bossTypes": [
+        "HiveTyrantLeviathan",
+        "TervigonKronos"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 6,
+      "bossTypes": [
+        "TervigonGorgon",
+        "HiveTyrantKronos",
+        "HiveTyrantGorgon"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 7,
+      "bossTypes": [
+        "TervigonGorgon",
+        "HiveTyrantGorgon"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_05",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 5,
+      "bossTypes": [
+        "HiveTyrantLeviathan",
+        "TervigonLeviathan"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_06",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 5,
+      "bossTypes": [
+        "TervigonKronos",
+        "HiveTyrantKronos"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Belisarius_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "BelisariusRW"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Belisarius_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "BelisariusRW"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Belisarius_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "BelisariusRW"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Belisarius_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "BelisariusRW"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Belisarius_support_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "BelisariusRW"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Belisarius_support_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "BelisariusRW"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Belisarius_support_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 3,
+      "bossTypes": [
+        "BelisariusRW"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Belisarius_support_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "BelisariusRW"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Belisarius_support_05",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "BelisariusRW"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Belisarius_support_06",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 3,
+      "bossTypes": [
+        "BelisariusRW"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_03_1",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_05",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 3,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_support_01",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 3,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_support_02",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 3,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_support_03",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 3,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_support_04",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 3,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_support_04_1",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_support_05",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_support_05_1",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 3,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Dakka_support_06",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 3,
+      "bossTypes": [
+        "Ghazghkull"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Khaine_01",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 2,
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Khaine_02",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 3,
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Khaine_03",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Khaine_04",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Khaine_05",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 3,
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Khaine_support_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 3,
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Khaine_support_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 3,
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Khaine_support_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 4,
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Khaine_support_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 4,
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Khaine_support_05",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 3,
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Khaine_support_06",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 3,
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Lion_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Lion"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Lion_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Lion"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Lion_support_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Lion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Lion_support_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Lion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Lion_support_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Lion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Lion_support_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Lion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Magnus_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Magnus"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Magnus_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Magnus"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Magnus_support_01",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Magnus"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Magnus_support_02",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Magnus"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Magnus_support_05",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Magnus"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Magnus_support_06",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Magnus"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_support_01",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_support_02",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_support_03",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_support_04",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Riptide_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 3,
+      "bossTypes": [
+        "Riptide"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Riptide_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 3,
+      "bossTypes": [
+        "Riptide"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Riptide_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 7,
+      "bossTypes": [
+        "Riptide"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Riptide_support_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 6,
+      "bossTypes": [
+        "Riptide"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Riptide_support_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 7,
+      "bossTypes": [
+        "Riptide"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Riptide_support_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 6,
+      "bossTypes": [
+        "Riptide"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Riptide_support_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 7,
+      "bossTypes": [
+        "Riptide"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 4,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_05",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 2,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_06",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 3,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_support_01",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 5,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_support_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 5,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_support_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 5,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_support_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 5,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_support_05",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 4,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_RogalDorn_support_06",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 4,
+      "bossTypes": [
+        "RogalDorn"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Screamer_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 5,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Screamer_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 9,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Screamer_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 5,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Screamer_support_01",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 5,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Screamer_support_02",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 5,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Screamer_support_03",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 5,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Screamer_support_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 5,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Screamer_support_05",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 2,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Screamer_support_06",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 2,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Screamer_support_07",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 7,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Screamer_support_08",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 7,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_SK_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_SK_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_SK_03",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_SK_support_01",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_SK_support_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_SK_support_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 1,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_SK_support_04",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_SK_support_05",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_SK_support_06",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 1,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_support_01",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 11,
+      "bossTypes": [
+        "TervigonLeviathan",
+        "HiveTyrantLeviathan"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_support_02",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 11,
+      "bossTypes": [
+        "TervigonLeviathan",
+        "HiveTyrantLeviathan"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_support_03",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 8,
+      "bossTypes": [
+        "HiveTyrantLeviathan",
+        "TervigonKronos"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_support_04",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 8,
+      "bossTypes": [
+        "HiveTyrantLeviathan",
+        "TervigonKronos"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_support_05",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 7,
+      "bossTypes": [
+        "TervigonGorgon",
+        "HiveTyrantKronos",
+        "HiveTyrantGorgon"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_support_06",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 7,
+      "bossTypes": [
+        "TervigonGorgon",
+        "HiveTyrantKronos",
+        "HiveTyrantGorgon"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_support_07",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 6,
+      "bossTypes": [
+        "TervigonKronos",
+        "HiveTyrantKronos"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_support_08",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 6,
+      "bossTypes": [
+        "TervigonKronos",
+        "HiveTyrantKronos"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_support_09",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 6,
+      "bossTypes": [
+        "TervigonGorgon",
+        "HiveTyrantGorgon"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_support_11",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 6,
+      "bossTypes": [
+        "TervigonGorgon",
+        "HiveTyrantGorgon"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    }
+  ]
+}

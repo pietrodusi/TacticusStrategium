@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-imperial-gold: #d4af37;
+  --color-ink: #0b0c0f;
+  --color-panel: #16181d;
+  --color-panel-2: #1f232b;
+  --color-line: #2a2f38;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-ink);
+  color: #e5e7eb;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+/* Prevent the hex grid SVG from triggering browser gestures on touch. */
+.touch-none {
+  touch-action: none;
+}
