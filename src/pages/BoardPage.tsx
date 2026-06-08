@@ -72,21 +72,19 @@ export function BoardPage() {
     return m
   }, [roster, machinesOfWar])
 
-  // Unique tokens: boss, MoW, squad.
+  // Unique deployable tokens: boss + squad. The Machine of War is NOT deployed
+  // directly — it's a loadout pick whose ability-summoned unit (if any) appears
+  // in the Allies palette like a summon.
   const uniqueDefs = useMemo<TrayDef[]>(() => {
     const list: TrayDef[] = []
     if (boss) list.push({ id: boss.unitId, type: 'boss', stem: boss.imageStem, name: bossDisplayName(boss.bossType, boss.name), size: boss.bossSize })
-    if (machineOfWar) {
-      const u = unitById.get(machineOfWar)
-      if (u) list.push({ id: u.id, type: 'mow', stem: u.stem, name: u.name, size: 1 })
-    }
     for (const id of team) {
       if (!id) continue
       const u = unitById.get(id)
       if (u) list.push({ id: u.id, type: 'character', stem: u.stem, name: u.name, size: 1 })
     }
     return list
-  }, [boss, machineOfWar, team, unitById])
+  }, [boss, team, unitById])
 
   // Spawn palettes (types you can add instances of).
   const allyPalette = useMemo<PaletteType[]>(() => {
