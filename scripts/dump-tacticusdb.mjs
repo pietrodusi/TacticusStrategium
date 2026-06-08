@@ -19,6 +19,8 @@
  *      /images/characters/portrait_{stem}.png and RoundPortrait_{stem}.png.
  *   5. Build a boss picker index from the "Boss" encounters (distinct boss unit ->
  *      its maps, faction, image stem, size).
+ *   6. Build per-unit spawn lists from ability `constants` (each character/boss ->
+ *      the units it summons) + boss encounter NPCs -> public/data/spawns.json.
  *
  * Output:
  *   public/data/guildBossSeasonConfigs.json   (master index)
@@ -26,6 +28,7 @@
  *   public/data/boards-manifest.json          (list of boards + metadata)
  *   public/data/imageStems.json               (unitId -> portrait stem, by type)
  *   public/data/bosses.json                   (boss picker index)
+ *   public/data/spawns.json                   (unit -> spawnable units + identities)
  *   public/images/maps/{boardId}_Visual.jpeg  (map backgrounds)
  *
  * Re-run any time to refresh. Idempotent: re-downloads everything by default,
@@ -240,6 +243,101 @@ async function buildBossIndex(seasonConfig, stems) {
   return bosses.sort((a, b) => a.unitId.localeCompare(b.unitId));
 }
 
+/**
+ * Build per-unit spawn lists: which units each character / boss can bring onto
+ * the board, derived from ability `constants` (e.g. `unitToSpawn`) plus each
+ * boss's encounter NPC(s). Also returns an identity catalog for every spawnable
+ * unit so the app needs no live ability/npc fetch.
+ */
+async function buildSpawns(seasonConfig, stems) {
+  const [abilities, characters, bossUnits, summons, npc] = await Promise.all([
+    fetchWithRetry(`${BASE}/api/data/abilities`),
+    fetchWithRetry(`${BASE}/api/data/characters`),
+    fetchWithRetry(`${BASE}/api/data/guildBossUnits`),
+    fetchWithRetry(`${BASE}/api/data/summons`),
+    fetchWithRetry(`${BASE}/api/data/npc`),
+  ]);
+  const isUnit = (id) => !!(summons[id] || npc[id] || characters[id] || bossUnits[id]);
+
+  // ability -> [spawned unit ids] (constants values can be comma-joined lists)
+  const abilitySpawns = {};
+  for (const [aid, a] of Object.entries(abilities)) {
+    if (!a?.constants) continue;
+    const ids = new Set();
+    const scan = (v) => {
+      if (typeof v === 'string') {
+        for (const tok of v.split(',')) {
+          const id = tok.trim();
+          if (id && isUnit(id)) ids.add(id);
+        }
+      } else if (Array.isArray(v)) v.forEach(scan);
+      else if (v && typeof v === 'object') Object.values(v).forEach(scan);
+    };
+    scan(a.constants);
+    if (ids.size) abilitySpawns[aid] = [...ids];
+  }
+
+  const unitSpawnIds = (u) => {
+    const abil = [...(u.activeAbilities ?? []), ...(u.passiveAbilities ?? [])];
+    return [...new Set(abil.flatMap((a) => abilitySpawns[a] ?? []))];
+  };
+
+  const byUnit = {};
+  for (const [id, c] of Object.entries(characters)) {
+    const s = unitSpawnIds(c);
+    if (s.length) byUnit[id] = s;
+  }
+
+  // boss encounter NPCs (the "initial" spawn for each boss)
+  const bossEnc = {};
+  for (const season of seasonConfig)
+    for (const tier of season.tiers ?? [])
+      for (const set of tier.sets ?? [])
+        for (const e of set.encounters ?? []) {
+          if (e.guildBossEncounterType !== 'Boss' || !e.unitId) continue;
+          const bid = e.unitId.split(':')[0];
+          (bossEnc[bid] ??= new Set());
+          if (e.npc1id) bossEnc[bid].add(e.npc1id.split(':')[0]);
+        }
+  // Tyranid hive-fleet variants share an ability that lists every variant; keep
+  // only the spawns matching this boss's own variant to avoid cross-variant noise.
+  const VARIANTS = ['Leviathan', 'Kronos', 'Gorgon'];
+  for (const [id, u] of Object.entries(bossUnits)) {
+    const variant = VARIANTS.find((v) => id.endsWith(v));
+    let abil = unitSpawnIds(u);
+    if (variant) abil = abil.filter((sid) => sid.endsWith(variant));
+    const all = [...new Set([...(bossEnc[id] ?? []), ...abil])];
+    if (all.length) byUnit[id] = all;
+  }
+
+  // Identity for every referenced spawn unit.
+  const deriveName = (id) => {
+    const s = id
+      .replace(/^GuildBoss\d+(?:MiniBoss|Boss|Npc)\d+/, '')
+      .replace(/^[a-z]+(?=[A-Z])/, '')
+      .replace(/^(Tyran|Necro|Astra|Adept|Ultra|Blood|Black|Death|Thous|Orks|Tau|Genes|Votan|Admec)/, '');
+    return splitCamel(s) || id;
+  };
+  const stemFor = (id) =>
+    stems.summon[id] ?? stems.npc[id] ?? stems.boss[id] ?? stems.character[id] ?? null;
+
+  const units = {};
+  for (const ids of Object.values(byUnit)) {
+    for (const id of ids) {
+      if (units[id]) continue;
+      const src = summons[id] ?? npc[id] ?? characters[id];
+      units[id] = {
+        name: src?.name ?? deriveName(id),
+        faction: src?.FactionId ?? bossUnits[id]?.FactionId ?? null,
+        stem: stemFor(id),
+        kind: summons[id] ? 'summon' : 'npc',
+      };
+    }
+  }
+
+  return { byUnit, units };
+}
+
 // --- main -------------------------------------------------------------------
 async function main() {
   const t0 = Date.now();
@@ -356,6 +454,16 @@ async function main() {
         (bossesNoImage ? `, ${bossesNoImage} without an image stem` : '') +
         ')',
     );
+
+    try {
+      const spawns = await buildSpawns(seasonConfig, stems);
+      await writeFile(join(DATA_DIR, 'spawns.json'), JSON.stringify(spawns, null, 2));
+      console.log(
+        `  ✓ spawns.json (${Object.keys(spawns.byUnit).length} summoners, ${Object.keys(spawns.units).length} spawnable units)`,
+      );
+    } catch (err) {
+      console.log(`  ✗ spawns (${err.message})`);
+    }
   }
 
   // summary -----------------------------------------------------------------

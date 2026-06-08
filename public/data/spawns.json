@@ -1,0 +1,652 @@
+{
+  "byUnit": {
+    "ultraInceptorSgt": [
+      "ultraSmnInceptor"
+    ],
+    "ultraDreadnought": [
+      "ultraSmnDreadnought"
+    ],
+    "adeptCelestine": [
+      "adeptSmnGeminaeSuperia"
+    ],
+    "necroSpyder": [
+      "necroSmnSwarm"
+    ],
+    "necroOverlord": [
+      "necroSmnWarrior"
+    ],
+    "astraYarrick": [
+      "astraSmnGuardsman"
+    ],
+    "astraCreed": [
+      "astraSmnGuardsman",
+      "astraSmnKell",
+      "astraNpc1Guardsman"
+    ],
+    "astraDreir": [
+      "astraSmnDeathRider"
+    ],
+    "astraOrdnanceBattery": [
+      "astraSmnGuardsman"
+    ],
+    "blackPossession": [
+      "blackSmnBloodletter",
+      "thousSmnBlueHorror"
+    ],
+    "deathBlightbringer": [
+      "deathPoxwalker"
+    ],
+    "orksRuntherd": [
+      "orksGrot"
+    ],
+    "orksBigMek": [
+      "orksGrotTank"
+    ],
+    "orksWarboss": [
+      "orksOrkBoys"
+    ],
+    "orksRukkatrukk": [
+      "orksSmnSquig"
+    ],
+    "tauMarksman": [
+      "tauSmnDroneSniper"
+    ],
+    "tauCrisis": [
+      "tauSmnDroneShield"
+    ],
+    "tauShadowsun": [
+      "tauSmnDroneCommandLink"
+    ],
+    "thousInfernalMaster": [
+      "thousSmnPinkHorror",
+      "thousSmnScreamer"
+    ],
+    "thousDaemonPrince": [
+      "thousSmnDaemonPrince"
+    ],
+    "tyranWingedPrime": [
+      "tyranSmnWarrior",
+      "tyranSmnHormagaunt"
+    ],
+    "tyranParasite": [
+      "tyranSmnRipperSwarm"
+    ],
+    "tyranBiovore": [
+      "tyranSmnSporeMine"
+    ],
+    "admecMarshall": [
+      "admecSmnVanguard"
+    ],
+    "bloodIntercessor": [
+      "bloodSmnIntercessor"
+    ],
+    "genesBiophagus": [
+      "genesSmnAberrant"
+    ],
+    "genesMagus": [
+      "genesSmnDecoy",
+      "genesSmnNeophyte"
+    ],
+    "genesPrimus": [
+      "genesSmnNeophyte",
+      "genesSmnDecoy"
+    ],
+    "genesKelermorph": [
+      "genesSmnDecoy"
+    ],
+    "genesPatriarch": [
+      "genesSmnGenestealer",
+      "genesSmnDecoy"
+    ],
+    "votanIronmaster": [
+      "votanSmnEcog"
+    ],
+    "votanMemnyr": [
+      "votanSmnSteeljack"
+    ],
+    "astarCyrus": [
+      "astarSmnHaywireMine"
+    ],
+    "GuildBoss1Boss1TyranTervigonLeviathan": [
+      "GuildBoss1Npc1TyranTermagantLeviathan"
+    ],
+    "GuildBoss1Boss2TyranTervigonKronos": [
+      "GuildBoss1Npc2TyranTermagantKronos"
+    ],
+    "GuildBoss1Boss3TyranTervigonGorgon": [
+      "GuildBoss1Npc3TyranTermagantGorgon"
+    ],
+    "GuildBoss1Npc1TyranTermagantLeviathan": [
+      "GuildBoss1Npc1TyranTermagantLeviathan"
+    ],
+    "GuildBoss1Npc2TyranTermagantKronos": [
+      "GuildBoss1Npc2TyranTermagantKronos"
+    ],
+    "GuildBoss1Npc3TyranTermagantGorgon": [
+      "GuildBoss1Npc3TyranTermagantGorgon"
+    ],
+    "GuildBoss2Boss1TyranHiveTyrantLeviathan": [
+      "GuildBoss2Npc1TyranRipperSwarmLeviathan"
+    ],
+    "GuildBoss2Boss2TyranHiveTyrantKronos": [
+      "GuildBoss2Npc2TyranRipperSwarmKronos"
+    ],
+    "GuildBoss2Boss3TyranHiveTyrantGorgon": [
+      "GuildBoss2Npc3TyranRipperSwarmGorgon"
+    ],
+    "GuildBoss1MiniBoss1TyranWarriorLeviathan": [
+      "GuildBoss2Npc1TyranRipperSwarmLeviathan"
+    ],
+    "GuildBoss1MiniBoss2TyranWarriorKronos": [
+      "GuildBoss2Npc2TyranRipperSwarmKronos"
+    ],
+    "GuildBoss1MiniBoss3TyranWarriorGorgon": [
+      "GuildBoss2Npc3TyranRipperSwarmGorgon"
+    ],
+    "GuildBoss3Boss1NecroSilentKing": [
+      "GuildBoss3Npc3NecroDeathmark",
+      "GuildBoss3Npc6NecroSmnDeathmark"
+    ],
+    "GuildBoss3Npc5NecroSwarm": [
+      "necroSmnSwarm"
+    ],
+    "GuildBoss4Boss1OrksGhazghkull": [
+      "GuildBoss4Npc2OrksOrkBoy",
+      "GuildBoss4Npc4OrksStormboy"
+    ],
+    "GuildBoss4Npc1OrksGrot": [
+      "orksGrot"
+    ],
+    "GuildBoss4MiniBoss1OrksBigMek": [
+      "orksGrotTank"
+    ],
+    "GuildBoss4MiniBoss2OrksNob": [
+      "GuildBoss4Npc1OrksGrot",
+      "GuildBoss4LootObjExplOilDrumReworked"
+    ],
+    "GuildBoss4Minion2OrksRuntherd": [
+      "orksGrot"
+    ],
+    "GuildBoss5Boss1DeathMortarion": [
+      "GuildBoss5Npc1Poxwalker",
+      "GuildBoss5Npc2PoxwalkerSummon"
+    ],
+    "GuildBoss5MiniBoss2DeathBlightbringer": [
+      "deathPoxwalker",
+      "GuildBoss5Npc2PoxwalkerSummon"
+    ],
+    "GuildBoss6Boss1TyranScreamerKiller": [
+      "GuildBoss6Npc1TyranHormagaunt"
+    ],
+    "GuildBoss6MiniBoss2TyranWingedPrime": [
+      "tyranSmnWarrior",
+      "tyranSmnHormagaunt"
+    ],
+    "GuildBoss6Npc1TyranHormagaunt": [
+      "tyranNpc1Hormagaunt",
+      "tyranNpc2RipperSwarm",
+      "tyranSmnHormagaunt",
+      "tyranSmnRipperSwarm"
+    ],
+    "GuildBoss6Npc3TyranTermagant": [
+      "tyranNpc3Termagant",
+      "tyranSmnTermagant",
+      "GuildBoss1Npc1TyranTermagantLeviathan",
+      "GuildBoss1Npc2TyranTermagantKronos",
+      "GuildBoss1Npc3TyranTermagantGorgon"
+    ],
+    "GuildBoss7Boss1AstraRogaldorn": [
+      "GuildBoss7Npc1AstraGuardsman",
+      "GuildBoss4Npc2OrksOrkBoy"
+    ],
+    "GuildBoss7MiniBoss1AstraPrimarisPsy": [
+      "GuildBoss7Npc1AstraGuardsmanSummon"
+    ],
+    "GuildBoss7Npc3AstraVoxcaster": [
+      "astraSmnGuardsman"
+    ],
+    "GuildBoss8Boss1EldarAvatar": [
+      "GuildBoss8Npc1EldarGuardian",
+      "GuildBoss8Npc5EldarGuardianSummon"
+    ],
+    "GuildBoss9Boss1ThousMagnus": [
+      "GuildBoss9Npc3ThousRubricMarine"
+    ],
+    "GuildBoss9MiniBoss2ThousInfernalMaster": [
+      "thousSmnPinkHorror",
+      "thousSmnScreamer",
+      "GuildBoss9Npc5ThousScreamerSummon"
+    ],
+    "GuildBoss9Npc1ThousPinkHorror": [
+      "thousSmnBlueHorror"
+    ],
+    "GuildBoss10Boss1AdmecBelisarius": [
+      "GuildBoss10Npc1AdmecTechpriest",
+      "admecSmnTechpriest"
+    ],
+    "GuildBoss10MiniBoss1AdmecMarshall": [
+      "admecSmnVanguard"
+    ],
+    "GuildBoss10MiniBoss2AdmecManipulus": [
+      "GuildBoss10LootObjArcheotecCrate"
+    ],
+    "GuildBoss11Boss1TauRiptide": [
+      "GuildBoss11Npc1TauFireWarrior"
+    ],
+    "GuildBoss11MiniBoss1TauMarksman": [
+      "tauSmnDroneSniper",
+      "tauSmnStealthSuit"
+    ],
+    "GuildBoss11MiniBoss2TauCrisis": [
+      "tauSmnDroneShield"
+    ],
+    "GuildBoss12Boss1DarkaLion": [
+      "GuildBoss12Npc2DarkaHellblaster",
+      "darkaSmnTerminator"
+    ]
+  },
+  "units": {
+    "ultraSmnInceptor": {
+      "name": "Inceptor",
+      "faction": "Ultramarines",
+      "stem": "ultra_inceptor_02",
+      "kind": "summon"
+    },
+    "ultraSmnDreadnought": {
+      "name": "Galatian",
+      "faction": "Ultramarines",
+      "stem": "ultra_dreadnought",
+      "kind": "summon"
+    },
+    "adeptSmnGeminaeSuperia": {
+      "name": "Geminae Superia",
+      "faction": "Sisterhood",
+      "stem": "adept_geminae",
+      "kind": "summon"
+    },
+    "necroSmnSwarm": {
+      "name": "Scarab Swarm",
+      "faction": "Necrons",
+      "stem": "necro_scarab",
+      "kind": "summon"
+    },
+    "necroSmnWarrior": {
+      "name": "Necron Warrior",
+      "faction": "Necrons",
+      "stem": "necro_npc",
+      "kind": "summon"
+    },
+    "astraSmnGuardsman": {
+      "name": "Cadian Guardsman",
+      "faction": "AstraMilitarum",
+      "stem": "astra_npc",
+      "kind": "summon"
+    },
+    "astraSmnKell": {
+      "name": "Kell",
+      "faction": "AstraMilitarum",
+      "stem": "astra_kell",
+      "kind": "summon"
+    },
+    "astraNpc1Guardsman": {
+      "name": "Cadian Guardsman",
+      "faction": "AstraMilitarum",
+      "stem": "astra_npc",
+      "kind": "npc"
+    },
+    "astraSmnDeathRider": {
+      "name": "Death Rider",
+      "faction": "AstraMilitarum",
+      "stem": "astra_deathrider",
+      "kind": "summon"
+    },
+    "blackSmnBloodletter": {
+      "name": "Bloodletter",
+      "faction": "BlackLegion",
+      "stem": "black_bloodletter",
+      "kind": "summon"
+    },
+    "thousSmnBlueHorror": {
+      "name": "Blue Horror",
+      "faction": "ThousandSons",
+      "stem": "thous_horror_02",
+      "kind": "summon"
+    },
+    "deathPoxwalker": {
+      "name": "Poxwalker",
+      "faction": "DeathGuard",
+      "stem": "death_poxwalker",
+      "kind": "summon"
+    },
+    "orksGrot": {
+      "name": "Grot",
+      "faction": "Orks",
+      "stem": "orkss_grot",
+      "kind": "summon"
+    },
+    "orksGrotTank": {
+      "name": "Grot Tank",
+      "faction": "Orks",
+      "stem": "orkss_tank",
+      "kind": "summon"
+    },
+    "orksOrkBoys": {
+      "name": "Ork Boy",
+      "faction": "Orks",
+      "stem": "orkss_boy",
+      "kind": "summon"
+    },
+    "orksSmnSquig": {
+      "name": "Large Squig",
+      "faction": "Orks",
+      "stem": "orkss_squig",
+      "kind": "summon"
+    },
+    "tauSmnDroneSniper": {
+      "name": "Sniper Drone",
+      "faction": "Tau",
+      "stem": "tauta_drone",
+      "kind": "summon"
+    },
+    "tauSmnDroneShield": {
+      "name": "Shield Drone",
+      "faction": "Tau",
+      "stem": "tauta_drone_02",
+      "kind": "summon"
+    },
+    "tauSmnDroneCommandLink": {
+      "name": "Command-Link Drone",
+      "faction": "Tau",
+      "stem": "tauta_drone_04",
+      "kind": "summon"
+    },
+    "thousSmnPinkHorror": {
+      "name": "Pink Horror",
+      "faction": "ThousandSons",
+      "stem": "thous_horror",
+      "kind": "summon"
+    },
+    "thousSmnScreamer": {
+      "name": "Screamer",
+      "faction": "ThousandSons",
+      "stem": "thous_screamer",
+      "kind": "summon"
+    },
+    "thousSmnDaemonPrince": {
+      "name": "Z'Kar",
+      "faction": "ThousandSons",
+      "stem": "thous_daemonprince",
+      "kind": "summon"
+    },
+    "tyranSmnWarrior": {
+      "name": "Tyranid Warrior",
+      "faction": "Tyranids",
+      "stem": "tyran_warrior",
+      "kind": "summon"
+    },
+    "tyranSmnHormagaunt": {
+      "name": "Hormagaunt",
+      "faction": "Tyranids",
+      "stem": "tyran_hormagaunt",
+      "kind": "summon"
+    },
+    "tyranSmnRipperSwarm": {
+      "name": "Ripper Swarm",
+      "faction": "Tyranids",
+      "stem": "tyran_ripper",
+      "kind": "summon"
+    },
+    "tyranSmnSporeMine": {
+      "name": "Spore Mine",
+      "faction": "Tyranids",
+      "stem": "tyran_sporemine",
+      "kind": "summon"
+    },
+    "admecSmnVanguard": {
+      "name": "Skitarii Vanguard",
+      "faction": "AdeptusMechanicus",
+      "stem": "admec_vanguard",
+      "kind": "summon"
+    },
+    "bloodSmnIntercessor": {
+      "name": "Jump Pack Intercessor",
+      "faction": "BloodAngels",
+      "stem": "blood_intercessor_02",
+      "kind": "summon"
+    },
+    "genesSmnAberrant": {
+      "name": "Aberrant Hypermorph",
+      "faction": "Genestealers",
+      "stem": "genes_aberrant",
+      "kind": "summon"
+    },
+    "genesSmnDecoy": {
+      "name": "Decoy",
+      "faction": "Genestealers",
+      "stem": "genes_decoy",
+      "kind": "summon"
+    },
+    "genesSmnNeophyte": {
+      "name": "Neophyte Hybrid",
+      "faction": "Genestealers",
+      "stem": "genes_neophyte",
+      "kind": "summon"
+    },
+    "genesSmnGenestealer": {
+      "name": "Purestrain Genestealer",
+      "faction": "Genestealers",
+      "stem": "genes_genestealer",
+      "kind": "summon"
+    },
+    "votanSmnEcog": {
+      "name": "E-COG",
+      "faction": "LeaguesOfVotann",
+      "stem": "votan_ecog",
+      "kind": "summon"
+    },
+    "votanSmnSteeljack": {
+      "name": "Ironkin Steeljack",
+      "faction": "LeaguesOfVotann",
+      "stem": "votan_steeljack",
+      "kind": "summon"
+    },
+    "astarSmnHaywireMine": {
+      "name": "Haywire Mine",
+      "faction": "AdeptusAstartes",
+      "stem": "astar_haywiremine",
+      "kind": "summon"
+    },
+    "GuildBoss1Npc1TyranTermagantLeviathan": {
+      "name": "Termagant Leviathan",
+      "faction": "Tyranids",
+      "stem": "tyran_termagant",
+      "kind": "npc"
+    },
+    "GuildBoss1Npc2TyranTermagantKronos": {
+      "name": "Termagant Kronos",
+      "faction": "Tyranids",
+      "stem": "tyran_termagant_02",
+      "kind": "npc"
+    },
+    "GuildBoss1Npc3TyranTermagantGorgon": {
+      "name": "Termagant Gorgon",
+      "faction": "Tyranids",
+      "stem": "tyran_termagant_03",
+      "kind": "npc"
+    },
+    "GuildBoss2Npc1TyranRipperSwarmLeviathan": {
+      "name": "Ripper Swarm Leviathan",
+      "faction": "Tyranids",
+      "stem": "tyran_ripper",
+      "kind": "npc"
+    },
+    "GuildBoss2Npc2TyranRipperSwarmKronos": {
+      "name": "Ripper Swarm Kronos",
+      "faction": "Tyranids",
+      "stem": "tyran_ripper_02",
+      "kind": "npc"
+    },
+    "GuildBoss2Npc3TyranRipperSwarmGorgon": {
+      "name": "Ripper Swarm Gorgon",
+      "faction": "Tyranids",
+      "stem": "tyran_ripper_03",
+      "kind": "npc"
+    },
+    "GuildBoss3Npc3NecroDeathmark": {
+      "name": "Deathmark",
+      "faction": "Necrons",
+      "stem": "necro_npc_03",
+      "kind": "npc"
+    },
+    "GuildBoss3Npc6NecroSmnDeathmark": {
+      "name": "Smn Deathmark",
+      "faction": "Necrons",
+      "stem": "necro_npc_03",
+      "kind": "npc"
+    },
+    "GuildBoss4Npc2OrksOrkBoy": {
+      "name": "Ork Boy",
+      "faction": "Orks",
+      "stem": "orkss_boy",
+      "kind": "npc"
+    },
+    "GuildBoss4Npc4OrksStormboy": {
+      "name": "Stormboy",
+      "faction": "Orks",
+      "stem": "orkss_stormboy",
+      "kind": "npc"
+    },
+    "GuildBoss4Npc1OrksGrot": {
+      "name": "Grot",
+      "faction": "Orks",
+      "stem": "orkss_grot",
+      "kind": "npc"
+    },
+    "GuildBoss4LootObjExplOilDrumReworked": {
+      "name": "Guild Boss4 Loot Obj Expl Oil Drum Reworked",
+      "faction": null,
+      "stem": "loots_expoildrum",
+      "kind": "npc"
+    },
+    "GuildBoss5Npc1Poxwalker": {
+      "name": "Poxwalker",
+      "faction": "DeathGuard",
+      "stem": "death_poxwalker",
+      "kind": "npc"
+    },
+    "GuildBoss5Npc2PoxwalkerSummon": {
+      "name": "Poxwalker Summon",
+      "faction": "DeathGuard",
+      "stem": "death_poxwalker",
+      "kind": "npc"
+    },
+    "GuildBoss6Npc1TyranHormagaunt": {
+      "name": "Hormagaunt",
+      "faction": "Tyranids",
+      "stem": "tyran_hormagaunt",
+      "kind": "npc"
+    },
+    "tyranNpc1Hormagaunt": {
+      "name": "Hormagaunt",
+      "faction": "Tyranids",
+      "stem": "tyran_hormagaunt",
+      "kind": "npc"
+    },
+    "tyranNpc2RipperSwarm": {
+      "name": "Ripper Swarm",
+      "faction": "Tyranids",
+      "stem": "tyran_ripper",
+      "kind": "npc"
+    },
+    "tyranNpc3Termagant": {
+      "name": "Termagant",
+      "faction": "Tyranids",
+      "stem": "tyran_termagant",
+      "kind": "npc"
+    },
+    "tyranSmnTermagant": {
+      "name": "Termagant",
+      "faction": "Tyranids",
+      "stem": null,
+      "kind": "summon"
+    },
+    "GuildBoss7Npc1AstraGuardsman": {
+      "name": "Guardsman",
+      "faction": "AstraMilitarum",
+      "stem": "astra_npc",
+      "kind": "npc"
+    },
+    "GuildBoss7Npc1AstraGuardsmanSummon": {
+      "name": "Guardsman Summon",
+      "faction": "AstraMilitarum",
+      "stem": "astra_npc",
+      "kind": "npc"
+    },
+    "GuildBoss8Npc1EldarGuardian": {
+      "name": "Eldar Guardian",
+      "faction": "Aeldari",
+      "stem": "aelda_guardian",
+      "kind": "npc"
+    },
+    "GuildBoss8Npc5EldarGuardianSummon": {
+      "name": "Eldar Guardian Summon",
+      "faction": "Aeldari",
+      "stem": "aelda_guardian",
+      "kind": "npc"
+    },
+    "GuildBoss9Npc3ThousRubricMarine": {
+      "name": "Rubric Marine",
+      "faction": "ThousandSons",
+      "stem": "thous_rubric",
+      "kind": "npc"
+    },
+    "GuildBoss9Npc5ThousScreamerSummon": {
+      "name": "Screamer Summon",
+      "faction": "ThousandSons",
+      "stem": "thous_screamer",
+      "kind": "npc"
+    },
+    "GuildBoss10Npc1AdmecTechpriest": {
+      "name": "Techpriest",
+      "faction": "AdeptusMechanicus",
+      "stem": "admec_techpriest",
+      "kind": "npc"
+    },
+    "admecSmnTechpriest": {
+      "name": "Tech-Priest Enginseer",
+      "faction": "AdeptusMechanicus",
+      "stem": "admec_techpriest",
+      "kind": "summon"
+    },
+    "GuildBoss10LootObjArcheotecCrate": {
+      "name": "Guild Boss10 Loot Obj Archeotec Crate",
+      "faction": null,
+      "stem": "loots_fancybox",
+      "kind": "npc"
+    },
+    "GuildBoss11Npc1TauFireWarrior": {
+      "name": "Fire Warrior",
+      "faction": "Tau",
+      "stem": null,
+      "kind": "npc"
+    },
+    "tauSmnStealthSuit": {
+      "name": "Stealth Battlesuit",
+      "faction": "Tau",
+      "stem": "tauta_stealthsuit",
+      "kind": "summon"
+    },
+    "GuildBoss12Npc2DarkaHellblaster": {
+      "name": "Darka Hellblaster",
+      "faction": "DarkAngels",
+      "stem": null,
+      "kind": "npc"
+    },
+    "darkaSmnTerminator": {
+      "name": "Deathwing Knight",
+      "faction": "DarkAngels",
+      "stem": "darka_terminator_02",
+      "kind": "summon"
+    }
+  }
+}
