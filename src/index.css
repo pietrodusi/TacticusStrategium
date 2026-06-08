@@ -118,77 +118,47 @@
 
 /* ─── Components ──────────────────────────────────────────────────────── */
 @layer components {
-  /* Chamfered tech panel with a brass hairline frame. */
+  /* Rounded metallic tech card — beveled steel/brass frame, top highlight,
+     soft inner shade (ref: SYNAPTIC_OVERWATCH dashboard cards). */
   .panel {
     position: relative;
+    border-radius: 9px;
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 28%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 26%),
       linear-gradient(180deg, var(--color-steel-2), var(--color-steel));
-    clip-path: polygon(
-      var(--chamfer) 0,
-      calc(100% - var(--chamfer)) 0,
-      100% var(--chamfer),
-      100% calc(100% - var(--chamfer)),
-      calc(100% - var(--chamfer)) 100%,
-      var(--chamfer) 100%,
-      0 calc(100% - var(--chamfer)),
-      0 var(--chamfer)
-    );
-  }
-  /* Brass edge drawn as a masked ring so it follows the chamfer. */
-  .panel::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    padding: 1.5px;
-    background: linear-gradient(
-      155deg,
-      var(--color-brass) 0%,
-      var(--color-brass-dim) 30%,
-      transparent 48%,
-      transparent 52%,
-      var(--color-brass-dim) 70%,
-      var(--color-brass) 100%
-    );
-    clip-path: inherit;
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+    border: 1px solid var(--color-brass-dim);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.35),
+      inset 0 -22px 36px -28px rgba(0, 0, 0, 0.7),
+      0 10px 24px -14px rgba(0, 0, 0, 0.85);
   }
 
-  /* Holographic variant: teal edge + outer glow (drop-shadow respects clip). */
+  /* Holographic variant: teal frame + outer/inner glow. */
   .panel-glow {
-    filter: drop-shadow(0 0 16px rgba(44, 208, 216, 0.18));
-  }
-  .panel-glow::before {
-    background: linear-gradient(
-      155deg,
-      var(--color-teal) 0%,
-      rgba(44, 208, 216, 0.25) 45%,
-      rgba(44, 208, 216, 0.25) 55%,
-      var(--color-teal) 100%
-    );
+    border-color: rgba(44, 208, 216, 0.45);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 0 24px -8px rgba(44, 208, 216, 0.4),
+      0 0 26px -6px rgba(44, 208, 216, 0.38),
+      0 10px 24px -14px rgba(0, 0, 0, 0.85);
   }
 
   /* Corner rivets for heavier panels. */
   .riveted::after {
     content: "";
     position: absolute;
-    inset: 7px;
+    inset: 8px;
     pointer-events: none;
     background:
-      radial-gradient(circle, rgba(0, 0, 0, 0.55) 38%, transparent 42%) 0 0 / 7px 7px no-repeat,
-      radial-gradient(circle, rgba(0, 0, 0, 0.55) 38%, transparent 42%) 100% 0 / 7px 7px no-repeat,
-      radial-gradient(circle, rgba(0, 0, 0, 0.55) 38%, transparent 42%) 0 100% / 7px 7px no-repeat,
-      radial-gradient(circle, rgba(0, 0, 0, 0.55) 38%, transparent 42%) 100% 100% / 7px 7px no-repeat;
+      radial-gradient(circle, rgba(0, 0, 0, 0.5) 38%, transparent 42%) 0 0 / 6px 6px no-repeat,
+      radial-gradient(circle, rgba(0, 0, 0, 0.5) 38%, transparent 42%) 100% 0 / 6px 6px no-repeat,
+      radial-gradient(circle, rgba(0, 0, 0, 0.5) 38%, transparent 42%) 0 100% / 6px 6px no-repeat,
+      radial-gradient(circle, rgba(0, 0, 0, 0.5) 38%, transparent 42%) 100% 100% / 6px 6px no-repeat;
   }
 
   /* Buttons */
   .btn {
-    --chamfer: 9px;
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -201,44 +171,25 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--color-bone);
+    border-radius: 7px;
+    border: 1px solid var(--color-brass-dim);
     background: linear-gradient(180deg, var(--color-steel-2), var(--color-steel));
-    clip-path: polygon(
-      var(--chamfer) 0,
-      calc(100% - var(--chamfer)) 0,
-      100% var(--chamfer),
-      100% calc(100% - var(--chamfer)),
-      calc(100% - var(--chamfer)) 100%,
-      var(--chamfer) 100%,
-      0 calc(100% - var(--chamfer)),
-      0 var(--chamfer)
-    );
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 3px 10px -5px rgba(0, 0, 0, 0.7);
     transition:
       color 0.18s ease,
-      filter 0.18s ease,
-      transform 0.18s ease;
+      border-color 0.18s ease,
+      box-shadow 0.18s ease,
+      transform 0.12s ease;
     cursor: pointer;
-  }
-  .btn::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    padding: 1.5px;
-    background: linear-gradient(160deg, var(--color-brass), var(--color-brass-dim));
-    clip-path: inherit;
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    transition: background 0.18s ease;
   }
   .btn:hover {
     color: var(--color-teal-bright);
-    filter: drop-shadow(0 0 10px rgba(44, 208, 216, 0.45));
-  }
-  .btn:hover::before {
-    background: linear-gradient(160deg, var(--color-teal), var(--color-brass));
+    border-color: var(--color-teal);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 0 18px -4px rgba(44, 208, 216, 0.5);
   }
   .btn:active {
     transform: translateY(1px);
@@ -246,28 +197,26 @@
   .btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
-    filter: none;
     color: var(--color-ash);
-  }
-  .btn:disabled::before {
-    background: var(--color-iron);
+    border-color: var(--color-iron);
+    box-shadow: none;
   }
 
   .btn-primary {
     color: var(--color-abyss);
     font-weight: 700;
+    border-color: rgba(255, 255, 255, 0.45);
     background: linear-gradient(180deg, var(--color-teal-bright), var(--color-teal) 70%, #16a6ac);
-    filter: drop-shadow(0 0 12px rgba(44, 208, 216, 0.4));
-  }
-  .btn-primary::before {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(44, 208, 216, 0.3));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      0 0 20px -4px rgba(44, 208, 216, 0.55);
   }
   .btn-primary:hover {
     color: var(--color-abyss);
-    filter: drop-shadow(0 0 20px rgba(44, 208, 216, 0.7));
-  }
-  .btn-primary:hover::before {
-    background: linear-gradient(180deg, #fff, rgba(44, 208, 216, 0.4));
+    border-color: #fff;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.65),
+      0 0 28px -2px rgba(44, 208, 216, 0.8);
   }
 
   /* Form controls */
@@ -277,6 +226,7 @@
     color: var(--color-bone);
     background: var(--color-abyss);
     border: 1px solid var(--color-brass-dim);
+    border-radius: 6px;
     padding: 0.5rem 0.75rem;
     outline: none;
     transition:
