@@ -208,27 +208,14 @@ export function HexGrid({
             .map((hx) => cellByAxial.get(hexKey(hx)))
             .filter((c): c is ParsedCell => !!c)
           if (cells.length === 0) return null
+          const color = RING_COLOR[t.type]
           return (
             <g key={`bf-${t.id}`}>
               {cells.map((c) => (
-                <polygon
-                  key={`${c.q},${c.r}`}
-                  points={cornersToPoints(c.cornersFull)}
-                  fill="rgba(207,70,50,0.32)"
-                  stroke="none"
-                />
+                <polygon key={`${c.q},${c.r}`} points={cornersToPoints(c.cornersFull)} fill={color} fillOpacity={0.3} stroke="none" />
               ))}
               {footprintEdges(cells).map((s, i) => (
-                <line
-                  key={i}
-                  x1={s.x1}
-                  y1={s.y1}
-                  x2={s.x2}
-                  y2={s.y2}
-                  stroke="rgba(207,70,50,0.9)"
-                  strokeWidth={2.5}
-                  strokeLinecap="round"
-                />
+                <line key={i} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={color} strokeOpacity={0.9} strokeWidth={2.5} strokeLinecap="round" />
               ))}
             </g>
           )

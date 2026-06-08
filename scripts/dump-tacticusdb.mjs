@@ -321,6 +321,11 @@ async function buildSpawns(seasonConfig, stems) {
   const stemFor = (id) =>
     stems.summon[id] ?? stems.npc[id] ?? stems.boss[id] ?? stems.character[id] ?? null;
 
+  // Hex footprint: the game's "BigTarget" trait marks multi-hex (3-hex) units;
+  // everything else is 1-hex. (No spawnable unit is 7-hex — those are bosses.)
+  const traitsOf = (id) =>
+    summons[id]?.traits ?? npc[id]?.traits ?? characters[id]?.traits ?? bossUnits[id]?.traits ?? [];
+
   const units = {};
   for (const ids of Object.values(byUnit)) {
     for (const id of ids) {
@@ -331,6 +336,7 @@ async function buildSpawns(seasonConfig, stems) {
         faction: src?.FactionId ?? bossUnits[id]?.FactionId ?? null,
         stem: stemFor(id),
         kind: summons[id] ? 'summon' : 'npc',
+        size: traitsOf(id).includes('BigTarget') ? 3 : 1,
       };
     }
   }

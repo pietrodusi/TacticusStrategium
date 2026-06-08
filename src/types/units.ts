@@ -40,6 +40,7 @@ export interface SpawnUnit {
   faction: string | null
   stem: string | null
   kind: 'summon' | 'npc'
+  size: number // 1 or 3 (BigTarget)
 }
 export interface SpawnsData {
   byUnit: Record<string, string[]>

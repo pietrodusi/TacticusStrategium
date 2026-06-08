@@ -106,7 +106,7 @@ export function BoardPage() {
     const data = spawns.data
     return Object.entries(instances).map(([id, inst]) => {
       const u = data?.units[inst.unitId]
-      return { id, type: (inst.side === 'ally' ? 'summon' : 'npc') as TokenKind, stem: u?.stem ?? null, name: u?.name ?? inst.unitId, size: 1 }
+      return { id, type: (inst.side === 'ally' ? 'summon' : 'npc') as TokenKind, stem: u?.stem ?? null, name: u?.name ?? inst.unitId, size: u?.size ?? 1 }
     })
   }, [instances, spawns.data])
 
@@ -254,11 +254,15 @@ export function BoardPage() {
               )}
               {selectedDef && tool === 'move' && (
                 <div className="ml-auto flex items-center gap-2">
-                  {selectedDef.type === 'boss' && selectedDef.size === 3 && (
+                  {selectedDef.size === 3 && (
                     <ToolButton
                       onClick={() => {
-                        if (!board.data) return
-                        const cur = posAtTurn(positions[selectedDef.id], currentTurn) ?? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation }
+                        const cur =
+                          posAtTurn(positions[selectedDef.id], currentTurn) ??
+                          (selectedDef.type === 'boss' && board.data
+                            ? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation }
+                            : null)
+                        if (!cur) return
                         placeToken(selectedDef.id, { q: cur.q, r: cur.r, rot: (cur.rot ?? 0) % 180 === 0 ? 90 : 0 })
                       }}
                       icon={<RotateCw size={15} />}

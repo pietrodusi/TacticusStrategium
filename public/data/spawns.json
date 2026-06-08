@@ -250,403 +250,470 @@
       "name": "Inceptor",
       "faction": "Ultramarines",
       "stem": "ultra_inceptor_02",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "ultraSmnDreadnought": {
       "name": "Galatian",
       "faction": "Ultramarines",
       "stem": "ultra_dreadnought",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 3
     },
     "adeptSmnGeminaeSuperia": {
       "name": "Geminae Superia",
       "faction": "Sisterhood",
       "stem": "adept_geminae",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "necroSmnSwarm": {
       "name": "Scarab Swarm",
       "faction": "Necrons",
       "stem": "necro_scarab",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "necroSmnWarrior": {
       "name": "Necron Warrior",
       "faction": "Necrons",
       "stem": "necro_npc",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "astraSmnGuardsman": {
       "name": "Cadian Guardsman",
       "faction": "AstraMilitarum",
       "stem": "astra_npc",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "astraSmnKell": {
       "name": "Kell",
       "faction": "AstraMilitarum",
       "stem": "astra_kell",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "astraNpc1Guardsman": {
       "name": "Cadian Guardsman",
       "faction": "AstraMilitarum",
       "stem": "astra_npc",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "astraSmnDeathRider": {
       "name": "Death Rider",
       "faction": "AstraMilitarum",
       "stem": "astra_deathrider",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "blackSmnBloodletter": {
       "name": "Bloodletter",
       "faction": "BlackLegion",
       "stem": "black_bloodletter",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "thousSmnBlueHorror": {
       "name": "Blue Horror",
       "faction": "ThousandSons",
       "stem": "thous_horror_02",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "deathPoxwalker": {
       "name": "Poxwalker",
       "faction": "DeathGuard",
       "stem": "death_poxwalker",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "orksGrot": {
       "name": "Grot",
       "faction": "Orks",
       "stem": "orkss_grot",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "orksGrotTank": {
       "name": "Grot Tank",
       "faction": "Orks",
       "stem": "orkss_tank",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "orksOrkBoys": {
       "name": "Ork Boy",
       "faction": "Orks",
       "stem": "orkss_boy",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "orksSmnSquig": {
       "name": "Large Squig",
       "faction": "Orks",
       "stem": "orkss_squig",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "tauSmnDroneSniper": {
       "name": "Sniper Drone",
       "faction": "Tau",
       "stem": "tauta_drone",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "tauSmnDroneShield": {
       "name": "Shield Drone",
       "faction": "Tau",
       "stem": "tauta_drone_02",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "tauSmnDroneCommandLink": {
       "name": "Command-Link Drone",
       "faction": "Tau",
       "stem": "tauta_drone_04",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "thousSmnPinkHorror": {
       "name": "Pink Horror",
       "faction": "ThousandSons",
       "stem": "thous_horror",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "thousSmnScreamer": {
       "name": "Screamer",
       "faction": "ThousandSons",
       "stem": "thous_screamer",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "thousSmnDaemonPrince": {
       "name": "Z'Kar",
       "faction": "ThousandSons",
       "stem": "thous_daemonprince",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 3
     },
     "tyranSmnWarrior": {
       "name": "Tyranid Warrior",
       "faction": "Tyranids",
       "stem": "tyran_warrior",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 3
     },
     "tyranSmnHormagaunt": {
       "name": "Hormagaunt",
       "faction": "Tyranids",
       "stem": "tyran_hormagaunt",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "tyranSmnRipperSwarm": {
       "name": "Ripper Swarm",
       "faction": "Tyranids",
       "stem": "tyran_ripper",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "tyranSmnSporeMine": {
       "name": "Spore Mine",
       "faction": "Tyranids",
       "stem": "tyran_sporemine",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "admecSmnVanguard": {
       "name": "Skitarii Vanguard",
       "faction": "AdeptusMechanicus",
       "stem": "admec_vanguard",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "bloodSmnIntercessor": {
       "name": "Jump Pack Intercessor",
       "faction": "BloodAngels",
       "stem": "blood_intercessor_02",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "genesSmnAberrant": {
       "name": "Aberrant Hypermorph",
       "faction": "Genestealers",
       "stem": "genes_aberrant",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "genesSmnDecoy": {
       "name": "Decoy",
       "faction": "Genestealers",
       "stem": "genes_decoy",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "genesSmnNeophyte": {
       "name": "Neophyte Hybrid",
       "faction": "Genestealers",
       "stem": "genes_neophyte",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "genesSmnGenestealer": {
       "name": "Purestrain Genestealer",
       "faction": "Genestealers",
       "stem": "genes_genestealer",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "votanSmnEcog": {
       "name": "E-COG",
       "faction": "LeaguesOfVotann",
       "stem": "votan_ecog",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "votanSmnSteeljack": {
       "name": "Ironkin Steeljack",
       "faction": "LeaguesOfVotann",
       "stem": "votan_steeljack",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 3
     },
     "astarSmnHaywireMine": {
       "name": "Haywire Mine",
       "faction": "AdeptusAstartes",
       "stem": "astar_haywiremine",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "GuildBoss1Npc1TyranTermagantLeviathan": {
       "name": "Termagant Leviathan",
       "faction": "Tyranids",
       "stem": "tyran_termagant",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss1Npc2TyranTermagantKronos": {
       "name": "Termagant Kronos",
       "faction": "Tyranids",
       "stem": "tyran_termagant_02",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss1Npc3TyranTermagantGorgon": {
       "name": "Termagant Gorgon",
       "faction": "Tyranids",
       "stem": "tyran_termagant_03",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss2Npc1TyranRipperSwarmLeviathan": {
       "name": "Ripper Swarm Leviathan",
       "faction": "Tyranids",
       "stem": "tyran_ripper",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss2Npc2TyranRipperSwarmKronos": {
       "name": "Ripper Swarm Kronos",
       "faction": "Tyranids",
       "stem": "tyran_ripper_02",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss2Npc3TyranRipperSwarmGorgon": {
       "name": "Ripper Swarm Gorgon",
       "faction": "Tyranids",
       "stem": "tyran_ripper_03",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss3Npc3NecroDeathmark": {
       "name": "Deathmark",
       "faction": "Necrons",
       "stem": "necro_npc_03",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss3Npc6NecroSmnDeathmark": {
       "name": "Smn Deathmark",
       "faction": "Necrons",
       "stem": "necro_npc_03",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss4Npc2OrksOrkBoy": {
       "name": "Ork Boy",
       "faction": "Orks",
       "stem": "orkss_boy",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss4Npc4OrksStormboy": {
       "name": "Stormboy",
       "faction": "Orks",
       "stem": "orkss_stormboy",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss4Npc1OrksGrot": {
       "name": "Grot",
       "faction": "Orks",
       "stem": "orkss_grot",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss4LootObjExplOilDrumReworked": {
       "name": "Guild Boss4 Loot Obj Expl Oil Drum Reworked",
       "faction": null,
       "stem": "loots_expoildrum",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss5Npc1Poxwalker": {
       "name": "Poxwalker",
       "faction": "DeathGuard",
       "stem": "death_poxwalker",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss5Npc2PoxwalkerSummon": {
       "name": "Poxwalker Summon",
       "faction": "DeathGuard",
       "stem": "death_poxwalker",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss6Npc1TyranHormagaunt": {
       "name": "Hormagaunt",
       "faction": "Tyranids",
       "stem": "tyran_hormagaunt",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "tyranNpc1Hormagaunt": {
       "name": "Hormagaunt",
       "faction": "Tyranids",
       "stem": "tyran_hormagaunt",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "tyranNpc2RipperSwarm": {
       "name": "Ripper Swarm",
       "faction": "Tyranids",
       "stem": "tyran_ripper",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "tyranNpc3Termagant": {
       "name": "Termagant",
       "faction": "Tyranids",
       "stem": "tyran_termagant",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "tyranSmnTermagant": {
       "name": "Termagant",
       "faction": "Tyranids",
       "stem": null,
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "GuildBoss7Npc1AstraGuardsman": {
       "name": "Guardsman",
       "faction": "AstraMilitarum",
       "stem": "astra_npc",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss7Npc1AstraGuardsmanSummon": {
       "name": "Guardsman Summon",
       "faction": "AstraMilitarum",
       "stem": "astra_npc",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss8Npc1EldarGuardian": {
       "name": "Eldar Guardian",
       "faction": "Aeldari",
       "stem": "aelda_guardian",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss8Npc5EldarGuardianSummon": {
       "name": "Eldar Guardian Summon",
       "faction": "Aeldari",
       "stem": "aelda_guardian",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss9Npc3ThousRubricMarine": {
       "name": "Rubric Marine",
       "faction": "ThousandSons",
       "stem": "thous_rubric",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss9Npc5ThousScreamerSummon": {
       "name": "Screamer Summon",
       "faction": "ThousandSons",
       "stem": "thous_screamer",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss10Npc1AdmecTechpriest": {
       "name": "Techpriest",
       "faction": "AdeptusMechanicus",
       "stem": "admec_techpriest",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "admecSmnTechpriest": {
       "name": "Tech-Priest Enginseer",
       "faction": "AdeptusMechanicus",
       "stem": "admec_techpriest",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "GuildBoss10LootObjArcheotecCrate": {
       "name": "Guild Boss10 Loot Obj Archeotec Crate",
       "faction": null,
       "stem": "loots_fancybox",
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "GuildBoss11Npc1TauFireWarrior": {
       "name": "Fire Warrior",
       "faction": "Tau",
       "stem": null,
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "tauSmnStealthSuit": {
       "name": "Stealth Battlesuit",
       "faction": "Tau",
       "stem": "tauta_stealthsuit",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 1
     },
     "GuildBoss12Npc2DarkaHellblaster": {
       "name": "Darka Hellblaster",
       "faction": "DarkAngels",
       "stem": null,
-      "kind": "npc"
+      "kind": "npc",
+      "size": 1
     },
     "darkaSmnTerminator": {
       "name": "Deathwing Knight",
       "faction": "DarkAngels",
       "stem": "darka_terminator_02",
-      "kind": "summon"
+      "kind": "summon",
+      "size": 3
     }
   }
 }
