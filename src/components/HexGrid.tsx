@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { ParsedBoard, ParsedCell } from '../services/boards/boardService'
 import { mapImageUrl, unitPortraitUrl } from '../services/paths'
 import { getBossOccupiedHexes, hexKey } from '../services/hex/hexUtils'
@@ -14,30 +14,50 @@ export interface BoardToken {
   pos: TokenPos
 }
 
+export interface BoardMovement {
+  from: HexCoord
+  to: HexCoord
+  color: string
+}
+
 interface Props {
   board: ParsedBoard
   showGrid?: boolean
   tokens?: BoardToken[]
+  movements?: BoardMovement[]
   /** hexKey → color, for the current turn. */
   paint?: Record<string, string>
   selectedTokenId?: string | null
   onHexClick?: (hex: HexCoord) => void
   onTokenClick?: (id: string) => void
+  onTokenMove?: (id: string, hex: HexCoord) => void
 }
 
 const GRID_STROKE = 'rgba(255,215,0,0.5)'
+
+interface DragState {
+  id: string | null // token being dragged, or null for a background gesture
+  ix: number
+  iy: number // current pointer, image space
+  sx: number
+  sy: number // start pointer, image space
+  moved: boolean
+}
 
 export function HexGrid({
   board,
   showGrid = true,
   tokens = [],
+  movements = [],
   paint,
   selectedTokenId,
   onHexClick,
   onTokenClick,
+  onTokenMove,
 }: Props) {
   const size = board.imageSize
   const { x, y, w, h } = board.view
+  const tokenR = board.tileSize * 0.4
 
   const cellByAxial = useMemo(() => {
     const m = new Map<string, ParsedCell>()
@@ -45,32 +65,66 @@ export function HexGrid({
     return m
   }, [board.cells])
 
-  const handleClick = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (!onHexClick) return
-    const svg = e.currentTarget
-    const ctm = svg.getScreenCTM()
-    if (!ctm) return
-    const pt = svg.createSVGPoint()
+  const [drag, setDrag] = useState<DragState | null>(null)
+
+  const toImage = (e: React.PointerEvent<SVGSVGElement>): Point | null => {
+    const ctm = e.currentTarget.getScreenCTM()
+    if (!ctm) return null
+    const pt = e.currentTarget.createSVGPoint()
     pt.x = e.clientX
     pt.y = e.clientY
-    const loc = pt.matrixTransform(ctm.inverse())
-    // Nearest playable cell within ~one tile.
+    const p = pt.matrixTransform(ctm.inverse())
+    return { x: p.x, y: p.y }
+  }
+
+  const nearestCell = (p: Point): ParsedCell | null => {
     let best: ParsedCell | null = null
     let bestD = Infinity
     for (const c of board.cells) {
       if (!c.isPlayable) continue
-      const dx = c.center.x - loc.x
-      const dy = c.center.y - loc.y
+      const dx = c.center.x - p.x
+      const dy = c.center.y - p.y
       const d = dx * dx + dy * dy
       if (d < bestD) {
         bestD = d
         best = c
       }
     }
-    if (best && bestD < board.tileSize * board.tileSize) onHexClick({ q: best.q, r: best.r })
+    return best && bestD < board.tileSize * board.tileSize ? best : null
   }
 
-  const tokenR = board.tileSize * 0.4
+  const onPointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    const p = toImage(e)
+    if (!p) return
+    const tokenId =
+      (e.target as Element).closest('[data-token-id]')?.getAttribute('data-token-id') ?? null
+    e.currentTarget.setPointerCapture(e.pointerId)
+    setDrag({ id: tokenId, ix: p.x, iy: p.y, sx: p.x, sy: p.y, moved: false })
+  }
+
+  const onPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (!drag) return
+    const p = toImage(e)
+    if (!p) return
+    const moved = drag.moved || Math.hypot(p.x - drag.sx, p.y - drag.sy) > board.tileSize * 0.35
+    setDrag({ ...drag, ix: p.x, iy: p.y, moved })
+  }
+
+  const onPointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (!drag) return
+    e.currentTarget.releasePointerCapture?.(e.pointerId)
+    const cell = nearestCell({ x: drag.ix, y: drag.iy })
+    if (drag.id) {
+      if (!drag.moved) onTokenClick?.(drag.id)
+      else if (cell) onTokenMove?.(drag.id, { q: cell.q, r: cell.r })
+    } else if (!drag.moved && cell) {
+      onHexClick?.({ q: cell.q, r: cell.r })
+    }
+    setDrag(null)
+  }
+
+  const draggingId = drag?.moved ? drag.id : null
+  const previewHex = draggingId ? nearestCell({ x: drag!.ix, y: drag!.iy }) : null
 
   return (
     <svg
@@ -78,7 +132,10 @@ export function HexGrid({
       className="block h-full w-full touch-none select-none"
       role="img"
       aria-label={`Map ${board.id}`}
-      onClick={handleClick}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={() => setDrag(null)}
     >
       <image href={mapImageUrl(board.id)} x={0} y={0} width={size} height={size} />
 
@@ -106,11 +163,13 @@ export function HexGrid({
           return c ? <polygon key={`p-${key}`} points={pointsOf(c)} fill={color} stroke={color} strokeWidth={1.5} /> : null
         })}
 
-      {/* Boss footprints (under markers) */}
+      {/* Boss footprints (follow the pointer while dragging) */}
       {tokens
         .filter((t) => t.size > 1)
-        .map((t) =>
-          getBossOccupiedHexes(t.pos, t.size as 1 | 3 | 7, t.pos.rot ?? 0).map((hx) => {
+        .map((t) => {
+          const hex =
+            draggingId === t.id && previewHex ? { q: previewHex.q, r: previewHex.r } : t.pos
+          return getBossOccupiedHexes(hex, t.size as 1 | 3 | 7, t.pos.rot ?? 0).map((hx) => {
             const c = cellByAxial.get(hexKey(hx))
             return c ? (
               <polygon
@@ -121,21 +180,29 @@ export function HexGrid({
                 strokeWidth={2}
               />
             ) : null
-          }),
-        )}
+          })
+        })}
+
+      {/* Movement arrows */}
+      {movements.map((m, i) => {
+        const from = cellByAxial.get(hexKey(m.from))?.center
+        const to = cellByAxial.get(hexKey(m.to))?.center
+        return from && to ? <Arrow key={`mv-${i}`} from={from} to={to} color={m.color} shorten={tokenR} /> : null
+      })}
 
       {/* Tokens */}
       {tokens.map((t) => {
-        const c = cellByAxial.get(hexKey(t.pos))
-        if (!c) return null
+        const dragging = draggingId === t.id
+        const center = dragging ? { x: drag!.ix, y: drag!.iy } : cellByAxial.get(hexKey(t.pos))?.center
+        if (!center) return null
         return (
           <TokenMarker
             key={t.id}
             token={t}
-            center={c.center}
+            center={center}
             r={t.type === 'boss' ? tokenR * 1.15 : tokenR}
             selected={t.id === selectedTokenId}
-            onClick={onTokenClick}
+            dragging={dragging}
           />
         )
       })}
@@ -147,29 +214,45 @@ function pointsOf(c: ParsedCell): string {
   return c.corners.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')
 }
 
+function Arrow({ from, to, color, shorten }: { from: Point; to: Point; color: string; shorten: number }) {
+  const dx = to.x - from.x
+  const dy = to.y - from.y
+  const len = Math.hypot(dx, dy) || 1
+  const ux = dx / len
+  const uy = dy / len
+  const sx = from.x + ux * shorten
+  const sy = from.y + uy * shorten
+  const ex = to.x - ux * shorten
+  const ey = to.y - uy * shorten
+  const head = shorten * 0.95
+  const ang = Math.atan2(ey - sy, ex - sx)
+  const p1 = `${ex - head * Math.cos(ang - 0.45)},${ey - head * Math.sin(ang - 0.45)}`
+  const p2 = `${ex - head * Math.cos(ang + 0.45)},${ey - head * Math.sin(ang + 0.45)}`
+  return (
+    <g stroke={color} fill={color} opacity={0.92}>
+      <line x1={sx} y1={sy} x2={ex} y2={ey} strokeWidth={3.5} strokeLinecap="round" />
+      <polygon points={`${ex},${ey} ${p1} ${p2}`} stroke="none" />
+    </g>
+  )
+}
+
 function TokenMarker({
   token,
   center,
   r,
   selected,
-  onClick,
+  dragging,
 }: {
   token: BoardToken
   center: Point
   r: number
   selected: boolean
-  onClick?: (id: string) => void
+  dragging: boolean
 }) {
   const clipId = `clip-${token.id.replace(/[^a-zA-Z0-9]/g, '')}`
   const ring = token.type === 'boss' ? '#cf4632' : token.type === 'mow' ? '#b88f4d' : '#2cd0d8'
   return (
-    <g
-      className="cursor-pointer"
-      onClick={(e) => {
-        e.stopPropagation()
-        onClick?.(token.id)
-      }}
-    >
+    <g data-token-id={token.id} className="cursor-grab" style={{ opacity: dragging ? 0.85 : 1 }}>
       <circle cx={center.x} cy={center.y} r={r} fill="#0b0d11" />
       {token.stem && (
         <>
@@ -192,8 +275,8 @@ function TokenMarker({
         cy={center.y}
         r={r}
         fill="none"
-        stroke={selected ? '#66f0f5' : ring}
-        strokeWidth={selected ? 4 : 2.5}
+        stroke={selected || dragging ? '#66f0f5' : ring}
+        strokeWidth={selected || dragging ? 4 : 2.5}
       />
     </g>
   )

@@ -4,7 +4,7 @@ import { Brush, ChevronDown, LogOut, Move, RotateCw, Trash2 } from 'lucide-react
 import { usePlanStore, posAtTurn, MAX_TURN } from '../stores/planStore'
 import { useBosses, useRoster } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
-import { HexGrid, type BoardToken } from '../components/HexGrid'
+import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
 import { UnitImage } from '../components/UnitImage'
 import { TurnSelector } from '../components/plan/TurnSelector'
 import { hexKey } from '../services/hex/hexUtils'
@@ -28,6 +28,9 @@ const PAINT_COLORS = [
   { name: 'Gold', value: 'rgba(212,175,55,0.5)' },
   { name: 'Green', value: 'rgba(74,222,128,0.45)' },
 ]
+
+const ringColor = (type: TrayDef['type']) =>
+  type === 'boss' ? '#cf4632' : type === 'mow' ? '#b88f4d' : '#2cd0d8'
 
 export function BoardPage() {
   const navigate = useNavigate()
@@ -89,31 +92,45 @@ export function BoardPage() {
 
   // Effective tokens at the current turn (boss defaults to its start position).
   const boardTokens: BoardToken[] = []
+  const movements: BoardMovement[] = []
   if (board.data) {
+    const bossStart = { q: board.data.bossStart.q, r: board.data.bossStart.r }
     for (const d of defs) {
-      let pos = posAtTurn(positions[d.id], currentTurn)
-      if (!pos && d.type === 'boss') pos = { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation }
+      const fallback = d.type === 'boss' ? { ...bossStart, rot: board.data.bossRotation } : null
+      const pos = posAtTurn(positions[d.id], currentTurn) ?? fallback
       if (pos) boardTokens.push({ ...d, pos })
+
+      // Arrow from the previous turn's position into the current one.
+      if (currentTurn > 0) {
+        const prev = posAtTurn(positions[d.id], currentTurn - 1) ?? fallback
+        if (pos && prev && (pos.q !== prev.q || pos.r !== prev.r)) {
+          movements.push({ from: { q: prev.q, r: prev.r }, to: { q: pos.q, r: pos.r }, color: ringColor(d.type) })
+        }
+      }
     }
   }
 
-  const isPlaced = (id: string) =>
-    !!posAtTurn(positions[id], currentTurn) || (id === bossUnitId)
-
+  const isPlaced = (id: string) => !!posAtTurn(positions[id], currentTurn) || id === bossUnitId
   const selectedDef = defs.find((d) => d.id === selectedId) ?? null
+
+  // Place/move a token at the current turn, then deselect.
+  const placeAt = (id: string, hex: HexCoord) => {
+    if (!board.data) return
+    const def = defs.find((d) => d.id === id)
+    const rot =
+      def?.type === 'boss'
+        ? posAtTurn(positions[id], currentTurn)?.rot ?? board.data.bossRotation
+        : undefined
+    placeToken(id, { q: hex.q, r: hex.r, ...(rot !== undefined ? { rot } : {}) })
+    setSelectedId(null)
+  }
 
   const handleHex = (hex: HexCoord) => {
     if (tool === 'paint') {
       paintHex(hexKey(hex), paintColor)
       return
     }
-    if (!selectedId || !board.data) return
-    const def = defs.find((d) => d.id === selectedId)
-    const rot =
-      def?.type === 'boss'
-        ? posAtTurn(positions[selectedId], currentTurn)?.rot ?? board.data.bossRotation
-        : undefined
-    placeToken(selectedId, { q: hex.q, r: hex.r, ...(rot !== undefined ? { rot } : {}) })
+    if (selectedId) placeAt(selectedId, hex)
   }
 
   return (
@@ -142,6 +159,7 @@ export function BoardPage() {
           <HexGrid
             board={board.data}
             tokens={boardTokens}
+            movements={movements}
             paint={paint[currentTurn]}
             selectedTokenId={selectedId}
             onHexClick={handleHex}
@@ -149,6 +167,7 @@ export function BoardPage() {
               setTool('move')
               setSelectedId((cur) => (cur === id ? null : id))
             }}
+            onTokenMove={(id, hex) => placeAt(id, hex)}
           />
         )}
         <p className="pointer-events-none absolute left-3 top-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-ash/50">
