@@ -1,29 +1,384 @@
 @import "tailwindcss";
 
+/* ─── Design tokens ──────────────────────────────────────────────────── */
 @theme {
-  --color-imperial-gold: #d4af37;
-  --color-ink: #0b0c0f;
-  --color-panel: #16181d;
-  --color-panel-2: #1f232b;
-  --color-line: #2a2f38;
+  /* Voids & metals */
+  --color-abyss: #07090c;
+  --color-void: #0a0d11;
+  --color-steel: #12161d;
+  --color-steel-2: #1a202a;
+  --color-iron: #2b333f;
+
+  /* Imperial faction red + holographic teal (from the app sigil) */
+  --color-blood: #9a2f2a;
+  --color-blood-bright: #cf4632;
+  --color-teal: #2cd0d8;
+  --color-teal-bright: #66f0f5;
+
+  /* Weathered brass + readable bone/ash text */
+  --color-brass: #b88f4d;
+  --color-brass-dim: #6d5930;
+  --color-bone: #e9e4d6;
+  --color-ash: #97a0aa;
+
+  --font-display: "Cinzel", "Times New Roman", serif;
+  --font-sans: "Rajdhani", system-ui, sans-serif;
+  --font-mono: "Share Tech Mono", ui-monospace, monospace;
 }
 
-html,
-body,
-#root {
-  height: 100%;
+/* ─── Base ───────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    color-scheme: dark;
+    --chamfer: 13px;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    color: var(--color-bone);
+    background-color: var(--color-void);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Atmosphere: cold void with a teal halo above and an ember glow below. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(120% 55% at 50% -8%, rgba(44, 208, 216, 0.08), transparent 60%),
+      radial-gradient(120% 55% at 50% 112%, rgba(154, 47, 42, 0.1), transparent 55%),
+      linear-gradient(180deg, var(--color-abyss), var(--color-void) 45%, var(--color-abyss));
+  }
+
+  /* Cogitator screen: faint tech-grid + scanlines, faded toward the edges. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.45;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0 1px, transparent 1px 3px),
+      linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 100% 3px, 46px 46px, 46px 46px;
+    -webkit-mask-image: radial-gradient(circle at 50% 38%, #000 25%, transparent 88%);
+    mask-image: radial-gradient(circle at 50% 38%, #000 25%, transparent 88%);
+  }
+
+  #root {
+    position: relative;
+    z-index: 0;
+    min-height: 100%;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.05;
+  }
+
+  ::selection {
+    background: rgba(44, 208, 216, 0.3);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-abyss);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-iron);
+    border: 2px solid var(--color-abyss);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-brass-dim);
+  }
 }
 
-body {
-  margin: 0;
-  background-color: var(--color-ink);
-  color: #e5e7eb;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  -webkit-tap-highlight-color: transparent;
-  overscroll-behavior: none;
+/* ─── Components ──────────────────────────────────────────────────────── */
+@layer components {
+  /* Chamfered tech panel with a brass hairline frame. */
+  .panel {
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 28%),
+      linear-gradient(180deg, var(--color-steel-2), var(--color-steel));
+    clip-path: polygon(
+      var(--chamfer) 0,
+      calc(100% - var(--chamfer)) 0,
+      100% var(--chamfer),
+      100% calc(100% - var(--chamfer)),
+      calc(100% - var(--chamfer)) 100%,
+      var(--chamfer) 100%,
+      0 calc(100% - var(--chamfer)),
+      0 var(--chamfer)
+    );
+  }
+  /* Brass edge drawn as a masked ring so it follows the chamfer. */
+  .panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1.5px;
+    background: linear-gradient(
+      155deg,
+      var(--color-brass) 0%,
+      var(--color-brass-dim) 30%,
+      transparent 48%,
+      transparent 52%,
+      var(--color-brass-dim) 70%,
+      var(--color-brass) 100%
+    );
+    clip-path: inherit;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Holographic variant: teal edge + outer glow (drop-shadow respects clip). */
+  .panel-glow {
+    filter: drop-shadow(0 0 16px rgba(44, 208, 216, 0.18));
+  }
+  .panel-glow::before {
+    background: linear-gradient(
+      155deg,
+      var(--color-teal) 0%,
+      rgba(44, 208, 216, 0.25) 45%,
+      rgba(44, 208, 216, 0.25) 55%,
+      var(--color-teal) 100%
+    );
+  }
+
+  /* Corner rivets for heavier panels. */
+  .riveted::after {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    pointer-events: none;
+    background:
+      radial-gradient(circle, rgba(0, 0, 0, 0.55) 38%, transparent 42%) 0 0 / 7px 7px no-repeat,
+      radial-gradient(circle, rgba(0, 0, 0, 0.55) 38%, transparent 42%) 100% 0 / 7px 7px no-repeat,
+      radial-gradient(circle, rgba(0, 0, 0, 0.55) 38%, transparent 42%) 0 100% / 7px 7px no-repeat,
+      radial-gradient(circle, rgba(0, 0, 0, 0.55) 38%, transparent 42%) 100% 100% / 7px 7px no-repeat;
+  }
+
+  /* Buttons */
+  .btn {
+    --chamfer: 9px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.62rem 1.15rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-bone);
+    background: linear-gradient(180deg, var(--color-steel-2), var(--color-steel));
+    clip-path: polygon(
+      var(--chamfer) 0,
+      calc(100% - var(--chamfer)) 0,
+      100% var(--chamfer),
+      100% calc(100% - var(--chamfer)),
+      calc(100% - var(--chamfer)) 100%,
+      var(--chamfer) 100%,
+      0 calc(100% - var(--chamfer)),
+      0 var(--chamfer)
+    );
+    transition:
+      color 0.18s ease,
+      filter 0.18s ease,
+      transform 0.18s ease;
+    cursor: pointer;
+  }
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1.5px;
+    background: linear-gradient(160deg, var(--color-brass), var(--color-brass-dim));
+    clip-path: inherit;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    transition: background 0.18s ease;
+  }
+  .btn:hover {
+    color: var(--color-teal-bright);
+    filter: drop-shadow(0 0 10px rgba(44, 208, 216, 0.45));
+  }
+  .btn:hover::before {
+    background: linear-gradient(160deg, var(--color-teal), var(--color-brass));
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    filter: none;
+    color: var(--color-ash);
+  }
+  .btn:disabled::before {
+    background: var(--color-iron);
+  }
+
+  .btn-primary {
+    color: var(--color-abyss);
+    font-weight: 700;
+    background: linear-gradient(180deg, var(--color-teal-bright), var(--color-teal) 70%, #16a6ac);
+    filter: drop-shadow(0 0 12px rgba(44, 208, 216, 0.4));
+  }
+  .btn-primary::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(44, 208, 216, 0.3));
+  }
+  .btn-primary:hover {
+    color: var(--color-abyss);
+    filter: drop-shadow(0 0 20px rgba(44, 208, 216, 0.7));
+  }
+  .btn-primary:hover::before {
+    background: linear-gradient(180deg, #fff, rgba(44, 208, 216, 0.4));
+  }
+
+  /* Form controls */
+  .input {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    color: var(--color-bone);
+    background: var(--color-abyss);
+    border: 1px solid var(--color-brass-dim);
+    padding: 0.5rem 0.75rem;
+    outline: none;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .input:focus {
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 1px var(--color-teal), 0 0 14px -4px rgba(44, 208, 216, 0.6);
+  }
+
+  /* Typographic helpers */
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    font-size: 0.68rem;
+    color: var(--color-brass);
+  }
+  .data {
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+    color: var(--color-teal);
+  }
+  .display {
+    font-family: var(--font-display);
+    letter-spacing: 0.03em;
+  }
+
+  /* Brass divider with a teal node in the middle. */
+  .rule {
+    height: 1px;
+    border: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-brass-dim) 20%,
+      var(--color-brass) 50%,
+      var(--color-brass-dim) 80%,
+      transparent
+    );
+  }
 }
 
-/* Prevent the hex grid SVG from triggering browser gestures on touch. */
-.touch-none {
-  touch-action: none;
+/* ─── Utilities & motion ─────────────────────────────────────────────── */
+@layer utilities {
+  .text-glow-teal {
+    text-shadow: 0 0 14px rgba(44, 208, 216, 0.55);
+  }
+  .glow-teal {
+    filter: drop-shadow(0 0 18px rgba(44, 208, 216, 0.45));
+  }
+}
+
+@keyframes sigil-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 14px rgba(44, 208, 216, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0 30px rgba(44, 208, 216, 0.7));
+  }
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes scan-sweep {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  12%,
+  88% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.animate-sigil {
+  animation: sigil-pulse 4.5s ease-in-out infinite;
+}
+.rise {
+  opacity: 0;
+  animation: rise-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-sigil,
+  .rise {
+    animation: none;
+  }
+  .rise {
+    opacity: 1;
+  }
 }

@@ -11,7 +11,7 @@ export function HexGrid({ board, showGrid = true }: { board: ParsedBoard; showGr
   return (
     <svg
       viewBox={`${x} ${y} ${w} ${h}`}
-      className="h-auto w-full touch-none select-none rounded-lg"
+      className="block h-auto w-full touch-none select-none"
       role="img"
       aria-label={`Map ${board.id}`}
     >
