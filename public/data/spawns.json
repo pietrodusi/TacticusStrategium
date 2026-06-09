@@ -695,7 +695,7 @@
       "visualId": "astraNpc1Guardsman"
     },
     "GuildBoss8Npc1EldarGuardian": {
-      "name": "Eldar Guardian",
+      "name": "Guardian",
       "faction": "Aeldari",
       "stem": "aelda_guardian",
       "kind": "npc",
@@ -703,7 +703,7 @@
       "visualId": "eldarNpc1Guardian"
     },
     "GuildBoss8Npc5EldarGuardianSummon": {
-      "name": "Eldar Guardian Summon",
+      "name": "Guardian Summon",
       "faction": "Aeldari",
       "stem": "aelda_guardian",
       "kind": "npc",
@@ -767,7 +767,7 @@
       "visualId": "tauNpc5StealthSuit"
     },
     "GuildBoss12Npc2DarkaHellblaster": {
-      "name": "Darka Hellblaster",
+      "name": "Hellblaster",
       "faction": "DarkAngels",
       "stem": null,
       "kind": "npc",
@@ -807,7 +807,7 @@
       "visualId": "astraNpc4Mortar"
     },
     "GuildBoss8Npc2EldarWarlock": {
-      "name": "Eldar Warlock",
+      "name": "Warlock",
       "faction": "Aeldari",
       "stem": "aelda_warlock",
       "kind": "npc",
@@ -863,7 +863,7 @@
       "visualId": null
     },
     "GuildBoss12Npc4DarkaWatcher": {
-      "name": "Darka Watcher",
+      "name": "Watcher",
       "faction": "DarkAngels",
       "stem": null,
       "kind": "npc",
@@ -882,76 +882,82 @@
           "col": 1,
           "row": 9,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss6Npc5TyranBarbgaunt",
           "col": 5,
           "row": 9,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 6,
           "row": 8,
           "deploymentOrder": 3,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 5,
           "row": 7,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 3,
           "row": 8,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 1,
           "row": 7,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 3,
           "row": 9,
           "deploymentOrder": 7,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 3,
           "row": 6,
           "deploymentOrder": 8,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc4TyranWarrior",
           "col": 5,
           "row": 6,
           "deploymentOrder": 9,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss6Npc4TyranWarrior",
           "col": 2,
           "row": 5,
           "deploymentOrder": 10,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss6Npc5TyranBarbgaunt": 2,
-        "GuildBoss6Npc1TyranHormagaunt": 6
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss6MiniBoss1TyranNeurothrope",
+          "name": "Neurothrope"
+        },
+        {
+          "unitId": "GuildBoss6MiniBoss2TyranWingedPrime",
+          "name": "Winged Prime"
+        }
+      ]
     },
     "GB_Screamer_01": {
       "bossType": "ScreamerKiller",
@@ -963,76 +969,82 @@
           "col": 0,
           "row": 8,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss6Npc5TyranBarbgaunt",
           "col": 5,
           "row": 7,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 4,
           "row": 8,
           "deploymentOrder": 3,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 1,
           "row": 7,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 0,
           "row": 7,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 4,
           "row": 6,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 4,
           "row": 7,
           "deploymentOrder": 7,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 2,
           "row": 5,
           "deploymentOrder": 8,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc4TyranWarrior",
           "col": 0,
           "row": 6,
           "deploymentOrder": 9,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss6Npc4TyranWarrior",
           "col": 5,
           "row": 5,
           "deploymentOrder": 10,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss6Npc5TyranBarbgaunt": 2,
-        "GuildBoss6Npc1TyranHormagaunt": 6
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss6MiniBoss1TyranNeurothrope",
+          "name": "Neurothrope"
+        },
+        {
+          "unitId": "GuildBoss6MiniBoss2TyranWingedPrime",
+          "name": "Winged Prime"
+        }
+      ]
     },
     "GB_RogalDorn_02": {
       "bossType": "RogalDorn",
@@ -1044,69 +1056,75 @@
           "col": 4,
           "row": 5,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 5,
           "row": 5,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 5,
           "row": 6,
           "deploymentOrder": 3,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 6,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 5,
           "deploymentOrder": 5,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 4,
           "row": 9,
           "deploymentOrder": 6,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 3,
           "row": 9,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 5,
           "row": 9,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc4Mortar",
           "col": 6,
           "row": 7,
           "deploymentOrder": 9,
-          "removable": true
+          "removeAtPrime": 2
         }
       ],
-      "removable": {
-        "GuildBoss7Npc1AstraGuardsman": 4,
-        "GuildBoss7Npc4Mortar": 1
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
+          "name": "Primaris Psy"
+        },
+        {
+          "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
+          "name": "Ordnance"
+        }
+      ]
     },
     "GB_Screamer_04": {
       "bossType": "ScreamerKiller",
@@ -1118,76 +1136,82 @@
           "col": 1,
           "row": 9,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss6Npc5TyranBarbgaunt",
           "col": 5,
           "row": 9,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 4,
           "row": 9,
           "deploymentOrder": 3,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 2,
           "row": 8,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 3,
           "row": 5,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 2,
           "row": 4,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 4,
           "row": 6,
           "deploymentOrder": 7,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc1TyranHormagaunt",
           "col": 3,
           "row": 7,
           "deploymentOrder": 8,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss6Npc4TyranWarrior",
           "col": 1,
           "row": 6,
           "deploymentOrder": 9,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss6Npc4TyranWarrior",
           "col": 5,
           "row": 6,
           "deploymentOrder": 10,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss6Npc5TyranBarbgaunt": 2,
-        "GuildBoss6Npc1TyranHormagaunt": 6
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss6MiniBoss1TyranNeurothrope",
+          "name": "Neurothrope"
+        },
+        {
+          "unitId": "GuildBoss6MiniBoss2TyranWingedPrime",
+          "name": "Winged Prime"
+        }
+      ]
     },
     "GB_RogalDorn_01": {
       "bossType": "RogalDorn",
@@ -1199,69 +1223,75 @@
           "col": 5,
           "row": 3,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 2,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 5,
           "row": 2,
           "deploymentOrder": 3,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 3,
           "row": 9,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 1,
           "row": 9,
           "deploymentOrder": 5,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 2,
           "row": 9,
           "deploymentOrder": 6,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 4,
           "row": 9,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 1,
           "row": 8,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc4Mortar",
           "col": 2,
           "row": 8,
           "deploymentOrder": 9,
-          "removable": true
+          "removeAtPrime": 2
         }
       ],
-      "removable": {
-        "GuildBoss7Npc1AstraGuardsman": 4,
-        "GuildBoss7Npc4Mortar": 1
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
+          "name": "Primaris Psy"
+        },
+        {
+          "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
+          "name": "Ordnance"
+        }
+      ]
     },
     "GB_Khaine_05": {
       "bossType": "AvatarOfKhaine",
@@ -1273,48 +1303,54 @@
           "col": 1,
           "row": 6,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss8Npc2EldarWarlock",
           "col": 5,
           "row": 6,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss8Npc2EldarWarlock",
           "col": 2,
           "row": 5,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 4,
           "row": 5,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 0,
           "row": 6,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 6,
           "row": 6,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 1
         }
       ],
-      "removable": {
-        "GuildBoss8Npc1EldarGuardian": 3,
-        "GuildBoss8Npc2EldarWarlock": 1
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss8MiniBoss1EldarAutarch",
+          "name": "Autarch"
+        },
+        {
+          "unitId": "GuildBoss8MiniBoss2EldarFarseer",
+          "name": "Farseer"
+        }
+      ]
     },
     "GB_RogalDorn_03": {
       "bossType": "RogalDorn",
@@ -1326,76 +1362,82 @@
           "col": 0,
           "row": 9,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 8,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 1,
           "row": 7,
           "deploymentOrder": 3,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 5,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 1,
           "row": 9,
           "deploymentOrder": 5,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 5,
           "row": 8,
           "deploymentOrder": 6,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 0,
           "row": 6,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 6,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc4Mortar",
           "col": 0,
           "row": 8,
           "deploymentOrder": 9,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss7Npc4Mortar",
           "col": 6,
           "row": 7,
           "deploymentOrder": 10,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss7Npc1AstraGuardsman": 4,
-        "GuildBoss7Npc4Mortar": 1
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
+          "name": "Primaris Psy"
+        },
+        {
+          "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
+          "name": "Ordnance"
+        }
+      ]
     },
     "GB_Khaine_03": {
       "bossType": "AvatarOfKhaine",
@@ -1407,48 +1449,54 @@
           "col": 0,
           "row": 6,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss8Npc2EldarWarlock",
           "col": 1,
           "row": 7,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss8Npc2EldarWarlock",
           "col": 5,
           "row": 6,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 1,
           "row": 6,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 6,
           "row": 6,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 5,
           "row": 7,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 1
         }
       ],
-      "removable": {
-        "GuildBoss8Npc1EldarGuardian": 3,
-        "GuildBoss8Npc2EldarWarlock": 1
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss8MiniBoss1EldarAutarch",
+          "name": "Autarch"
+        },
+        {
+          "unitId": "GuildBoss8MiniBoss2EldarFarseer",
+          "name": "Farseer"
+        }
+      ]
     },
     "GB_Belisarius_01": {
       "bossType": "BelisariusRW",
@@ -1460,61 +1508,68 @@
           "col": 1,
           "row": 7,
           "deploymentOrder": 1,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 3,
           "row": 9,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 0,
           "row": 4,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 6,
           "row": 7,
           "deploymentOrder": 4,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 0,
           "row": 3,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 5,
           "row": 3,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 4,
           "row": 5,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 4,
           "row": 4,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss10Npc2AdmecElectropriest": 2
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss10MiniBoss1AdmecMarshall",
+          "name": "Marshall"
+        },
+        {
+          "unitId": "GuildBoss10MiniBoss2AdmecManipulus",
+          "name": "Manipulus"
+        }
+      ]
     },
     "GB_Riptide_03": {
       "bossType": "Riptide",
@@ -1526,61 +1581,68 @@
           "col": 2,
           "row": 9,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss11Npc3TauDroneShield",
           "col": 2,
           "row": 6,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss11Npc3TauDroneShield",
           "col": 4,
           "row": 9,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc3TauDroneShield",
           "col": 4,
           "row": 6,
           "deploymentOrder": 4,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc1TauFireWarrior",
           "col": 2,
           "row": 4,
           "deploymentOrder": 5,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc1TauFireWarrior",
           "col": 4,
           "row": 5,
           "deploymentOrder": 6,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc1TauFireWarrior",
           "col": 0,
           "row": 5,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc4TauStealthSuit",
           "col": 6,
           "row": 6,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss11Npc3TauDroneShield": 2
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss11MiniBoss1TauMarksman",
+          "name": "Marksman"
+        },
+        {
+          "unitId": "GuildBoss11MiniBoss2TauCrisis",
+          "name": "Crisis"
+        }
+      ]
     },
     "GB_RogalDorn_05": {
       "bossType": "RogalDorn",
@@ -1592,69 +1654,75 @@
           "col": 0,
           "row": 4,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 1,
           "row": 5,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 8,
           "deploymentOrder": 3,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 0,
           "row": 6,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 2,
           "row": 6,
           "deploymentOrder": 5,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 4,
           "row": 9,
           "deploymentOrder": 6,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 9,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 1,
           "row": 7,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc4Mortar",
           "col": 1,
           "row": 6,
           "deploymentOrder": 9,
-          "removable": true
+          "removeAtPrime": 2
         }
       ],
-      "removable": {
-        "GuildBoss7Npc1AstraGuardsman": 4,
-        "GuildBoss7Npc4Mortar": 1
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
+          "name": "Primaris Psy"
+        },
+        {
+          "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
+          "name": "Ordnance"
+        }
+      ]
     },
     "GB_RogalDorn_06": {
       "bossType": "RogalDorn",
@@ -1666,76 +1734,82 @@
           "col": 2,
           "row": 5,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 4,
           "row": 4,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 2,
           "deploymentOrder": 3,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 0,
           "row": 9,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 5,
           "deploymentOrder": 5,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 5,
           "row": 6,
           "deploymentOrder": 6,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 2,
           "row": 4,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 0,
           "row": 4,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc4Mortar",
           "col": 3,
           "row": 7,
           "deploymentOrder": 9,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss7Npc4Mortar",
           "col": 6,
           "row": 8,
           "deploymentOrder": 10,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss7Npc1AstraGuardsman": 4,
-        "GuildBoss7Npc4Mortar": 1
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
+          "name": "Primaris Psy"
+        },
+        {
+          "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
+          "name": "Ordnance"
+        }
+      ]
     },
     "GB_Belisarius_02": {
       "bossType": "BelisariusRW",
@@ -1747,61 +1821,68 @@
           "col": 3,
           "row": 9,
           "deploymentOrder": 1,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 0,
           "row": 5,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 6,
           "row": 6,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 6,
           "row": 3,
           "deploymentOrder": 4,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 1,
           "row": 7,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 5,
           "row": 5,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 0,
           "row": 4,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 6,
           "row": 2,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss10Npc2AdmecElectropriest": 2
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss10MiniBoss1AdmecMarshall",
+          "name": "Marshall"
+        },
+        {
+          "unitId": "GuildBoss10MiniBoss2AdmecManipulus",
+          "name": "Manipulus"
+        }
+      ]
     },
     "GB_Riptide_01": {
       "bossType": "Riptide",
@@ -1813,68 +1894,75 @@
           "col": 1,
           "row": 6,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss11Npc3TauDroneShield",
           "col": 5,
           "row": 6,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss11Npc3TauDroneShield",
           "col": 5,
           "row": 8,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc3TauDroneShield",
           "col": 1,
           "row": 8,
           "deploymentOrder": 4,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc1TauFireWarrior",
           "col": 0,
           "row": 4,
           "deploymentOrder": 5,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc1TauFireWarrior",
           "col": 6,
           "row": 6,
           "deploymentOrder": 6,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc1TauFireWarrior",
           "col": 3,
           "row": 5,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc4TauStealthSuit",
           "col": 0,
           "row": 6,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc4TauStealthSuit",
           "col": 6,
           "row": 7,
           "deploymentOrder": 9,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss11Npc3TauDroneShield": 2
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss11MiniBoss1TauMarksman",
+          "name": "Marksman"
+        },
+        {
+          "unitId": "GuildBoss11MiniBoss2TauCrisis",
+          "name": "Crisis"
+        }
+      ]
     },
     "GB_Khaine_02": {
       "bossType": "AvatarOfKhaine",
@@ -1886,48 +1974,54 @@
           "col": 0,
           "row": 5,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss8Npc2EldarWarlock",
           "col": 0,
           "row": 4,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss8Npc2EldarWarlock",
           "col": 6,
           "row": 4,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 1,
           "row": 5,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 5,
           "row": 4,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 6,
           "row": 3,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 1
         }
       ],
-      "removable": {
-        "GuildBoss8Npc1EldarGuardian": 3,
-        "GuildBoss8Npc2EldarWarlock": 1
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss8MiniBoss1EldarAutarch",
+          "name": "Autarch"
+        },
+        {
+          "unitId": "GuildBoss8MiniBoss2EldarFarseer",
+          "name": "Farseer"
+        }
+      ]
     },
     "GB_Magnus_03": {
       "bossType": "Magnus",
@@ -1939,69 +2033,75 @@
           "col": 6,
           "row": 5,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss9Npc4ThousTerminator",
           "col": 0,
           "row": 4,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss9Npc4ThousTerminator",
           "col": 6,
           "row": 6,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss9Npc4ThousTerminator",
           "col": 0,
           "row": 5,
           "deploymentOrder": 4,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss9Npc3ThousRubricMarine",
           "col": 4,
           "row": 4,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss9Npc3ThousRubricMarine",
           "col": 2,
           "row": 3,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss9Npc3ThousRubricMarine",
           "col": 5,
           "row": 4,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss9Npc3ThousRubricMarine",
           "col": 6,
           "row": 3,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss9Npc3ThousRubricMarine",
           "col": 1,
           "row": 4,
           "deploymentOrder": 9,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss9Npc4ThousTerminator": 2,
-        "GuildBoss9Npc3ThousRubricMarine": 2
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss9MiniBoss1ThousSorcerer",
+          "name": "Sorcerer"
+        },
+        {
+          "unitId": "GuildBoss9MiniBoss2ThousInfernalMaster",
+          "name": "Infernal Master"
+        }
+      ]
     },
     "GB_SK_02": {
       "bossType": "SilentKing",
@@ -2013,17 +2113,26 @@
           "col": 2,
           "row": 8,
           "deploymentOrder": 1,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss3Minion1NecroMesophet",
           "col": 4,
           "row": 8,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {}
+      "primes": [
+        {
+          "unitId": "GuildBoss3Minion3NecroMenhir",
+          "name": "Guild Boss3 Minion3 Necro Menhir"
+        },
+        {
+          "unitId": "GuildBoss3Minion3NecroMenhir",
+          "name": "Guild Boss3 Minion3 Necro Menhir"
+        }
+      ]
     },
     "GB_Khaine_01": {
       "bossType": "AvatarOfKhaine",
@@ -2035,48 +2144,54 @@
           "col": 0,
           "row": 4,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss8Npc2EldarWarlock",
           "col": 0,
           "row": 3,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss8Npc2EldarWarlock",
           "col": 6,
           "row": 4,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 1,
           "row": 4,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 5,
           "row": 4,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 6,
           "row": 3,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 1
         }
       ],
-      "removable": {
-        "GuildBoss8Npc1EldarGuardian": 3,
-        "GuildBoss8Npc2EldarWarlock": 1
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss8MiniBoss1EldarAutarch",
+          "name": "Autarch"
+        },
+        {
+          "unitId": "GuildBoss8MiniBoss2EldarFarseer",
+          "name": "Farseer"
+        }
+      ]
     },
     "GB_RogalDorn_04": {
       "bossType": "RogalDorn",
@@ -2088,76 +2203,82 @@
           "col": 0,
           "row": 7,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 8,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 0,
           "row": 8,
           "deploymentOrder": 3,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 4,
           "row": 5,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 0,
           "row": 4,
           "deploymentOrder": 5,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 5,
           "row": 9,
           "deploymentOrder": 6,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 6,
           "row": 5,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc1AstraGuardsman",
           "col": 4,
           "row": 4,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss7Npc4Mortar",
           "col": 0,
           "row": 5,
           "deploymentOrder": 9,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss7Npc4Mortar",
           "col": 5,
           "row": 5,
           "deploymentOrder": 10,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss7Npc1AstraGuardsman": 4,
-        "GuildBoss7Npc4Mortar": 1
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
+          "name": "Primaris Psy"
+        },
+        {
+          "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
+          "name": "Ordnance"
+        }
+      ]
     },
     "GB_Riptide_02": {
       "bossType": "Riptide",
@@ -2169,68 +2290,75 @@
           "col": 1,
           "row": 4,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss11Npc3TauDroneShield",
           "col": 5,
           "row": 7,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss11Npc3TauDroneShield",
           "col": 0,
           "row": 6,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc3TauDroneShield",
           "col": 4,
           "row": 8,
           "deploymentOrder": 4,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc1TauFireWarrior",
           "col": 2,
           "row": 5,
           "deploymentOrder": 5,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc1TauFireWarrior",
           "col": 0,
           "row": 4,
           "deploymentOrder": 6,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc1TauFireWarrior",
           "col": 6,
           "row": 7,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc4TauStealthSuit",
           "col": 6,
           "row": 6,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss11Npc4TauStealthSuit",
           "col": 0,
           "row": 3,
           "deploymentOrder": 9,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss11Npc3TauDroneShield": 2
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss11MiniBoss1TauMarksman",
+          "name": "Marksman"
+        },
+        {
+          "unitId": "GuildBoss11MiniBoss2TauCrisis",
+          "name": "Crisis"
+        }
+      ]
     },
     "GB_Belisarius_04": {
       "bossType": "BelisariusRW",
@@ -2242,61 +2370,68 @@
           "col": 0,
           "row": 8,
           "deploymentOrder": 1,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 6,
           "row": 5,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 6,
           "row": 2,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 5,
           "row": 5,
           "deploymentOrder": 4,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 1,
           "row": 7,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 3,
           "row": 6,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 6,
           "row": 8,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 5,
           "row": 1,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss10Npc2AdmecElectropriest": 2
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss10MiniBoss1AdmecMarshall",
+          "name": "Marshall"
+        },
+        {
+          "unitId": "GuildBoss10MiniBoss2AdmecManipulus",
+          "name": "Manipulus"
+        }
+      ]
     },
     "GB_Khaine_04": {
       "bossType": "AvatarOfKhaine",
@@ -2308,48 +2443,54 @@
           "col": 0,
           "row": 4,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss8Npc2EldarWarlock",
           "col": 0,
           "row": 3,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss8Npc2EldarWarlock",
           "col": 6,
           "row": 4,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 1,
           "row": 4,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 5,
           "row": 4,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss8Npc1EldarGuardian",
           "col": 6,
           "row": 3,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 1
         }
       ],
-      "removable": {
-        "GuildBoss8Npc1EldarGuardian": 3,
-        "GuildBoss8Npc2EldarWarlock": 1
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss8MiniBoss1EldarAutarch",
+          "name": "Autarch"
+        },
+        {
+          "unitId": "GuildBoss8MiniBoss2EldarFarseer",
+          "name": "Farseer"
+        }
+      ]
     },
     "GB_SK_01": {
       "bossType": "SilentKing",
@@ -2361,17 +2502,26 @@
           "col": 2,
           "row": 9,
           "deploymentOrder": 1,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss3Minion1NecroMesophet",
           "col": 4,
           "row": 9,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {}
+      "primes": [
+        {
+          "unitId": "GuildBoss3Minion3NecroMenhir",
+          "name": "Guild Boss3 Minion3 Necro Menhir"
+        },
+        {
+          "unitId": "GuildBoss3Minion3NecroMenhir",
+          "name": "Guild Boss3 Minion3 Necro Menhir"
+        }
+      ]
     },
     "GB_Lion_01": {
       "bossType": "Lion",
@@ -2383,47 +2533,54 @@
           "col": 1,
           "row": 8,
           "deploymentOrder": 1,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss12Npc4DarkaWatcher",
           "col": 6,
           "row": 8,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss12Npc2DarkaHellblaster",
           "col": 6,
           "row": 7,
           "deploymentOrder": 3,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss12Npc2DarkaHellblaster",
           "col": 0,
           "row": 6,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss12Npc2DarkaHellblaster",
           "col": 2,
           "row": 5,
           "deploymentOrder": 5,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss12Npc2DarkaHellblaster",
           "col": 5,
           "row": 6,
           "deploymentOrder": 6,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss12Npc2DarkaHellblaster": 2
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss12MiniBoss1DarkaTerminator",
+          "name": "Terminator"
+        },
+        {
+          "unitId": "GuildBoss12MiniBoss2DarkaCompanion",
+          "name": "Companion"
+        }
+      ]
     },
     "GB_Lion_02": {
       "bossType": "Lion",
@@ -2435,47 +2592,54 @@
           "col": 1,
           "row": 8,
           "deploymentOrder": 1,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss12Npc4DarkaWatcher",
           "col": 6,
           "row": 8,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss12Npc2DarkaHellblaster",
           "col": 0,
           "row": 7,
           "deploymentOrder": 3,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss12Npc2DarkaHellblaster",
           "col": 4,
           "row": 9,
           "deploymentOrder": 4,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss12Npc2DarkaHellblaster",
           "col": 5,
           "row": 8,
           "deploymentOrder": 5,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss12Npc2DarkaHellblaster",
           "col": 4,
           "row": 6,
           "deploymentOrder": 6,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss12Npc2DarkaHellblaster": 2
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss12MiniBoss1DarkaTerminator",
+          "name": "Terminator"
+        },
+        {
+          "unitId": "GuildBoss12MiniBoss2DarkaCompanion",
+          "name": "Companion"
+        }
+      ]
     },
     "GB_Magnus_01": {
       "bossType": "Magnus",
@@ -2487,69 +2651,75 @@
           "col": 0,
           "row": 7,
           "deploymentOrder": 1,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss9Npc4ThousTerminator",
           "col": 1,
           "row": 7,
           "deploymentOrder": 2,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss9Npc4ThousTerminator",
           "col": 1,
           "row": 8,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss9Npc4ThousTerminator",
           "col": 6,
           "row": 7,
           "deploymentOrder": 4,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss9Npc3ThousRubricMarine",
           "col": 6,
           "row": 6,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 1
         },
         {
           "unitId": "GuildBoss9Npc3ThousRubricMarine",
           "col": 0,
           "row": 5,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss9Npc3ThousRubricMarine",
           "col": 1,
           "row": 5,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss9Npc3ThousRubricMarine",
           "col": 5,
           "row": 4,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss9Npc3ThousRubricMarine",
           "col": 6,
           "row": 4,
           "deploymentOrder": 9,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss9Npc4ThousTerminator": 2,
-        "GuildBoss9Npc3ThousRubricMarine": 2
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss9MiniBoss1ThousSorcerer",
+          "name": "Sorcerer"
+        },
+        {
+          "unitId": "GuildBoss9MiniBoss2ThousInfernalMaster",
+          "name": "Infernal Master"
+        }
+      ]
     },
     "GB_SK_03": {
       "bossType": "SilentKing",
@@ -2561,17 +2731,26 @@
           "col": 2,
           "row": 7,
           "deploymentOrder": 1,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss3Minion1NecroMesophet",
           "col": 4,
           "row": 7,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {}
+      "primes": [
+        {
+          "unitId": "GuildBoss3Minion3NecroMenhir",
+          "name": "Guild Boss3 Minion3 Necro Menhir"
+        },
+        {
+          "unitId": "GuildBoss3Minion3NecroMenhir",
+          "name": "Guild Boss3 Minion3 Necro Menhir"
+        }
+      ]
     },
     "GB_Belisarius_03": {
       "bossType": "BelisariusRW",
@@ -2583,61 +2762,68 @@
           "col": 0,
           "row": 8,
           "deploymentOrder": 1,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 2,
           "row": 9,
           "deploymentOrder": 2,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 6,
           "row": 9,
           "deploymentOrder": 3,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc1AdmecTechpriest",
           "col": 0,
           "row": 5,
           "deploymentOrder": 4,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 1,
           "row": 6,
           "deploymentOrder": 5,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 5,
           "row": 7,
           "deploymentOrder": 6,
-          "removable": true
+          "removeAtPrime": 2
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 0,
           "row": 4,
           "deploymentOrder": 7,
-          "removable": false
+          "removeAtPrime": null
         },
         {
           "unitId": "GuildBoss10Npc2AdmecElectropriest",
           "col": 3,
           "row": 6,
           "deploymentOrder": 8,
-          "removable": false
+          "removeAtPrime": null
         }
       ],
-      "removable": {
-        "GuildBoss10Npc2AdmecElectropriest": 2
-      }
+      "primes": [
+        {
+          "unitId": "GuildBoss10MiniBoss1AdmecMarshall",
+          "name": "Marshall"
+        },
+        {
+          "unitId": "GuildBoss10MiniBoss2AdmecManipulus",
+          "name": "Manipulus"
+        }
+      ]
     }
   }
 }

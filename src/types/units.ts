@@ -50,7 +50,14 @@ export interface DeployedEnemy {
   col: number
   row: number
   deploymentOrder: number | null
-  removable: boolean // disappears once the boss's primes are defeated
+  /** Number of primes that must fall for this add to be removed (null = never). */
+  removeAtPrime: number | null
+}
+
+/** One of a boss's prime mini-bosses (ordered; defeating them removes adds). */
+export interface DeploymentPrime {
+  unitId: string | null
+  name: string
 }
 
 /** Initial enemy deployment for a board (keyed by boardId in SpawnsData). */
@@ -59,7 +66,7 @@ export interface BoardDeployment {
   bossUnitId: string
   rarity: string | null
   enemies: DeployedEnemy[]
-  removable: Record<string, number> // enemyUnitId -> total removable when primes die
+  primes: DeploymentPrime[] // defeating the first k removes adds with removeAtPrime ≤ k
 }
 
 export interface SpawnsData {

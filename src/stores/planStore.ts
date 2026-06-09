@@ -68,14 +68,17 @@ interface PlanState {
    *  marker (masks a hex inherited from the previous phase). See paintAtTurn. */
   paint: Record<number, Record<string, string | null>>
   /** Spawn instances (summons / boss minions). instanceId → its source unit +
-   *  side; `removable` marks initial-deployment adds that vanish once the boss's
-   *  primes are defeated (hidden by the Primes-defeated toggle). */
-  instances: Record<string, { unitId: string; side: 'ally' | 'enemy'; removable?: boolean }>
+   *  side; `removeAtPrime` (initial-deployment adds only) is how many primes must
+   *  fall for it to be hidden by the Primes-defeated stepper (null/undef = never). */
+  instances: Record<
+    string,
+    { unitId: string; side: 'ally' | 'enemy'; removeAtPrime?: number | null }
+  >
   instanceSeq: number
   /** Board whose initial enemy deployment has been seeded (idempotency guard). */
   seededBoard: string | null
-  /** When true, hide the removable initial adds (boss's primes defeated). */
-  primesDefeated: boolean
+  /** How many of the boss's primes are defeated — hides adds with removeAtPrime ≤ it. */
+  primesDefeated: number
 
   // ── Setup actions ──
   selectBoss: (unitId: string) => void
@@ -96,10 +99,10 @@ interface PlanState {
   /** Seed a board's initial enemy deployment as turn-0 enemy instances (once). */
   seedDeployment: (
     boardId: string,
-    enemies: { unitId: string; q: number; r: number; removable: boolean }[],
+    enemies: { unitId: string; q: number; r: number; removeAtPrime: number | null }[],
   ) => void
-  /** Toggle whether the boss's primes are defeated (hides removable adds). */
-  setPrimesDefeated: (defeated: boolean) => void
+  /** Set how many of the boss's primes are defeated (hides the matching adds). */
+  setPrimesDefeated: (defeated: number) => void
   /** Set a hex colour at the current turn, or erase it when color is null. */
   setPaint: (hexKey: string, color: string | null) => void
   resetPlan: () => void
@@ -112,7 +115,7 @@ const EMPTY_PLAN = {
   instances: {},
   instanceSeq: 0,
   seededBoard: null,
-  primesDefeated: false,
+  primesDefeated: 0,
 }
 
 export const usePlanStore = create<PlanState>()(
@@ -189,7 +192,7 @@ export const usePlanStore = create<PlanState>()(
           const positions = { ...s.positions }
           for (const e of enemies) {
             const id = `inst-${++seq}`
-            instances[id] = { unitId: e.unitId, side: 'enemy', removable: e.removable }
+            instances[id] = { unitId: e.unitId, side: 'enemy', removeAtPrime: e.removeAtPrime }
             positions[id] = { 0: { q: e.q, r: e.r } }
           }
           return { instanceSeq: seq, instances, positions, seededBoard: boardId }

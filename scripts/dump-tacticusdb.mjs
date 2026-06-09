@@ -315,7 +315,10 @@ async function buildSpawns(seasonConfig, stems) {
     const s = id
       .replace(/^GuildBoss\d+(?:MiniBoss|Boss|Npc)\d+/, '')
       .replace(/^[a-z]+(?=[A-Z])/, '')
-      .replace(/^(Tyran|Necro|Astra|Adept|Ultra|Blood|Black|Death|Thous|Orks|Tau|Genes|Votan|Admec)/, '');
+      .replace(
+        /^(Tyran|Necro|Astra|Adept|Ultra|Blood|Black|Death|Thous|Orks|Tau|Genes|Votan|Admec|Darka|Eldar)/,
+        '',
+      );
     return splitCamel(s) || id;
   };
   const stemFor = (id) =>
@@ -357,19 +360,33 @@ async function buildSpawns(seasonConfig, stems) {
     fetchWithRetry(`${BASE}/api/data/guildBossModDetails`).catch(() => ({})),
   ]);
 
-  // boss unitId (rankless) -> { enemyUnitId: removableCount } when all primes die
-  const removableFor = (bossUnitId) => {
+  // Per-prime removals for a boss. `guildBossMods[boss].modifiers[0]` is an array
+  // indexed by prime (aligned with unitIds[1..] — unitIds[0] is the boss itself);
+  // each prime's `unitAmountDecrease` tokens say how many of which add it removes.
+  // Returns the ordered prime list + a queue of removal "levels" per enemy unit
+  // (defeating prime p, 1-based, removes one entry from that unit's queue).
+  const primesFor = (bossUnitId) => {
     const key = bossUnitId.replace(/:\d+$/, '');
     const mod = Object.values(mods).find((m) => m.unitIds?.includes(key));
-    const tokens = (mod?.modifiers ?? []).flat(2);
-    const out = {};
-    for (const tk of tokens) {
-      const d = modDetails[tk];
-      if (d?.type === 'unitAmountDecrease' && d.subtarget && typeof d.amount === 'number') {
-        out[d.subtarget] = (out[d.subtarget] ?? 0) + d.amount;
+    const perPrime = (mod?.modifiers ?? [])[0] ?? [];
+    const primes = [];
+    const queue = {}; // enemyUnitId -> [removal level per removed instance]
+    perPrime.forEach((tokens, pi) => {
+      const removes = {};
+      for (const tk of tokens) {
+        const d = modDetails[tk];
+        if (d?.type === 'unitAmountDecrease' && d.subtarget && typeof d.amount === 'number')
+          removes[d.subtarget] = (removes[d.subtarget] ?? 0) + d.amount;
       }
-    }
-    return out;
+      const primeUnit = mod?.unitIds?.[pi + 1] ?? null;
+      primes.push({
+        unitId: primeUnit,
+        name: primeUnit ? identity(primeUnit).name : `Prime ${pi + 1}`,
+      });
+      for (const [u, c] of Object.entries(removes))
+        for (let i = 0; i < c; i++) (queue[u] ??= []).push(pi + 1);
+    });
+    return { primes, queue };
   };
 
   const RARITY_RANK = { common: 0, uncommon: 1, rare: 2, epic: 3, legendary: 4, mythic: 5 };
@@ -393,9 +410,9 @@ async function buildSpawns(seasonConfig, stems) {
       (g) => g.TeamWithPlayerIndex === 1,
     );
     if (!group) continue;
-    const removable = removableFor(enc.unitId);
+    const { primes, queue } = primesFor(enc.unitId);
+    const q = Object.fromEntries(Object.entries(queue).map(([u, arr]) => [u, [...arr]]));
     const enemies = [];
-    const seen = {}; // enemyUnitId -> how many already flagged removable
     let placed = 0;
     let dp = 0;
     for (const sp of group.SpawnPoints) {
@@ -403,18 +420,17 @@ async function buildSpawns(seasonConfig, stems) {
       if (sp.SpawnPointType !== 10) deploymentOrder = ++dp;
       if (placed >= enc.enemies.length) continue;
       const unitId = enc.enemies[placed++].split(':')[0];
-      const taken = seen[unitId] ?? 0;
-      const isRemovable = taken < (removable[unitId] ?? 0);
-      if (isRemovable) seen[unitId] = taken + 1;
+      // The earlier-defeated primes remove the earlier-deployed adds of each type.
+      const removeAtPrime = q[unitId]?.length ? q[unitId].shift() : null;
       if (!units[unitId]) units[unitId] = identity(unitId);
-      enemies.push({ unitId, col: sp.Column, row: sp.Row, deploymentOrder, removable: isRemovable });
+      enemies.push({ unitId, col: sp.Column, row: sp.Row, deploymentOrder, removeAtPrime });
     }
     deployments[boardId] = {
       bossType: enc.bossType ?? null,
       bossUnitId: enc.unitId.split(':')[0],
       rarity,
       enemies,
-      removable, // { enemyUnitId: count } — total removable once all primes are dead
+      primes, // ordered mini-bosses; defeating the first k removes adds with removeAtPrime ≤ k
     };
   }
 

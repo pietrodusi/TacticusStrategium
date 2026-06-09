@@ -22,7 +22,7 @@ interface TrayDef {
   stem: string | null
   name: string
   size: number
-  removable?: boolean // initial add removed when the boss's primes are defeated
+  removeAtPrime?: number | null // primes needed to remove this initial add (null = never)
 }
 interface PaletteType {
   unitId: string
@@ -79,7 +79,7 @@ export function BoardPage() {
     const byColRow = new Map(board.data.cells.map((c) => [`${c.col},${c.row}`, { q: c.q, r: c.r }]))
     const enemies = (spawns.data.deployments[boardId]?.enemies ?? []).flatMap((e) => {
       const ax = byColRow.get(`${e.col},${e.row}`)
-      return ax ? [{ unitId: e.unitId, q: ax.q, r: ax.r, removable: e.removable }] : []
+      return ax ? [{ unitId: e.unitId, q: ax.q, r: ax.r, removeAtPrime: e.removeAtPrime }] : []
     })
     seedDeployment(boardId, enemies)
   }, [boardId, board.data, spawns.data, seededBoard, seedDeployment])
@@ -133,25 +133,27 @@ export function BoardPage() {
     const data = spawns.data
     return Object.entries(instances).map(([id, inst]) => {
       const u = data?.units[inst.unitId]
-      return { id, type: (inst.side === 'ally' ? 'summon' : 'npc') as TokenKind, stem: u?.stem ?? null, name: u?.name ?? inst.unitId, size: u?.size ?? 1, removable: inst.removable }
+      return { id, type: (inst.side === 'ally' ? 'summon' : 'npc') as TokenKind, stem: u?.stem ?? null, name: u?.name ?? inst.unitId, size: u?.size ?? 1, removeAtPrime: inst.removeAtPrime }
     })
   }, [instances, spawns.data])
 
   const allDefs = useMemo(() => [...uniqueDefs, ...instanceDefs], [uniqueDefs, instanceDefs])
-  const hasRemovable = useMemo(() => Object.values(instances).some((i) => i.removable), [instances])
+  const nPrimes = (boardId && spawns.data?.deployments[boardId]?.primes.length) || 0
 
   if (!bossUnitId || !boardId) return <Navigate to="/plan" replace />
 
-  // Effective tokens + movement arrows. Removable adds are hidden once the
-  // boss's primes are marked defeated.
-  const visibleDefs = primesDefeated ? allDefs.filter((d) => !d.removable) : allDefs
+  // Effective tokens + movement arrows. An initial add is hidden once enough of
+  // the boss's primes are defeated (removeAtPrime ≤ primesDefeated).
+  const visibleDefs = allDefs.filter(
+    (d) => d.removeAtPrime == null || d.removeAtPrime > primesDefeated,
+  )
   const boardTokens: BoardToken[] = []
   const movements: BoardMovement[] = []
   if (board.data) {
     for (const d of visibleDefs) {
       const fallback = d.type === 'boss' ? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation } : null
       const pos = posAtTurn(positions[d.id], currentTurn) ?? fallback
-      if (pos) boardTokens.push({ ...d, pos })
+      if (pos) boardTokens.push({ ...d, pos, removable: d.removeAtPrime != null })
       if (currentTurn > 0) {
         const prev = posAtTurn(positions[d.id], currentTurn - 1) ?? fallback
         if (pos && prev && (pos.q !== prev.q || pos.r !== prev.r)) {
@@ -330,14 +332,11 @@ export function BoardPage() {
                     label="Show elevation"
                     desc="Tint every hex by its height (0–4)"
                   />
-                  {hasRemovable && currentTurn === 0 && (
-                    <ViewToggle
-                      active={primesDefeated}
-                      onClick={() => setPrimesDefeated(!primesDefeated)}
-                      icon={<Skull size={16} />}
-                      label="Primes defeated"
-                      desc="Hide the adds removed once the boss's primes die"
-                      danger
+                  {nPrimes > 0 && currentTurn === 0 && (
+                    <PrimeStepper
+                      count={nPrimes}
+                      value={Math.min(primesDefeated, nPrimes)}
+                      onChange={setPrimesDefeated}
                     />
                   )}
                 </div>
@@ -485,6 +484,31 @@ function ViewToggle({
         className={`ml-auto h-4 w-4 shrink-0 rounded-full border-2 ${active ? (danger ? 'border-blood-bright bg-blood-bright' : 'border-teal-bright bg-teal-bright') : 'border-iron'}`}
       />
     </button>
+  )
+}
+
+/** Stepper for how many of the boss's primes are defeated (0..count). Each step
+ *  hides one more wave of removable initial adds. */
+function PrimeStepper({ count, value, onChange }: { count: number; value: number; onChange: (n: number) => void }) {
+  return (
+    <div className="flex items-center gap-3 rounded-lg border border-iron px-3 py-2">
+      <Skull size={16} className={value > 0 ? 'text-blood-bright' : 'text-ash'} />
+      <span className="flex flex-col">
+        <span className="text-xs font-semibold uppercase tracking-[0.08em] text-bone">Primes defeated</span>
+        <span className="text-[0.65rem] text-ash">Hide adds as each prime falls</span>
+      </span>
+      <div className="ml-auto flex gap-1">
+        {Array.from({ length: count + 1 }, (_, k) => k).map((k) => (
+          <button
+            key={k}
+            onClick={() => onChange(k)}
+            className={`h-7 min-w-[1.9rem] rounded border px-2 font-mono text-sm font-bold transition-colors ${value === k ? 'border-blood bg-blood/20 text-blood-bright' : 'border-iron text-ash hover:border-brass-dim hover:text-bone'}`}
+          >
+            {k}
+          </button>
+        ))}
+      </div>
+    </div>
   )
 }
 
