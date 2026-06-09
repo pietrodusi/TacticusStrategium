@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { Brush, ChevronDown, LogOut, Plus, RotateCw, Trash2 } from 'lucide-react'
+import { ArrowLeftRight, Brush, ChevronDown, LogOut, Plus, RotateCw, Trash2 } from 'lucide-react'
 import { usePlanStore, posAtTurn, paintAtTurn } from '../stores/planStore'
 import { useBosses, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
@@ -12,8 +12,8 @@ import { bossDisplayName } from '../utils/format'
 import type { HexCoord } from '../types/strategium'
 import type { Unit } from '../types/units'
 
-type Tool = 'move' | 'paint'
 type Tab = 'allies' | 'enemies'
+type Side = 'left' | 'right'
 
 interface TrayDef {
   id: string
@@ -30,8 +30,8 @@ interface PaletteType {
 }
 
 const PAINT_COLORS = [
-  { name: 'Teal', value: 'rgba(44,208,216,0.45)' },
   { name: 'Red', value: 'rgba(207,70,50,0.5)' },
+  { name: 'Teal', value: 'rgba(44,208,216,0.45)' },
   { name: 'Gold', value: 'rgba(212,175,55,0.5)' },
   { name: 'Green', value: 'rgba(74,222,128,0.45)' },
 ]
@@ -48,7 +48,8 @@ export function BoardPage() {
 
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [pending, setPending] = useState<PaletteType | null>(null)
-  const [tool, setTool] = useState<Tool>('move')
+  const [paintOpen, setPaintOpen] = useState(false)
+  const [paintSide, setPaintSide] = useState<Side>('left')
   const [paintColor, setPaintColor] = useState(PAINT_COLORS[0].value)
   const [dockOpen, setDockOpen] = useState(true)
   const [tab, setTab] = useState<Tab>('allies')
@@ -155,11 +156,22 @@ export function BoardPage() {
     if (selectedId) placeAt(selectedId, hex)
   }
 
+  // Opening the Paint panel activates the paint tool (and clears any selection so
+  // taps mark hexes instead of moving units); closing it returns to move mode.
+  const togglePaint = () =>
+    setPaintOpen((o) => {
+      const next = !o
+      if (next) { setSelectedId(null); setPending(null) }
+      return next
+    })
+
   const selectToken = (id: string) => {
+    setPaintOpen(false)
     setPending(null)
     setSelectedId((cur) => (cur === id ? null : id))
   }
   const selectPalette = (p: PaletteType) => {
+    setPaintOpen(false)
     setSelectedId(null)
     setPending((cur) => (cur?.unitId === p.unitId && cur.side === p.side ? null : p))
   }
@@ -190,15 +202,25 @@ export function BoardPage() {
             movements={movements}
             paint={visiblePaint}
             selectedTokenId={selectedId}
-            painting={tool === 'paint'}
+            painting={paintOpen}
             onHexClick={handleHex}
             onTokenClick={selectToken}
             onTokenMove={(id, hex) => placeAt(id, hex)}
             onPaint={(key, erase) => setPaint(key, erase ? null : paintColor)}
           />
         )}
-        <p className="pointer-events-none absolute left-3 top-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-ash/50">
-          {tool === 'paint'
+
+        <PaintPanel
+          open={paintOpen}
+          side={paintSide}
+          color={paintColor}
+          onToggle={togglePaint}
+          onPick={setPaintColor}
+          onFlip={() => setPaintSide((s) => (s === 'left' ? 'right' : 'left'))}
+        />
+
+        <p className={`pointer-events-none absolute top-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-ash/50 ${paintSide === 'left' ? 'right-3 text-right' : 'left-3'}`}>
+          {paintOpen
             ? 'Paint — drag to mark, drag painted to erase'
             : pending
               ? `Add ${pending.name} — tap hexes`
@@ -246,17 +268,9 @@ export function BoardPage() {
               )}
             </div>
 
-            {/* Tools */}
-            <div className="flex flex-wrap items-center gap-2">
-              <ToolButton active={tool === 'paint'} onClick={() => { setTool((t) => (t === 'paint' ? 'move' : 'paint')); setSelectedId(null); setPending(null) }} icon={<Brush size={15} />} label="Paint" />
-              {tool === 'paint' && (
-                <div className="flex items-center gap-1.5">
-                  {PAINT_COLORS.map((c) => (
-                    <button key={c.value} onClick={() => setPaintColor(c.value)} title={c.name} className={`h-6 w-6 rounded-full border-2 ${paintColor === c.value ? 'border-bone' : 'border-iron'}`} style={{ background: c.value }} />
-                  ))}
-                </div>
-              )}
-              {selectedDef && tool === 'move' && (
+            {/* Selected-unit actions */}
+            {selectedDef && !paintOpen && (
+              <div className="flex flex-wrap items-center gap-2">
                 <div className="ml-auto flex items-center gap-2">
                   {selectedDef.size === 3 && (
                     <ToolButton
@@ -285,8 +299,8 @@ export function BoardPage() {
                     />
                   )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -298,6 +312,76 @@ export function BoardPage() {
           <TurnSelector phase={currentTurn} onChange={setCurrentTurn} />
         </div>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Collapsible Paint side-panel pinned to the left/right edge of the board.
+ * Collapsed it's a slim "Paint" notch; expanded it activates the paint tool and
+ * shows the colour palette vertically, with a button at the bottom to flip sides.
+ */
+function PaintPanel({
+  open,
+  side,
+  color,
+  onToggle,
+  onPick,
+  onFlip,
+}: {
+  open: boolean
+  side: Side
+  color: string
+  onToggle: () => void
+  onPick: (c: string) => void
+  onFlip: () => void
+}) {
+  const edge = side === 'left' ? 'left-0' : 'right-0'
+  const round = side === 'left' ? 'rounded-r-xl' : 'rounded-l-xl'
+
+  if (!open) {
+    return (
+      <button
+        onClick={onToggle}
+        title="Paint"
+        className={`absolute top-1/2 z-20 -translate-y-1/2 ${edge} ${round} flex flex-col items-center gap-1.5 border border-iron bg-abyss/90 px-1.5 py-3 text-ash backdrop-blur transition-colors hover:border-teal hover:text-teal-bright`}
+      >
+        <Brush size={16} />
+        <span className="text-[0.6rem] font-semibold uppercase tracking-[0.15em]" style={{ writingMode: 'vertical-rl' }}>
+          Paint
+        </span>
+      </button>
+    )
+  }
+
+  return (
+    <div
+      className={`absolute top-1/2 z-20 -translate-y-1/2 ${edge} ${round} flex flex-col items-center gap-2.5 border border-teal/60 bg-abyss/95 px-2 py-3 backdrop-blur`}
+    >
+      <button onClick={onToggle} title="Close paint" className="flex flex-col items-center gap-1 text-teal-bright">
+        <Brush size={16} />
+        <span className="text-[0.55rem] font-semibold uppercase tracking-[0.15em]">Paint</span>
+      </button>
+      <span className="h-px w-7 bg-iron" />
+      <div className="flex flex-col gap-2">
+        {PAINT_COLORS.map((c) => (
+          <button
+            key={c.value}
+            onClick={() => onPick(c.value)}
+            title={c.name}
+            className={`h-7 w-7 rounded-full border-2 transition-transform hover:scale-110 ${color === c.value ? 'border-bone' : 'border-iron'}`}
+            style={{ background: c.value }}
+          />
+        ))}
+      </div>
+      <span className="h-px w-7 bg-iron" />
+      <button
+        onClick={onFlip}
+        title="Move panel to the other side"
+        className="grid h-7 w-7 place-items-center rounded-md border border-iron text-ash transition-colors hover:border-brass-dim hover:text-bone"
+      >
+        <ArrowLeftRight size={15} />
+      </button>
     </div>
   )
 }
