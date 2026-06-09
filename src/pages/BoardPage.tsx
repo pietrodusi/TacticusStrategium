@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeftRight, Brush, ChevronDown, LogOut, Plus, RotateCw, Skull, Trash2 } from 'lucide-react'
+import { ArrowLeftRight, Brush, Cog, LogOut, Plus, RotateCw, Skull, Trash2 } from 'lucide-react'
 import { usePlanStore, posAtTurn, paintAtTurn } from '../stores/planStore'
 import { useBosses, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
@@ -262,7 +262,7 @@ export function BoardPage() {
             <div className="flex items-center gap-1">
               <TabBtn active={tab === 'allies'} onClick={() => setTab('allies')}>Allies</TabBtn>
               <TabBtn active={tab === 'enemies'} onClick={() => setTab('enemies')}>Enemies</TabBtn>
-              {tab === 'enemies' && hasRemovable && (
+              {tab === 'enemies' && hasRemovable && currentTurn === 0 && (
                 <button
                   onClick={() => setPrimesDefeated(!primesDefeated)}
                   title="Hide the adds that disappear once the boss's primes are defeated"
@@ -339,8 +339,12 @@ export function BoardPage() {
         )}
 
         <div className="flex items-center justify-between gap-3 px-3 py-2">
-          <button onClick={() => setDockOpen((o) => !o)} className="flex items-center gap-1 text-xs uppercase tracking-[0.1em] text-ash transition-colors hover:text-bone">
-            <ChevronDown size={16} className={`transition-transform ${dockOpen ? '' : 'rotate-180'}`} />
+          <button
+            onClick={() => setDockOpen((o) => !o)}
+            title={dockOpen ? 'Hide tools' : 'Show tools'}
+            className={`flex items-center gap-1.5 text-xs uppercase tracking-[0.1em] transition-colors ${dockOpen ? 'text-teal-bright' : 'text-ash hover:text-bone'}`}
+          >
+            <Cog size={16} />
             Tools
           </button>
           <TurnSelector phase={currentTurn} onChange={setCurrentTurn} />
@@ -381,7 +385,7 @@ function PaintPanel({
         className={`absolute top-3 z-20 ${edge} ${round} flex flex-col items-center gap-1.5 border border-iron bg-abyss/90 px-1.5 py-3 text-ash backdrop-blur transition-colors hover:border-teal hover:text-teal-bright`}
       >
         <Brush size={16} />
-        <span className="text-[0.6rem] font-semibold uppercase tracking-[0.15em]" style={{ writingMode: 'vertical-rl' }}>
+        <span className="rotate-180 text-[0.6rem] font-semibold uppercase tracking-[0.15em]" style={{ writingMode: 'vertical-rl' }}>
           Paint
         </span>
       </button>

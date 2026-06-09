@@ -1,44 +1,37 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { MAX_PHASE, TURN_COUNT } from '../../stores/planStore'
+import { MAX_PHASE } from '../../stores/planStore'
 
-type Kind = 'deploy' | 'player' | 'enemy' | 'idle'
+type Kind = 'deploy' | 'player' | 'enemy'
 
 /**
- * Phase timeline: S (deploy) → turn 1 (player) → turn 1 enemy → turn 2 → … → 5E.
- * `phase` is the flat index 0..MAX_PHASE. A number button is blue on its player
- * phase, red on its enemy phase; pressing the active number toggles the two, and
- * advancing steps player → enemy → next player.
+ * Phase timeline: S (deploy) → turn 1 (player) → turn 1 enemy → turn 2 → … → 6.
+ * `phase` is the flat index 0..MAX_PHASE. Only the current phase is shown — `S`
+ * (green), `k` for a player turn (blue) or `kE` for an enemy turn (red). The
+ * arrows step through the sequence; tapping the current phase toggles
+ * player ↔ enemy for that turn.
  */
 export function TurnSelector({ phase, onChange }: { phase: number; onChange: (p: number) => void }) {
   const turn = phase === 0 ? 0 : Math.ceil(phase / 2)
   const enemy = phase >= 2 && phase % 2 === 0
+  const kind: Kind = phase === 0 ? 'deploy' : enemy ? 'enemy' : 'player'
+  const label = phase === 0 ? 'S' : `${turn}${enemy ? 'E' : ''}`
+  const title =
+    phase === 0 ? 'Deployment' : `Turn ${turn} — ${enemy ? 'enemy' : 'player'} (tap to toggle)`
 
-  const pressTurn = (k: number) => {
-    if (turn !== k) onChange(2 * k - 1) // jump to this turn's player phase
-    else if (enemy) onChange(2 * k - 1) // enemy → player
-    else if (2 * k <= MAX_PHASE) onChange(2 * k) // player → enemy (when that phase exists)
-    // else: last turn, player-only — no toggle
+  // Tap the current phase to swap player ↔ enemy for this turn (no enemy phase
+  // exists on the final turn, so it stays player-only).
+  const toggle = () => {
+    if (turn === 0) return
+    if (enemy) onChange(2 * turn - 1)
+    else if (2 * turn <= MAX_PHASE) onChange(2 * turn)
   }
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1.5">
       <Arrow dir="prev" disabled={phase <= 0} onClick={() => onChange(phase - 1)} />
-      <PhaseBtn kind={phase === 0 ? 'deploy' : 'idle'} title="Deployment" onClick={() => onChange(0)}>
-        S
+      <PhaseBtn kind={kind} title={title} onClick={toggle}>
+        {label}
       </PhaseBtn>
-      {Array.from({ length: TURN_COUNT }, (_, i) => i + 1).map((k) => {
-        const kind: Kind = turn === k ? (enemy ? 'enemy' : 'player') : 'idle'
-        return (
-          <PhaseBtn
-            key={k}
-            kind={kind}
-            title={`Turn ${k}${kind === 'enemy' ? ' — enemy' : kind === 'player' ? ' — player' : ''}`}
-            onClick={() => pressTurn(k)}
-          >
-            {k}
-          </PhaseBtn>
-        )
-      })}
       <Arrow dir="next" disabled={phase >= MAX_PHASE} onClick={() => onChange(phase + 1)} />
     </div>
   )
@@ -60,14 +53,12 @@ function PhaseBtn({
       ? 'bg-[#22c55e] text-abyss'
       : kind === 'player'
         ? 'bg-teal text-abyss'
-        : kind === 'enemy'
-          ? 'bg-blood-bright text-bone'
-          : 'bg-steel-2 text-ash hover:text-bone'
+        : 'bg-blood-bright text-bone'
   return (
     <button
       onClick={onClick}
       title={title}
-      className={`h-8 w-8 rounded font-mono text-sm font-bold transition-colors ${color}`}
+      className={`h-8 min-w-[2.5rem] rounded px-2 font-mono text-sm font-bold transition-colors ${color}`}
     >
       {children}
     </button>
