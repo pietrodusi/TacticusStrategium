@@ -1,5 +1,4 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
-import { asset } from '../../services/paths'
 
 export function Layout() {
   return (
@@ -9,18 +8,10 @@ export function Layout() {
 
       <header className="sticky top-0 z-20 border-b border-iron/80 bg-abyss/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-4">
-          <Link to="/" className="group flex items-center gap-3">
-            <img
-              src={asset('icon-192.png')}
-              alt="Strategium sigil"
-              className="h-10 w-10 animate-sigil"
-              draggable={false}
-            />
-            <span className="flex flex-col leading-none">
-              <span className="eyebrow hidden sm:block">Cogitator Tactica</span>
-              <span className="display text-xl font-bold tracking-[0.14em] text-bone transition-colors group-hover:text-teal-bright">
-                STRATEGIUM
-              </span>
+          <Link to="/" className="group flex flex-col leading-none">
+            <span className="eyebrow hidden sm:block">Cogitator Tactica</span>
+            <span className="display text-xl font-bold tracking-[0.14em] text-bone transition-colors group-hover:text-teal-bright">
+              STRATEGIUM
             </span>
           </Link>
 
