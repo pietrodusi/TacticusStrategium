@@ -246,8 +246,9 @@ export function BoardPage() {
         <span className="data truncate text-xs">{target?.name ?? ''} // {boardId}</span>
       </div>
 
-      {/* Board */}
-      <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden">
+      {/* Board — top-aligned so its unused vertical space pools at the bottom,
+          where the tools dock overlays it instead of covering the map. */}
+      <div className="relative flex min-h-0 flex-1 items-start justify-center overflow-hidden">
         {board.isLoading && <p className="font-mono text-sm text-ash">Acquiring auspex feed…</p>}
         {board.data && (
           <HexGrid
@@ -274,16 +275,6 @@ export function BoardPage() {
           onPick={setPaintColor}
           onFlip={() => setPaintSide((s) => (s === 'left' ? 'right' : 'left'))}
         />
-
-        <p className={`pointer-events-none absolute top-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-ash/50 ${paintSide === 'left' ? 'right-3 text-right' : 'left-3'}`}>
-          {paintOpen
-            ? 'Paint — drag to mark, drag painted to erase'
-            : pending
-              ? `Add ${pending.name} — tap hexes`
-              : selectedDef
-                ? `Move ${selectedDef.name}`
-                : 'Select a unit'}
-        </p>
 
         {/* Remove — sits just under the Paint notch (same edge), shown only when a
             removable unit is selected */}

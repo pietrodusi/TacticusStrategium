@@ -185,6 +185,7 @@ export function HexGrid({
   return (
     <svg
       viewBox={`${x} ${y} ${w} ${h}`}
+      preserveAspectRatio="xMidYMin meet"
       className="block h-full w-full touch-none select-none"
       role="img"
       aria-label={`Map ${board.id}`}
