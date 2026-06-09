@@ -29,6 +29,30 @@ export function posAtTurn(
   return null
 }
 
+/**
+ * Visible paint at `phase`. Paint lives for the phase it was made on plus the
+ * single following phase, then auto-clears — i.e. it persists through the other
+ * side's turn and is gone by the next turn of the same type (paint on turn 1
+ * shows on 1 and 1E, clears on turn 2). A `null` entry is a manual erase that
+ * masks a hex inherited from the previous phase.
+ */
+export function paintAtTurn(
+  byPhase: Record<number, Record<string, string | null>> | undefined,
+  phase: number,
+): Record<string, string> {
+  const result: Record<string, string> = {}
+  if (!byPhase) return result
+  const prev = byPhase[phase - 1]
+  if (prev) for (const [hex, color] of Object.entries(prev)) if (color !== null) result[hex] = color
+  const cur = byPhase[phase]
+  if (cur)
+    for (const [hex, color] of Object.entries(cur)) {
+      if (color === null) delete result[hex]
+      else result[hex] = color
+    }
+  return result
+}
+
 interface PlanState {
   // ── Setup ──
   bossUnitId: string | null
@@ -40,8 +64,9 @@ interface PlanState {
   currentTurn: number
   /** tokenId → (turn → position | null). Sparse; null = removed from that turn on. */
   positions: Record<string, Record<number, TokenPos | null>>
-  /** turn → (hexKey → color). Per-turn hex annotations. */
-  paint: Record<number, Record<string, string>>
+  /** phase → (hexKey → color). Per-phase hex annotations; null = manual erase
+   *  marker (masks a hex inherited from the previous phase). See paintAtTurn. */
+  paint: Record<number, Record<string, string | null>>
   /** Spawn instances (summons / boss minions). instanceId → its source unit + side. */
   instances: Record<string, { unitId: string; side: 'ally' | 'enemy' }>
   instanceSeq: number
@@ -135,10 +160,18 @@ export const usePlanStore = create<PlanState>()(
 
       setPaint: (hexKey, color) =>
         set((s) => {
-          const turnPaint = { ...(s.paint[s.currentTurn] ?? {}) }
-          if (color === null) delete turnPaint[hexKey]
-          else turnPaint[hexKey] = color
-          return { paint: { ...s.paint, [s.currentTurn]: turnPaint } }
+          const P = s.currentTurn
+          const turnPaint = { ...(s.paint[P] ?? {}) }
+          if (color === null) {
+            // Erasing a hex inherited from the previous phase needs a null mask;
+            // a hex painted on this phase is just dropped.
+            const prev = s.paint[P - 1]
+            if (prev && prev[hexKey] != null) turnPaint[hexKey] = null
+            else delete turnPaint[hexKey]
+          } else {
+            turnPaint[hexKey] = color
+          }
+          return { paint: { ...s.paint, [P]: turnPaint } }
         }),
 
       resetPlan: () => set({ ...EMPTY_PLAN }),

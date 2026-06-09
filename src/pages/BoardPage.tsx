@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { Brush, ChevronDown, LogOut, Plus, RotateCw, Trash2 } from 'lucide-react'
-import { usePlanStore, posAtTurn } from '../stores/planStore'
+import { usePlanStore, posAtTurn, paintAtTurn } from '../stores/planStore'
 import { useBosses, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
 import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
@@ -64,6 +64,10 @@ export function BoardPage() {
       html.style.overscrollBehavior = prev.over
     }
   }, [])
+
+  // Paint visible at the current phase: this phase's marks + those carried over
+  // from the previous phase (paint persists one phase, then auto-clears).
+  const visiblePaint = useMemo(() => paintAtTurn(paint, currentTurn), [paint, currentTurn])
 
   const boss = bosses.data?.bosses.find((b) => b.unitId === bossUnitId)
   const unitById = useMemo(() => {
@@ -184,7 +188,7 @@ export function BoardPage() {
             board={board.data}
             tokens={boardTokens}
             movements={movements}
-            paint={paint[currentTurn]}
+            paint={visiblePaint}
             selectedTokenId={selectedId}
             painting={tool === 'paint'}
             onHexClick={handleHex}
