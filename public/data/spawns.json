@@ -673,7 +673,7 @@
     "tyranSmnTermagant": {
       "name": "Termagant",
       "faction": "Tyranids",
-      "stem": null,
+      "stem": "tyran_termagant",
       "kind": "summon",
       "size": 1,
       "visualId": "tyranNpc3Termagant"
@@ -753,7 +753,7 @@
     "GuildBoss11Npc1TauFireWarrior": {
       "name": "Fire Warrior",
       "faction": "Tau",
-      "stem": null,
+      "stem": "tauta_firewarrior",
       "kind": "npc",
       "size": 1,
       "visualId": "tauNpc1FireWarrior"
@@ -769,7 +769,7 @@
     "GuildBoss12Npc2DarkaHellblaster": {
       "name": "Hellblaster",
       "faction": "DarkAngels",
-      "stem": null,
+      "stem": "darka_hellblaster_02",
       "kind": "npc",
       "size": 1,
       "visualId": "darkaNpc2Hellblaster"
@@ -825,7 +825,7 @@
     "GuildBoss11Npc3TauDroneShield": {
       "name": "Drone Shield",
       "faction": "Tau",
-      "stem": null,
+      "stem": "tauta_drone_02",
       "kind": "npc",
       "size": 1,
       "visualId": "tauSmnDroneShield"
@@ -833,7 +833,7 @@
     "GuildBoss11Npc4TauStealthSuit": {
       "name": "Stealth Suit",
       "faction": "Tau",
-      "stem": null,
+      "stem": "tauta_stealthsuit",
       "kind": "npc",
       "size": 1,
       "visualId": "tauNpc5StealthSuit"
@@ -865,7 +865,7 @@
     "GuildBoss12Npc4DarkaWatcher": {
       "name": "Watcher",
       "faction": "DarkAngels",
-      "stem": null,
+      "stem": "darka_watcher",
       "kind": "npc",
       "size": 1,
       "visualId": "darkaNpc4Watcher"

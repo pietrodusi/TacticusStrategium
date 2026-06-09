@@ -321,8 +321,13 @@ async function buildSpawns(seasonConfig, stems) {
       );
     return splitCamel(s) || id;
   };
-  const stemFor = (id) =>
-    stems.summon[id] ?? stems.npc[id] ?? stems.boss[id] ?? stems.character[id] ?? null;
+  // Portrait stems are keyed by unitId for bosses but by **visualId** for the
+  // npc/summon catalog (e.g. summon.tauSmnDroneShield → "tauta_drone_02"), so we
+  // resolve by both.
+  const stemByKey = (key) =>
+    (key && (stems.summon[key] ?? stems.npc[key] ?? stems.boss[key] ?? stems.character[key])) ||
+    null;
+  const stemFor = (id, visualId) => stemByKey(id) ?? stemByKey(visualId);
 
   // Hex footprint: the only non-boss units that occupy 3 hexes right now are the
   // Galatian summon and Z'Kar. (The "BigTarget" trait is NOT a reliable proxy —
@@ -330,16 +335,18 @@ async function buildSpawns(seasonConfig, stems) {
   // Knight.) No spawnable unit is 7-hex — those are bosses.
   const THREE_HEX_UNITS = new Set(['ultraSmnDreadnought', 'thousSmnDaemonPrince']);
 
-  const identity = (id) => ({
-    name: (summons[id] ?? npc[id] ?? characters[id])?.name ?? deriveName(id),
-    faction:
-      (summons[id] ?? npc[id] ?? characters[id])?.FactionId ?? bossUnits[id]?.FactionId ?? null,
-    stem: stemFor(id),
-    kind: summons[id] ? 'summon' : 'npc',
-    size: THREE_HEX_UNITS.has(id) ? 3 : 1,
-    // Enemy NPCs often have no portrait stem; keep visualId as a fallback handle.
-    visualId: bossUnits[id]?.visualId ?? npc[id]?.visualId ?? summons[id]?.visualId ?? null,
-  });
+  const identity = (id) => {
+    const visualId = bossUnits[id]?.visualId ?? npc[id]?.visualId ?? summons[id]?.visualId ?? null;
+    return {
+      name: (summons[id] ?? npc[id] ?? characters[id])?.name ?? deriveName(id),
+      faction:
+        (summons[id] ?? npc[id] ?? characters[id])?.FactionId ?? bossUnits[id]?.FactionId ?? null,
+      stem: stemFor(id, visualId),
+      kind: summons[id] ? 'summon' : 'npc',
+      size: THREE_HEX_UNITS.has(id) ? 3 : 1,
+      visualId,
+    };
+  };
 
   const units = {};
   for (const ids of Object.values(byUnit)) {
