@@ -1,18 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeftRight, Brush, Cog, LogOut, Plus, RotateCw, Skull, Trash2 } from 'lucide-react'
+import { ArrowLeftRight, Brush, Cog, LogOut, Mountain, Plus, RotateCw, Skull, SlidersHorizontal, Trash2 } from 'lucide-react'
 import { usePlanStore, posAtTurn, paintAtTurn } from '../stores/planStore'
 import { useBosses, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
 import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
 import { RING_COLOR, type TokenKind } from '../components/tokenColors'
+import { keywordIconUrl } from '../services/paths'
 import { UnitImage } from '../components/UnitImage'
 import { TurnSelector } from '../components/plan/TurnSelector'
 import { bossDisplayName } from '../utils/format'
 import type { HexCoord } from '../types/strategium'
 import type { Unit } from '../types/units'
 
-type Tab = 'allies' | 'enemies'
+type Tab = 'allies' | 'enemies' | 'view'
 type Side = 'left' | 'right'
 
 interface TrayDef {
@@ -35,6 +36,7 @@ const PAINT_COLORS = [
   { name: 'Teal', value: 'rgba(44,208,216,0.45)' },
   { name: 'Gold', value: 'rgba(212,175,55,0.5)' },
   { name: 'Green', value: 'rgba(74,222,128,0.45)' },
+  { name: 'Fire', value: 'fire' }, // sentinel: HexGrid paints the flame icon
 ]
 
 export function BoardPage() {
@@ -56,6 +58,7 @@ export function BoardPage() {
   const [paintColor, setPaintColor] = useState(PAINT_COLORS[0].value)
   const [dockOpen, setDockOpen] = useState(true)
   const [tab, setTab] = useState<Tab>('allies')
+  const [showElevation, setShowElevation] = useState(false)
 
   // Lock the page (no scroll/bounce) while planning.
   useEffect(() => {
@@ -118,8 +121,12 @@ export function BoardPage() {
   const enemyPalette = useMemo<PaletteType[]>(() => {
     const data = spawns.data
     if (!data || !bossUnitId) return []
-    return (data.byUnit[bossUnitId] ?? []).map((unitId) => ({ unitId, name: data.units[unitId]?.name ?? unitId, stem: data.units[unitId]?.stem ?? null, side: 'enemy' as const }))
-  }, [spawns.data, bossUnitId])
+    // Boss's summonable units + the distinct types from this board's initial
+    // deployment (so the starting adds are addable from the palette too).
+    const ids = new Set<string>(data.byUnit[bossUnitId] ?? [])
+    for (const e of data.deployments[boardId ?? '']?.enemies ?? []) ids.add(e.unitId)
+    return [...ids].map((unitId) => ({ unitId, name: data.units[unitId]?.name ?? unitId, stem: data.units[unitId]?.stem ?? null, side: 'enemy' as const }))
+  }, [spawns.data, bossUnitId, boardId])
 
   // Spawn instances on the board.
   const instanceDefs = useMemo<TrayDef[]>(() => {
@@ -225,6 +232,7 @@ export function BoardPage() {
             movements={movements}
             paint={visiblePaint}
             showStartHexes={currentTurn === 0}
+            showElevation={showElevation}
             selectedTokenId={selectedId}
             painting={paintOpen}
             onHexClick={handleHex}
@@ -258,20 +266,18 @@ export function BoardPage() {
       <div className="z-10 border-t border-iron bg-abyss/95 backdrop-blur" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
         {dockOpen && (
           <div className="space-y-3 border-b border-iron/50 px-3 py-3">
-            {/* Tabs */}
+            {/* Tabs — unit trays on the left, view options pinned right */}
             <div className="flex items-center gap-1">
               <TabBtn active={tab === 'allies'} onClick={() => setTab('allies')}>Allies</TabBtn>
               <TabBtn active={tab === 'enemies'} onClick={() => setTab('enemies')}>Enemies</TabBtn>
-              {tab === 'enemies' && hasRemovable && currentTurn === 0 && (
-                <button
-                  onClick={() => setPrimesDefeated(!primesDefeated)}
-                  title="Hide the adds that disappear once the boss's primes are defeated"
-                  className={`ml-auto flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.08em] transition-colors ${primesDefeated ? 'border-blood bg-blood/15 text-blood-bright' : 'border-iron text-ash hover:border-brass-dim hover:text-bone'}`}
-                >
-                  <Skull size={14} />
-                  Primes defeated
-                </button>
-              )}
+              <button
+                onClick={() => setTab('view')}
+                title="View options"
+                className={`ml-auto flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] transition-colors ${tab === 'view' ? 'bg-steel-2 text-teal-bright' : 'text-ash hover:text-bone'}`}
+              >
+                <SlidersHorizontal size={14} />
+                View
+              </button>
             </div>
 
             {/* Tray — min-height reserves room for the horizontal scrollbar so the
@@ -288,7 +294,7 @@ export function BoardPage() {
                   ))}
                   {teamDefs.length === 0 && allyPalette.length === 0 && <Empty text="No allied units" />}
                 </>
-              ) : (
+              ) : tab === 'enemies' ? (
                 <>
                   {bossDef && (
                     <TrayChip def={bossDef} placed selected={bossDef.id === selectedId} onClick={() => selectToken(bossDef.id)} />
@@ -299,6 +305,26 @@ export function BoardPage() {
                   ))}
                   {enemyPalette.length === 0 && <Empty text="No known spawns" />}
                 </>
+              ) : (
+                <div className="flex w-full flex-col gap-2">
+                  <ViewToggle
+                    active={showElevation}
+                    onClick={() => setShowElevation((v) => !v)}
+                    icon={<Mountain size={16} />}
+                    label="Show elevation"
+                    desc="Tint every hex by its height (0–4)"
+                  />
+                  {hasRemovable && currentTurn === 0 && (
+                    <ViewToggle
+                      active={primesDefeated}
+                      onClick={() => setPrimesDefeated(!primesDefeated)}
+                      icon={<Skull size={16} />}
+                      label="Primes defeated"
+                      desc="Hide the adds removed once the boss's primes die"
+                      danger
+                    />
+                  )}
+                </div>
               )}
             </div>
 
@@ -407,9 +433,11 @@ function PaintPanel({
             key={c.value}
             onClick={() => onPick(c.value)}
             title={c.name}
-            className={`h-7 w-7 rounded-full border-2 transition-transform hover:scale-110 ${color === c.value ? 'border-bone' : 'border-iron'}`}
-            style={{ background: c.value }}
-          />
+            className={`grid h-7 w-7 place-items-center overflow-hidden rounded-full border-2 transition-transform hover:scale-110 ${color === c.value ? 'border-bone' : 'border-iron'}`}
+            style={{ background: c.value === 'fire' ? 'rgba(232,92,30,0.22)' : c.value }}
+          >
+            {c.value === 'fire' && <img src={keywordIconUrl('tile_effect_fire')} alt="" className="h-5 w-5" />}
+          </button>
         ))}
       </div>
       <span className="h-px w-7 bg-iron" />
@@ -421,6 +449,41 @@ function PaintPanel({
         <ArrowLeftRight size={15} />
       </button>
     </div>
+  )
+}
+
+function ViewToggle({
+  active,
+  onClick,
+  icon,
+  label,
+  desc,
+  danger,
+}: {
+  active: boolean
+  onClick: () => void
+  icon: React.ReactNode
+  label: string
+  desc: string
+  danger?: boolean
+}) {
+  const activeCls = danger
+    ? 'border-blood bg-blood/15 text-blood-bright'
+    : 'border-teal bg-teal/10 text-teal-bright'
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-3 rounded-lg border px-3 py-2 text-left transition-colors ${active ? activeCls : 'border-iron text-ash hover:border-brass-dim hover:text-bone'}`}
+    >
+      <span className="shrink-0">{icon}</span>
+      <span className="flex flex-col">
+        <span className="text-xs font-semibold uppercase tracking-[0.08em]">{label}</span>
+        <span className="text-[0.65rem] text-ash">{desc}</span>
+      </span>
+      <span
+        className={`ml-auto h-4 w-4 shrink-0 rounded-full border-2 ${active ? (danger ? 'border-blood-bright bg-blood-bright' : 'border-teal-bright bg-teal-bright') : 'border-iron'}`}
+      />
+    </button>
   )
 }
 

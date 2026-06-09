@@ -40,9 +40,17 @@ export interface BoardSpawnPointGroup {
   SpawnPoints: BoardSpawnPoint[]
 }
 
+/** A starting tile hazard. EffectType: 5 = Fire, 17 = Ice, 1244 = Contaminated. */
+export interface BoardTileEffect {
+  Column: number
+  Row: number
+  EffectType: number
+  Turns: number
+}
+
 export interface BoardSpawnPointSet {
   SpawnPointGroups: BoardSpawnPointGroup[]
-  TileEffectSpawnPoints: unknown[]
+  TileEffectSpawnPoints: BoardTileEffect[]
   GameModeTiles: unknown[]
   OverrideDeploymentCameraZ: number
   DeploymentCameraZ: number

@@ -63,7 +63,13 @@ export interface ParsedCell {
   isPlayable: boolean
   spawnRole?: 'player' | 'boss'
   spawnIndex?: number
+  /** Starting tile hazard, if any (from TileEffectSpawnPoints). */
+  effect?: TileEffectKind
 }
+
+export type TileEffectKind = 'fire' | 'ice' | 'contaminated'
+
+const TILE_EFFECTS: Record<number, TileEffectKind> = { 5: 'fire', 17: 'ice', 1244: 'contaminated' }
 
 /** Crop rectangle (in image-pixel space) for the trimmed in-game view. */
 export interface ViewBox {
@@ -237,6 +243,13 @@ export function parseBoard(board: BoardData, spawnPointsSet = 0): ParsedBoard {
       bossRotation = placement.rotation
     }
   })
+
+  // Starting tile hazards (fire / ice / contaminated) from the chosen spawn set.
+  for (const fx of spawnSet?.TileEffectSpawnPoints ?? []) {
+    const kind = TILE_EFFECTS[fx.EffectType]
+    const cell = byOffset.get(`${fx.Column},${fx.Row}`)
+    if (kind && cell) cell.effect = kind
+  }
 
   return {
     id: board.Id,

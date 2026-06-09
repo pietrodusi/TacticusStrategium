@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import type { ParsedBoard, ParsedCell } from '../services/boards/boardService'
-import { mapImageUrl, unitPortraitUrl } from '../services/paths'
+import type { ParsedBoard, ParsedCell, TileEffectKind } from '../services/boards/boardService'
+import { keywordIconUrl, mapImageUrl, unitPortraitUrl } from '../services/paths'
 import { getBossOccupiedHexes, hexKey } from '../services/hex/hexUtils'
 import type { HexCoord, Point } from '../types/strategium'
 import type { TokenPos } from '../stores/planStore'
@@ -28,10 +28,12 @@ interface Props {
   showGrid?: boolean
   tokens?: BoardToken[]
   movements?: BoardMovement[]
-  /** hexKey → color, for the current turn. */
+  /** hexKey → color, for the current turn. The sentinel "fire" renders a flame. */
   paint?: Record<string, string>
   /** Tint the player (teal) and boss (purple) starting hexes. */
   showStartHexes?: boolean
+  /** Tint every playable hex by its elevation (0–4 heatmap). */
+  showElevation?: boolean
   selectedTokenId?: string | null
   /** When true, dragging paints/erases hexes instead of moving tokens. */
   painting?: boolean
@@ -42,6 +44,22 @@ interface Props {
 }
 
 const GRID_STROKE = 'rgba(255,215,0,0.2)'
+
+/** Elevation heatmap fill by level (0 low → 4 high). */
+const ELEV_FILL = [
+  'rgba(40,90,165,0.32)',
+  'rgba(38,150,150,0.32)',
+  'rgba(95,180,80,0.32)',
+  'rgba(214,176,60,0.34)',
+  'rgba(214,110,48,0.40)',
+]
+
+/** Tile-hazard fills (fire also overlays the bundled flame icon). */
+const EFFECT_FILL: Record<TileEffectKind, string> = {
+  fire: 'rgba(232,92,30,0.40)',
+  ice: 'rgba(120,200,232,0.34)',
+  contaminated: 'rgba(120,200,60,0.32)',
+}
 
 interface DragState {
   id: string | null // token being dragged, or null for a background gesture
@@ -59,6 +77,7 @@ export function HexGrid({
   movements = [],
   paint,
   showStartHexes = false,
+  showElevation = false,
   selectedTokenId,
   painting = false,
   onHexClick,
@@ -195,6 +214,19 @@ export function HexGrid({
         </g>
       )}
 
+      {/* Elevation heatmap */}
+      {showElevation &&
+        board.cells.map((c) =>
+          c.isPlayable ? (
+            <polygon key={`el-${c.col}-${c.row}`} points={pointsOf(c)} fill={ELEV_FILL[c.elevation] ?? 'none'} stroke="none" />
+          ) : null,
+        )}
+
+      {/* Starting tile hazards (fire / ice / contaminated) */}
+      {board.cells.map((c) =>
+        c.effect ? <EffectHex key={`fx-${c.col}-${c.row}`} cell={c} kind={c.effect} tileSize={board.tileSize} /> : null,
+      )}
+
       {/* Starting hexes: player deployment (teal) + boss platform(s) (purple) */}
       {showStartHexes &&
         board.cells.map((c) =>
@@ -210,11 +242,13 @@ export function HexGrid({
           ) : null,
         )}
 
-      {/* Painted hexes */}
+      {/* Painted hexes (the "fire" sentinel paints a flame instead of a colour) */}
       {paint &&
         Object.entries(paint).map(([key, color]) => {
           const c = cellByAxial.get(key)
-          return c ? <polygon key={`p-${key}`} points={pointsOf(c)} fill={color} stroke={color} strokeWidth={1.5} /> : null
+          if (!c) return null
+          if (color === 'fire') return <EffectHex key={`p-${key}`} cell={c} kind="fire" tileSize={board.tileSize} />
+          return <polygon key={`p-${key}`} points={pointsOf(c)} fill={color} stroke={color} strokeWidth={1.5} />
         })}
 
       {/* Boss footprints — merged into one shape (outline only on outer edges).
@@ -270,6 +304,26 @@ export function HexGrid({
 
 function pointsOf(c: ParsedCell): string {
   return cornersToPoints(c.corners)
+}
+
+/** A tile hazard on one hex: tinted fill, plus the flame icon for fire. */
+function EffectHex({ cell, kind, tileSize }: { cell: ParsedCell; kind: TileEffectKind; tileSize: number }) {
+  const s = tileSize * 0.72
+  return (
+    <g pointerEvents="none">
+      <polygon points={pointsOf(cell)} fill={EFFECT_FILL[kind]} stroke="none" />
+      {kind === 'fire' && (
+        <image
+          href={keywordIconUrl('tile_effect_fire')}
+          x={cell.center.x - s / 2}
+          y={cell.center.y - s / 2}
+          width={s}
+          height={s}
+          preserveAspectRatio="xMidYMid meet"
+        />
+      )}
+    </g>
+  )
 }
 
 function cornersToPoints(corners: Point[]): string {

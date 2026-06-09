@@ -19,3 +19,6 @@ export const bossSplashUrl = (guildBossUnitKey: string) =>
 /** Unit portrait (character/summon/boss/npc) by image stem. Round is best for tokens. */
 export const unitPortraitUrl = (stem: string, round = false) =>
   `https://tacticusdb.com/images/characters/${round ? 'RoundPortrait_' : 'portrait_'}${stem}.png`
+
+/** Bundled keyword/tile-effect icon (e.g. "tile_effect_fire"). */
+export const keywordIconUrl = (name: string) => asset(`images/keywords/${name}.png`)
