@@ -321,10 +321,11 @@ async function buildSpawns(seasonConfig, stems) {
   const stemFor = (id) =>
     stems.summon[id] ?? stems.npc[id] ?? stems.boss[id] ?? stems.character[id] ?? null;
 
-  // Hex footprint: the game's "BigTarget" trait marks multi-hex (3-hex) units;
-  // everything else is 1-hex. (No spawnable unit is 7-hex — those are bosses.)
-  const traitsOf = (id) =>
-    summons[id]?.traits ?? npc[id]?.traits ?? characters[id]?.traits ?? bossUnits[id]?.traits ?? [];
+  // Hex footprint: the only non-boss units that occupy 3 hexes right now are the
+  // Galatian summon and Z'Kar. (The "BigTarget" trait is NOT a reliable proxy —
+  // several 1-hex units carry it, e.g. Tyranid Warrior / Steeljack / Deathwing
+  // Knight.) No spawnable unit is 7-hex — those are bosses.
+  const THREE_HEX_UNITS = new Set(['ultraSmnDreadnought', 'thousSmnDaemonPrince']);
 
   const identity = (id) => ({
     name: (summons[id] ?? npc[id] ?? characters[id])?.name ?? deriveName(id),
@@ -332,7 +333,7 @@ async function buildSpawns(seasonConfig, stems) {
       (summons[id] ?? npc[id] ?? characters[id])?.FactionId ?? bossUnits[id]?.FactionId ?? null,
     stem: stemFor(id),
     kind: summons[id] ? 'summon' : 'npc',
-    size: traitsOf(id).includes('BigTarget') ? 3 : 1,
+    size: THREE_HEX_UNITS.has(id) ? 3 : 1,
     // Enemy NPCs often have no portrait stem; keep visualId as a fallback handle.
     visualId: bossUnits[id]?.visualId ?? npc[id]?.visualId ?? summons[id]?.visualId ?? null,
   });

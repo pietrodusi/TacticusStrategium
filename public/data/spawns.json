@@ -427,7 +427,7 @@
       "faction": "Tyranids",
       "stem": "tyran_warrior",
       "kind": "summon",
-      "size": 3,
+      "size": 1,
       "visualId": "tyranNpc4Warrior"
     },
     "tyranSmnHormagaunt": {
@@ -515,7 +515,7 @@
       "faction": "LeaguesOfVotann",
       "stem": "votan_steeljack",
       "kind": "summon",
-      "size": 3,
+      "size": 1,
       "visualId": "votanNpc2Steeljack"
     },
     "astarSmnHaywireMine": {
@@ -779,7 +779,7 @@
       "faction": "DarkAngels",
       "stem": "darka_terminator_02",
       "kind": "summon",
-      "size": 3,
+      "size": 1,
       "visualId": "darkaNpc3Terminator"
     },
     "GuildBoss6Npc5TyranBarbgaunt": {
@@ -795,7 +795,7 @@
       "faction": "Tyranids",
       "stem": "tyran_warrior",
       "kind": "npc",
-      "size": 3,
+      "size": 1,
       "visualId": "tyranNpc4Warrior"
     },
     "GuildBoss7Npc4Mortar": {

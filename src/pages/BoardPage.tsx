@@ -193,8 +193,13 @@ export function BoardPage() {
     setSelectedId(null)
     setPending((cur) => (cur?.unitId === p.unitId && cur.side === p.side ? null : p))
   }
+  // Count only instances actually present at the current turn — a spawn removed
+  // from here on (a `null` marker, kept for its earlier turns) no longer counts.
   const instCount = (p: PaletteType) =>
-    Object.values(instances).filter((i) => i.unitId === p.unitId && i.side === p.side).length
+    Object.entries(instances).filter(
+      ([id, i]) =>
+        i.unitId === p.unitId && i.side === p.side && posAtTurn(positions[id], currentTurn) != null,
+    ).length
 
   const teamDefs = uniqueDefs.filter((d) => d.type !== 'boss')
   const bossDef = uniqueDefs.find((d) => d.type === 'boss')
