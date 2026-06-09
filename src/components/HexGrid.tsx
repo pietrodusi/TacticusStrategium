@@ -34,6 +34,9 @@ interface Props {
   showStartHexes?: boolean
   /** Tint every playable hex by its elevation (0–4 heatmap). */
   showElevation?: boolean
+  /** Vertical anchoring of the map within its area (top when tools fill the band
+   *  below, centered when they're collapsed). */
+  vAlign?: 'top' | 'center'
   selectedTokenId?: string | null
   /** When true, dragging paints/erases hexes instead of moving tokens. */
   painting?: boolean
@@ -79,6 +82,7 @@ export function HexGrid({
   paint,
   showStartHexes = false,
   showElevation = false,
+  vAlign = 'top',
   selectedTokenId,
   painting = false,
   onHexClick,
@@ -185,7 +189,7 @@ export function HexGrid({
   return (
     <svg
       viewBox={`${x} ${y} ${w} ${h}`}
-      preserveAspectRatio="xMidYMin meet"
+      preserveAspectRatio={vAlign === 'center' ? 'xMidYMid meet' : 'xMidYMin meet'}
       className="block h-full w-full touch-none select-none"
       role="img"
       aria-label={`Map ${board.id}`}

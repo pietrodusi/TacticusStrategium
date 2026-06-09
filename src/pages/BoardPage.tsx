@@ -258,6 +258,7 @@ export function BoardPage() {
             paint={visiblePaint}
             showStartHexes={currentTurn === 0}
             showElevation={showElevation}
+            vAlign={dockOpen ? 'top' : 'center'}
             selectedTokenId={selectedId}
             painting={paintOpen}
             onHexClick={handleHex}
