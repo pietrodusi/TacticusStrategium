@@ -4,7 +4,7 @@ import { ChevronDown, ChevronRight, Lock, Plus, X } from 'lucide-react'
 import { useBosses, usePrimes, useRoster } from '../hooks/useGameData'
 import { usePlanStore } from '../stores/planStore'
 import { mapImageUrl } from '../services/paths'
-import { bossDisplayName, factionLabel } from '../utils/format'
+import { bossDisplayName } from '../utils/format'
 import type { BossIndexEntry, PrimeIndexEntry, Unit } from '../types/units'
 import { UnitPickerModal } from '../components/plan/UnitPickerModal'
 import { UnitImage } from '../components/UnitImage'
@@ -328,7 +328,6 @@ function BossTile({ boss, active, onClick }: { boss: BossIndexEntry; active: boo
       <span className="text-center text-[0.68rem] font-semibold leading-tight text-bone">
         {bossDisplayName(boss.bossType, boss.name)}
       </span>
-      <span className="text-[0.6rem] uppercase tracking-wide text-ash/60">{factionLabel(boss.faction)}</span>
     </button>
   )
 }
