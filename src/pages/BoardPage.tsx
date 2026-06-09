@@ -295,11 +295,12 @@ export function BoardPage() {
         )}
       </div>
 
-      {/* Bottom control dock. The expandable section overlays the board (absolute)
-          so opening it doesn't resize the map. */}
-      <div className="relative z-10 border-t border-iron bg-abyss/95 backdrop-blur" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
+      {/* Bottom control dock. The expandable section is in-flow, so it occupies
+          the band below the fit-to-width board — the map fills the remaining area
+          (fit-to-height) instead of leaving dead space. */}
+      <div className="z-10 border-t border-iron bg-abyss/95 backdrop-blur" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
         {dockOpen && (
-          <div className="absolute inset-x-0 bottom-full space-y-3 border-t border-iron bg-abyss/95 px-3 py-3 backdrop-blur">
+          <div className="space-y-3 border-b border-iron/50 px-3 py-3">
             {/* Tabs — unit trays on the left, view options pinned right */}
             <div className="flex items-center gap-1">
               <TabBtn active={tab === 'allies'} onClick={() => setTab('allies')}>Allies</TabBtn>
