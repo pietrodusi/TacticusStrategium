@@ -125,7 +125,6 @@ export function SetupPage() {
       <Step
         numeral="III"
         title="Raid Team"
-        locked={!boardId}
         open={open === 'team'}
         onToggle={() => toggle('team')}
         summary={<TeamSummary count={teamCount} hasMoW={!!machineOfWar} />}

@@ -527,7 +527,7 @@
       "visualId": "astarNpc1HaywireMine"
     },
     "GuildBoss1Npc1TyranTermagantLeviathan": {
-      "name": "Termagant Leviathan",
+      "name": "Termagant",
       "faction": "Tyranids",
       "stem": "tyran_termagant",
       "kind": "npc",
@@ -535,7 +535,7 @@
       "visualId": null
     },
     "GuildBoss1Npc2TyranTermagantKronos": {
-      "name": "Termagant Kronos",
+      "name": "Termagant",
       "faction": "Tyranids",
       "stem": "tyran_termagant_02",
       "kind": "npc",
@@ -543,7 +543,7 @@
       "visualId": null
     },
     "GuildBoss1Npc3TyranTermagantGorgon": {
-      "name": "Termagant Gorgon",
+      "name": "Termagant",
       "faction": "Tyranids",
       "stem": "tyran_termagant_03",
       "kind": "npc",
@@ -551,7 +551,7 @@
       "visualId": null
     },
     "GuildBoss2Npc1TyranRipperSwarmLeviathan": {
-      "name": "Ripper Swarm Leviathan",
+      "name": "Ripper Swarm",
       "faction": "Tyranids",
       "stem": "tyran_ripper",
       "kind": "npc",
@@ -559,7 +559,7 @@
       "visualId": null
     },
     "GuildBoss2Npc2TyranRipperSwarmKronos": {
-      "name": "Ripper Swarm Kronos",
+      "name": "Ripper Swarm",
       "faction": "Tyranids",
       "stem": "tyran_ripper_02",
       "kind": "npc",
@@ -567,7 +567,7 @@
       "visualId": null
     },
     "GuildBoss2Npc3TyranRipperSwarmGorgon": {
-      "name": "Ripper Swarm Gorgon",
+      "name": "Ripper Swarm",
       "faction": "Tyranids",
       "stem": "tyran_ripper_03",
       "kind": "npc",
@@ -583,7 +583,7 @@
       "visualId": "necroNpc3Deathmark"
     },
     "GuildBoss3Npc6NecroSmnDeathmark": {
-      "name": "Smn Deathmark",
+      "name": "Deathmark",
       "faction": "Necrons",
       "stem": "necro_npc_03",
       "kind": "npc",
@@ -615,7 +615,7 @@
       "visualId": "orksNpc1Grot"
     },
     "GuildBoss4LootObjExplOilDrumReworked": {
-      "name": "Guild Boss4 Loot Obj Expl Oil Drum Reworked",
+      "name": "Explosive Oil Drum",
       "faction": null,
       "stem": "loots_expoildrum",
       "kind": "npc",
@@ -631,7 +631,7 @@
       "visualId": "deathPoxwalker"
     },
     "GuildBoss5Npc2PoxwalkerSummon": {
-      "name": "Poxwalker Summon",
+      "name": "Poxwalker",
       "faction": "DeathGuard",
       "stem": "death_poxwalker",
       "kind": "npc",
@@ -679,7 +679,7 @@
       "visualId": "tyranNpc3Termagant"
     },
     "GuildBoss7Npc1AstraGuardsman": {
-      "name": "Guardsman",
+      "name": "Cadian Guardsman",
       "faction": "AstraMilitarum",
       "stem": "astra_npc",
       "kind": "npc",
@@ -687,7 +687,7 @@
       "visualId": "astraNpc1Guardsman"
     },
     "GuildBoss7Npc1AstraGuardsmanSummon": {
-      "name": "Guardsman Summon",
+      "name": "Cadian Guardsman",
       "faction": "AstraMilitarum",
       "stem": "astra_npc",
       "kind": "npc",
@@ -703,7 +703,7 @@
       "visualId": "eldarNpc1Guardian"
     },
     "GuildBoss8Npc5EldarGuardianSummon": {
-      "name": "Guardian Summon",
+      "name": "Guardian",
       "faction": "Aeldari",
       "stem": "aelda_guardian",
       "kind": "npc",
@@ -719,7 +719,7 @@
       "visualId": "thousNpc3RubricMarine"
     },
     "GuildBoss9Npc5ThousScreamerSummon": {
-      "name": "Screamer Summon",
+      "name": "Screamer",
       "faction": "ThousandSons",
       "stem": "thous_screamer",
       "kind": "npc",
@@ -727,7 +727,7 @@
       "visualId": "thousNpc2Screamer"
     },
     "GuildBoss10Npc1AdmecTechpriest": {
-      "name": "Techpriest",
+      "name": "Tech-Priest Enginseer",
       "faction": "AdeptusMechanicus",
       "stem": "admec_techpriest",
       "kind": "npc",
@@ -743,7 +743,7 @@
       "visualId": "admecNpc2Techpriest"
     },
     "GuildBoss10LootObjArcheotecCrate": {
-      "name": "Guild Boss10 Loot Obj Archeotec Crate",
+      "name": "Archeotec Crate",
       "faction": null,
       "stem": "loots_fancybox",
       "kind": "npc",
@@ -791,7 +791,7 @@
       "visualId": "tyranNpc5Barbgaunt"
     },
     "GuildBoss6Npc4TyranWarrior": {
-      "name": "Warrior",
+      "name": "Tyranid Warrior",
       "faction": "Tyranids",
       "stem": "tyran_warrior",
       "kind": "npc",
@@ -799,7 +799,7 @@
       "visualId": "tyranNpc4Warrior"
     },
     "GuildBoss7Npc4Mortar": {
-      "name": "Mortar",
+      "name": "Cadian Mortar Team",
       "faction": "AstraMilitarum",
       "stem": "astra_mortar",
       "kind": "npc",
@@ -815,7 +815,7 @@
       "visualId": "eldarNpc2Warlock"
     },
     "GuildBoss10Npc2AdmecElectropriest": {
-      "name": "Electropriest",
+      "name": "Electro-priest",
       "faction": "AdeptusMechanicus",
       "stem": "admec_electropriest",
       "kind": "npc",
@@ -823,7 +823,7 @@
       "visualId": "admecNpc3Electropriest"
     },
     "GuildBoss11Npc3TauDroneShield": {
-      "name": "Drone Shield",
+      "name": "Shield Drone",
       "faction": "Tau",
       "stem": "tauta_drone_02",
       "kind": "npc",
@@ -831,7 +831,7 @@
       "visualId": "tauSmnDroneShield"
     },
     "GuildBoss11Npc4TauStealthSuit": {
-      "name": "Stealth Suit",
+      "name": "Stealth Battlesuit",
       "faction": "Tau",
       "stem": "tauta_stealthsuit",
       "kind": "npc",
@@ -839,7 +839,7 @@
       "visualId": "tauNpc5StealthSuit"
     },
     "GuildBoss9Npc4ThousTerminator": {
-      "name": "Terminator",
+      "name": "Scarab Occult Terminator",
       "faction": "ThousandSons",
       "stem": "thous_terminator_02",
       "kind": "npc",
@@ -863,7 +863,7 @@
       "visualId": null
     },
     "GuildBoss12Npc4DarkaWatcher": {
-      "name": "Watcher",
+      "name": "Watcher in the Dark",
       "faction": "DarkAngels",
       "stem": "darka_watcher",
       "kind": "npc",
@@ -871,7 +871,7 @@
       "visualId": "darkaNpc4Watcher"
     },
     "GuildBoss1Npc4TyranHormagauntLeviathan": {
-      "name": "Hormagaunt Leviathan",
+      "name": "Hormagaunt",
       "faction": "Tyranids",
       "stem": "tyran_hormagaunt",
       "kind": "npc",
@@ -879,7 +879,7 @@
       "visualId": null
     },
     "GuildBoss1Npc6TyranHormagauntGorgon": {
-      "name": "Hormagaunt Gorgon",
+      "name": "Hormagaunt",
       "faction": "Tyranids",
       "stem": "tyran_hormagaunt_03",
       "kind": "npc",
@@ -903,7 +903,7 @@
       "visualId": "tyranNpc2RipperSwarm"
     },
     "GuildBoss1Npc5TyranHormagauntKronos": {
-      "name": "Hormagaunt Kronos",
+      "name": "Hormagaunt",
       "faction": "Tyranids",
       "stem": "tyran_hormagaunt_02",
       "kind": "npc",
@@ -911,7 +911,7 @@
       "visualId": null
     },
     "GuildBoss7Npc3AstraVoxcaster": {
-      "name": "Voxcaster",
+      "name": "Cadian Vox-caster",
       "faction": "AstraMilitarum",
       "stem": "astra_npc_03",
       "kind": "npc",
@@ -919,7 +919,7 @@
       "visualId": "astraNpc3Voxcaster"
     },
     "GuildBoss7Npc2AstraLascannon": {
-      "name": "Lascannon",
+      "name": "Cadian Lascannon Team",
       "faction": "AstraMilitarum",
       "stem": "astra_npc_02",
       "kind": "npc",
@@ -927,7 +927,7 @@
       "visualId": "astraNpc2Lascannon"
     },
     "GuildBoss8Npc3EldarHarlequin": {
-      "name": "Harlequin",
+      "name": "Harlequin Player",
       "faction": "Aeldari",
       "stem": "aelda_harlequin",
       "kind": "npc",
@@ -935,7 +935,7 @@
       "visualId": "eldarNpc3Harlequin"
     },
     "GuildBoss4Minion1OrksKillaKan": {
-      "name": "Killa Kan",
+      "name": "Snappawrecka",
       "faction": "Orks",
       "stem": "orkss_killakan",
       "kind": "npc",
@@ -951,7 +951,7 @@
       "visualId": "orksNpc3GrotTank"
     },
     "GuildBoss4Minion2OrksRuntherd": {
-      "name": "Runtherd",
+      "name": "Snotflogga",
       "faction": "Orks",
       "stem": "orkss_runtherd",
       "kind": "npc",
@@ -959,7 +959,7 @@
       "visualId": "orksRuntherd"
     },
     "GuildBoss10Minion1AdmecRuststalker": {
-      "name": "Ruststalker",
+      "name": "Exitor-Rho",
       "faction": "AdeptusMechanicus",
       "stem": "admec_ruststalker",
       "kind": "npc",
@@ -967,7 +967,7 @@
       "visualId": "admecRuststalker"
     },
     "GuildBoss10Minion2AdmecDestroyer": {
-      "name": "Destroyer",
+      "name": "Sy-gex",
       "faction": "AdeptusMechanicus",
       "stem": "admec_destroyer",
       "kind": "npc",
@@ -975,7 +975,7 @@
       "visualId": "admecDestroyer"
     },
     "GuildBoss11Npc2TauDroneSniper": {
-      "name": "Drone Sniper",
+      "name": "Sniper Drone",
       "faction": "Tau",
       "stem": "tauta_drone",
       "kind": "npc",
@@ -991,7 +991,7 @@
       "visualId": "thousNpc1PinkHorror"
     },
     "GuildBoss3Npc1NecroWarrior": {
-      "name": "Warrior",
+      "name": "Necron Warrior",
       "faction": "Necrons",
       "stem": "necro_npc",
       "kind": "npc",
@@ -999,7 +999,7 @@
       "visualId": "necroNpc1Warrior"
     },
     "GuildBoss3Npc5NecroSwarm": {
-      "name": "Swarm",
+      "name": "Scarab Swarm",
       "faction": "Necrons",
       "stem": "necro_scarab",
       "kind": "npc",
@@ -1015,7 +1015,7 @@
       "visualId": "necroNpc2FlayedOne"
     },
     "GuildBoss5Minion1DeathBlightlord": {
-      "name": "Blightlord",
+      "name": "Blightlord Terminator",
       "faction": "DeathGuard",
       "stem": "death_blightlord",
       "kind": "npc",
@@ -1023,7 +1023,7 @@
       "visualId": null
     },
     "GuildBoss12Npc3DarkaTerminator": {
-      "name": "Terminator",
+      "name": "Deathwing Knight",
       "faction": "DarkAngels",
       "stem": "darka_terminator_02",
       "kind": "npc",
@@ -1286,11 +1286,11 @@
       "primes": [
         {
           "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
-          "name": "Primaris Psy"
+          "name": "Sibyll Devine"
         },
         {
           "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
-          "name": "Ordnance"
+          "name": "Thaddeus Noble"
         }
       ]
     },
@@ -1453,11 +1453,11 @@
       "primes": [
         {
           "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
-          "name": "Primaris Psy"
+          "name": "Sibyll Devine"
         },
         {
           "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
-          "name": "Ordnance"
+          "name": "Thaddeus Noble"
         }
       ]
     },
@@ -1512,11 +1512,11 @@
       "primes": [
         {
           "unitId": "GuildBoss8MiniBoss1EldarAutarch",
-          "name": "Autarch"
+          "name": "Aethana"
         },
         {
           "unitId": "GuildBoss8MiniBoss2EldarFarseer",
-          "name": "Farseer"
+          "name": "Eldryon"
         }
       ]
     },
@@ -1599,11 +1599,11 @@
       "primes": [
         {
           "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
-          "name": "Primaris Psy"
+          "name": "Sibyll Devine"
         },
         {
           "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
-          "name": "Ordnance"
+          "name": "Thaddeus Noble"
         }
       ]
     },
@@ -1658,11 +1658,11 @@
       "primes": [
         {
           "unitId": "GuildBoss8MiniBoss1EldarAutarch",
-          "name": "Autarch"
+          "name": "Aethana"
         },
         {
           "unitId": "GuildBoss8MiniBoss2EldarFarseer",
-          "name": "Farseer"
+          "name": "Eldryon"
         }
       ]
     },
@@ -1731,11 +1731,11 @@
       "primes": [
         {
           "unitId": "GuildBoss10MiniBoss1AdmecMarshall",
-          "name": "Marshall"
+          "name": "Tan Gi'da"
         },
         {
           "unitId": "GuildBoss10MiniBoss2AdmecManipulus",
-          "name": "Manipulus"
+          "name": "Actus"
         }
       ]
     },
@@ -1804,11 +1804,11 @@
       "primes": [
         {
           "unitId": "GuildBoss11MiniBoss1TauMarksman",
-          "name": "Marksman"
+          "name": "Sho'syl"
         },
         {
           "unitId": "GuildBoss11MiniBoss2TauCrisis",
-          "name": "Crisis"
+          "name": "Re'vas"
         }
       ]
     },
@@ -1884,11 +1884,11 @@
       "primes": [
         {
           "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
-          "name": "Primaris Psy"
+          "name": "Sibyll Devine"
         },
         {
           "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
-          "name": "Ordnance"
+          "name": "Thaddeus Noble"
         }
       ]
     },
@@ -1971,11 +1971,11 @@
       "primes": [
         {
           "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
-          "name": "Primaris Psy"
+          "name": "Sibyll Devine"
         },
         {
           "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
-          "name": "Ordnance"
+          "name": "Thaddeus Noble"
         }
       ]
     },
@@ -2044,11 +2044,11 @@
       "primes": [
         {
           "unitId": "GuildBoss10MiniBoss1AdmecMarshall",
-          "name": "Marshall"
+          "name": "Tan Gi'da"
         },
         {
           "unitId": "GuildBoss10MiniBoss2AdmecManipulus",
-          "name": "Manipulus"
+          "name": "Actus"
         }
       ]
     },
@@ -2124,11 +2124,11 @@
       "primes": [
         {
           "unitId": "GuildBoss11MiniBoss1TauMarksman",
-          "name": "Marksman"
+          "name": "Sho'syl"
         },
         {
           "unitId": "GuildBoss11MiniBoss2TauCrisis",
-          "name": "Crisis"
+          "name": "Re'vas"
         }
       ]
     },
@@ -2183,11 +2183,11 @@
       "primes": [
         {
           "unitId": "GuildBoss8MiniBoss1EldarAutarch",
-          "name": "Autarch"
+          "name": "Aethana"
         },
         {
           "unitId": "GuildBoss8MiniBoss2EldarFarseer",
-          "name": "Farseer"
+          "name": "Eldryon"
         }
       ]
     },
@@ -2263,11 +2263,11 @@
       "primes": [
         {
           "unitId": "GuildBoss9MiniBoss1ThousSorcerer",
-          "name": "Sorcerer"
+          "name": "Thaumachus"
         },
         {
           "unitId": "GuildBoss9MiniBoss2ThousInfernalMaster",
-          "name": "Infernal Master"
+          "name": "Abraxas"
         }
       ]
     },
@@ -2294,11 +2294,11 @@
       "primes": [
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Menhir"
+          "name": "Triarchal Menhir"
         },
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Menhir"
+          "name": "Triarchal Menhir"
         }
       ]
     },
@@ -2353,11 +2353,11 @@
       "primes": [
         {
           "unitId": "GuildBoss8MiniBoss1EldarAutarch",
-          "name": "Autarch"
+          "name": "Aethana"
         },
         {
           "unitId": "GuildBoss8MiniBoss2EldarFarseer",
-          "name": "Farseer"
+          "name": "Eldryon"
         }
       ]
     },
@@ -2440,11 +2440,11 @@
       "primes": [
         {
           "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
-          "name": "Primaris Psy"
+          "name": "Sibyll Devine"
         },
         {
           "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
-          "name": "Ordnance"
+          "name": "Thaddeus Noble"
         }
       ]
     },
@@ -2520,11 +2520,11 @@
       "primes": [
         {
           "unitId": "GuildBoss11MiniBoss1TauMarksman",
-          "name": "Marksman"
+          "name": "Sho'syl"
         },
         {
           "unitId": "GuildBoss11MiniBoss2TauCrisis",
-          "name": "Crisis"
+          "name": "Re'vas"
         }
       ]
     },
@@ -2593,11 +2593,11 @@
       "primes": [
         {
           "unitId": "GuildBoss10MiniBoss1AdmecMarshall",
-          "name": "Marshall"
+          "name": "Tan Gi'da"
         },
         {
           "unitId": "GuildBoss10MiniBoss2AdmecManipulus",
-          "name": "Manipulus"
+          "name": "Actus"
         }
       ]
     },
@@ -2652,11 +2652,11 @@
       "primes": [
         {
           "unitId": "GuildBoss8MiniBoss1EldarAutarch",
-          "name": "Autarch"
+          "name": "Aethana"
         },
         {
           "unitId": "GuildBoss8MiniBoss2EldarFarseer",
-          "name": "Farseer"
+          "name": "Eldryon"
         }
       ]
     },
@@ -2683,11 +2683,11 @@
       "primes": [
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Menhir"
+          "name": "Triarchal Menhir"
         },
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Menhir"
+          "name": "Triarchal Menhir"
         }
       ]
     },
@@ -2742,11 +2742,11 @@
       "primes": [
         {
           "unitId": "GuildBoss12MiniBoss1DarkaTerminator",
-          "name": "Terminator"
+          "name": "Baraqiel"
         },
         {
           "unitId": "GuildBoss12MiniBoss2DarkaCompanion",
-          "name": "Companion"
+          "name": "Forcas"
         }
       ]
     },
@@ -2801,11 +2801,11 @@
       "primes": [
         {
           "unitId": "GuildBoss12MiniBoss1DarkaTerminator",
-          "name": "Terminator"
+          "name": "Baraqiel"
         },
         {
           "unitId": "GuildBoss12MiniBoss2DarkaCompanion",
-          "name": "Companion"
+          "name": "Forcas"
         }
       ]
     },
@@ -2881,11 +2881,11 @@
       "primes": [
         {
           "unitId": "GuildBoss9MiniBoss1ThousSorcerer",
-          "name": "Sorcerer"
+          "name": "Thaumachus"
         },
         {
           "unitId": "GuildBoss9MiniBoss2ThousInfernalMaster",
-          "name": "Infernal Master"
+          "name": "Abraxas"
         }
       ]
     },
@@ -2912,11 +2912,11 @@
       "primes": [
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Menhir"
+          "name": "Triarchal Menhir"
         },
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Menhir"
+          "name": "Triarchal Menhir"
         }
       ]
     },
@@ -2985,11 +2985,11 @@
       "primes": [
         {
           "unitId": "GuildBoss10MiniBoss1AdmecMarshall",
-          "name": "Marshall"
+          "name": "Tan Gi'da"
         },
         {
           "unitId": "GuildBoss10MiniBoss2AdmecManipulus",
-          "name": "Manipulus"
+          "name": "Actus"
         }
       ]
     }

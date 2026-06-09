@@ -5,7 +5,7 @@
     {
       "unitId": "GuildBoss10MiniBoss1AdmecMarshall",
       "bossType": "BelisariusRW",
-      "name": "Marshall",
+      "name": "Tan Gi'da",
       "faction": "AdeptusMechanicus",
       "imageStem": "admec_marshall",
       "size": 1,
@@ -18,7 +18,7 @@
     {
       "unitId": "GuildBoss10MiniBoss2AdmecManipulus",
       "bossType": "BelisariusRW",
-      "name": "Manipulus",
+      "name": "Actus",
       "faction": "AdeptusMechanicus",
       "imageStem": "admec_manipulus",
       "size": 1,
@@ -31,7 +31,7 @@
     {
       "unitId": "GuildBoss11MiniBoss1TauMarksman",
       "bossType": "Riptide",
-      "name": "Marksman",
+      "name": "Sho'syl",
       "faction": "Tau",
       "imageStem": "tauta_marksman",
       "size": 1,
@@ -43,7 +43,7 @@
     {
       "unitId": "GuildBoss11MiniBoss2TauCrisis",
       "bossType": "Riptide",
-      "name": "Crisis",
+      "name": "Re'vas",
       "faction": "Tau",
       "imageStem": "tauta_crisis",
       "size": 1,
@@ -55,7 +55,7 @@
     {
       "unitId": "GuildBoss12MiniBoss1DarkaTerminator",
       "bossType": "Lion",
-      "name": "Terminator",
+      "name": "Baraqiel",
       "faction": "DarkAngels",
       "imageStem": "darka_terminator",
       "size": 1,
@@ -67,7 +67,7 @@
     {
       "unitId": "GuildBoss12MiniBoss2DarkaCompanion",
       "bossType": "Lion",
-      "name": "Companion",
+      "name": "Forcas",
       "faction": "DarkAngels",
       "imageStem": "darka_companion",
       "size": 1,
@@ -79,7 +79,7 @@
     {
       "unitId": "GuildBoss1MiniBoss1TyranWarriorLeviathan",
       "bossType": "TervigonLeviathan",
-      "name": "Warrior Leviathan",
+      "name": "Tyranid Prime",
       "faction": "Tyranids",
       "imageStem": "tyran_warrior",
       "size": 1,
@@ -93,7 +93,7 @@
     {
       "unitId": "GuildBoss1MiniBoss2TyranWarriorKronos",
       "bossType": "TervigonKronos",
-      "name": "Warrior Kronos",
+      "name": "Tyranid Prime",
       "faction": "Tyranids",
       "imageStem": "tyran_warrior_02",
       "size": 1,
@@ -109,7 +109,7 @@
     {
       "unitId": "GuildBoss1MiniBoss3TyranWarriorGorgon",
       "bossType": "TervigonGorgon",
-      "name": "Warrior Gorgon",
+      "name": "Tyranid Prime",
       "faction": "Tyranids",
       "imageStem": "tyran_warrior_03",
       "size": 1,
@@ -123,7 +123,7 @@
     {
       "unitId": "GuildBoss3Minion3NecroMenhir",
       "bossType": "SilentKing",
-      "name": "Menhir",
+      "name": "Triarchal Menhir",
       "faction": "Necrons",
       "imageStem": "necro_menhir",
       "size": 1,
@@ -139,7 +139,7 @@
     {
       "unitId": "GuildBoss4MiniBoss1OrksBigMek",
       "bossType": "Ghazghkull",
-      "name": "Big Mek",
+      "name": "Gibbascrapz",
       "faction": "Orks",
       "imageStem": "orkss_mek",
       "size": 1,
@@ -153,7 +153,7 @@
     {
       "unitId": "GuildBoss4MiniBoss2OrksNob",
       "bossType": "Ghazghkull",
-      "name": "Nob",
+      "name": "Tanksmasha",
       "faction": "Orks",
       "imageStem": "orkss_nob",
       "size": 1,
@@ -167,7 +167,7 @@
     {
       "unitId": "GuildBoss5MiniBoss1DeathRotbone",
       "bossType": "Mortarion",
-      "name": "Rotbone",
+      "name": "Nauseous Rotbone",
       "faction": "DeathGuard",
       "imageStem": "death_rotbone",
       "size": 1,
@@ -179,7 +179,7 @@
     {
       "unitId": "GuildBoss5MiniBoss2DeathBlightbringer",
       "bossType": "Mortarion",
-      "name": "Blightbringer",
+      "name": "Corrodius",
       "faction": "DeathGuard",
       "imageStem": "death_blightbringer",
       "size": 1,
@@ -219,7 +219,7 @@
     {
       "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
       "bossType": "RogalDorn",
-      "name": "Primaris Psy",
+      "name": "Sibyll Devine",
       "faction": "AstraMilitarum",
       "imageStem": "astra_psyker",
       "size": 1,
@@ -232,7 +232,7 @@
     {
       "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
       "bossType": "RogalDorn",
-      "name": "Ordnance",
+      "name": "Thaddeus Noble",
       "faction": "AstraMilitarum",
       "imageStem": "astra_ordnance",
       "size": 1,
@@ -245,7 +245,7 @@
     {
       "unitId": "GuildBoss8MiniBoss1EldarAutarch",
       "bossType": "AvatarOfKhaine",
-      "name": "Autarch",
+      "name": "Aethana",
       "faction": "Aeldari",
       "imageStem": "aelda_autarch",
       "size": 1,
@@ -258,7 +258,7 @@
     {
       "unitId": "GuildBoss8MiniBoss2EldarFarseer",
       "bossType": "AvatarOfKhaine",
-      "name": "Farseer",
+      "name": "Eldryon",
       "faction": "Aeldari",
       "imageStem": "aelda_farseer",
       "size": 1,
@@ -271,7 +271,7 @@
     {
       "unitId": "GuildBoss9MiniBoss1ThousSorcerer",
       "bossType": "Magnus",
-      "name": "Sorcerer",
+      "name": "Thaumachus",
       "faction": "ThousandSons",
       "imageStem": "thous_sorcerer",
       "size": 1,
@@ -283,7 +283,7 @@
     {
       "unitId": "GuildBoss9MiniBoss2ThousInfernalMaster",
       "bossType": "Magnus",
-      "name": "Infernal Master",
+      "name": "Abraxas",
       "faction": "ThousandSons",
       "imageStem": "thous_infernal",
       "size": 1,

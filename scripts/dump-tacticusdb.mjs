@@ -262,7 +262,7 @@ async function buildBossIndex(seasonConfig, stems) {
  * boss's encounter NPC(s). Also returns an identity catalog for every spawnable
  * unit so the app needs no live ability/npc fetch.
  */
-async function buildSpawns(seasonConfig, stems) {
+async function buildSpawns(seasonConfig, stems, locale) {
   const [abilities, characters, bossUnits, summons, npc] = await Promise.all([
     fetchWithRetry(`${BASE}/api/data/abilities`),
     fetchWithRetry(`${BASE}/api/data/characters`),
@@ -325,6 +325,13 @@ async function buildSpawns(seasonConfig, stems) {
 
   // Identity for every referenced spawn unit.
   const deriveName = prettyUnitName;
+  // Real display name from the i18n catalog (keyed by unitId for named units, by
+  // visualId for generic ones); prefer the short name, fall back to the full one.
+  const localeName = (id, vid) =>
+    locale?.[id]?.shortname ??
+    locale?.[id]?.name ??
+    (vid && (locale[vid]?.shortname ?? locale[vid]?.name)) ??
+    null;
   // Portrait stems are keyed by unitId for bosses but by **visualId** for the
   // npc/summon catalog (e.g. summon.tauSmnDroneShield → "tauta_drone_02"), so we
   // resolve by both.
@@ -342,7 +349,7 @@ async function buildSpawns(seasonConfig, stems) {
   const identity = (id) => {
     const visualId = bossUnits[id]?.visualId ?? npc[id]?.visualId ?? summons[id]?.visualId ?? null;
     return {
-      name: (summons[id] ?? npc[id] ?? characters[id])?.name ?? deriveName(id),
+      name: localeName(id, visualId) ?? (summons[id] ?? npc[id] ?? characters[id])?.name ?? deriveName(id),
       faction:
         (summons[id] ?? npc[id] ?? characters[id])?.FactionId ?? bossUnits[id]?.FactionId ?? null,
       stem: stemFor(id, visualId),
@@ -485,7 +492,7 @@ async function buildSpawns(seasonConfig, stems) {
  * Build the prime (mini-boss) picker index from the "Crystal" encounters — one
  * entry per distinct mini-boss, with its parent boss, maps, faction, stem, size.
  */
-async function buildPrimeIndex(seasonConfig, stems) {
+async function buildPrimeIndex(seasonConfig, stems, locale) {
   const byUnit = new Map();
   for (const season of seasonConfig)
     for (const tier of season.tiers ?? [])
@@ -522,12 +529,17 @@ async function buildPrimeIndex(seasonConfig, stems) {
         break;
       }
     }
+    const vid = units[p.unitId]?.visualId;
     primes.push({
       unitId: p.unitId,
       bossType: p.bossType,
-      name: prettyUnitName(p.unitId),
+      name:
+        locale?.[p.unitId]?.shortname ??
+        locale?.[p.unitId]?.name ??
+        (vid && (locale[vid]?.shortname ?? locale[vid]?.name)) ??
+        prettyUnitName(p.unitId),
       faction: units[p.unitId]?.FactionId ?? null,
-      imageStem: stemFor(p.unitId, units[p.unitId]?.visualId),
+      imageStem: stemFor(p.unitId, vid),
       size,
       boardIds,
     });
@@ -652,7 +664,9 @@ async function main() {
         ')',
     );
 
-    const primes = await buildPrimeIndex(seasonConfig, stems);
+    // Real display names (i18n) — keyed by unitId for named units, visualId else.
+    const locale = await fetchWithRetry(`${BASE}/locales/en/units.json`).catch(() => ({}));
+    const primes = await buildPrimeIndex(seasonConfig, stems, locale);
     await writeFile(
       join(DATA_DIR, 'primes.json'),
       JSON.stringify({ generatedFrom: BASE, primeCount: primes.length, primes }, null, 2),
@@ -665,7 +679,7 @@ async function main() {
     );
 
     try {
-      const spawns = await buildSpawns(seasonConfig, stems);
+      const spawns = await buildSpawns(seasonConfig, stems, locale);
       await writeFile(join(DATA_DIR, 'spawns.json'), JSON.stringify(spawns, null, 2));
       console.log(
         `  ✓ spawns.json (${Object.keys(spawns.byUnit).length} summoners, ${Object.keys(spawns.units).length} spawnable units, ${Object.keys(spawns.deployments).length} boss + ${Object.keys(spawns.primeDeployments).length} prime deployments)`,

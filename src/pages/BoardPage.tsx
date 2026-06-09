@@ -285,7 +285,8 @@ export function BoardPage() {
                 : 'Select a unit'}
         </p>
 
-        {/* Remove — appears beside the board only when a removable unit is selected */}
+        {/* Remove — sits just under the Paint notch (same edge), shown only when a
+            removable unit is selected */}
         {selectedDef && selectedDef.type !== 'boss' && !paintOpen && (
           <button
             onClick={() => {
@@ -293,7 +294,7 @@ export function BoardPage() {
               setSelectedId(null)
             }}
             title={`Remove ${selectedDef.name}`}
-            className={`absolute top-1/2 z-20 -translate-y-1/2 ${paintSide === 'left' ? 'right-0 rounded-l-xl' : 'left-0 rounded-r-xl'} flex flex-col items-center gap-1 border border-iron bg-abyss/90 px-1.5 py-3 text-ash backdrop-blur transition-colors hover:border-blood hover:text-blood-bright`}
+            className={`absolute top-28 z-20 ${paintSide === 'left' ? 'left-0 rounded-r-xl' : 'right-0 rounded-l-xl'} flex flex-col items-center gap-1 border border-iron bg-abyss/90 px-1.5 py-3 text-ash backdrop-blur transition-colors hover:border-blood hover:text-blood-bright`}
           >
             <Trash2 size={16} />
             <span className="text-[0.55rem] font-semibold uppercase tracking-[0.14em]">Remove</span>
