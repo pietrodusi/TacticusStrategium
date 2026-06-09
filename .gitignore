@@ -14,10 +14,11 @@ dist-ssr/
 .DS_Store
 *.local
 
-# Claude Code — kept private (this repo is public)
+# Claude Code + private planning notes — kept private (this repo is public)
 CLAUDE.md
 CLAUDE.local.md
 .claude/
+BACKLOG.md
 
 # logs
 npm-debug.log*
