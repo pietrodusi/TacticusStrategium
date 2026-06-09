@@ -1,5 +1,6 @@
 import type { BoardData } from '../../types/boardData'
 import type { BossSize, HexCoord, Point } from '../../types/strategium'
+import { getBossOccupiedHexes, hexKey, hexNeighbors } from '../hex/hexUtils'
 
 // ─── Calibration ─────────────────────────────────────────────────────
 // Replicates TacticusDB's own hex overlay (gamemodes/GR map component) so
@@ -118,23 +119,32 @@ function coerceBossSize(n: number): BossSize {
   return n === 7 ? 7 : n === 1 ? 1 : 3
 }
 
-/** For 3-hex bosses, find which neighbor direction the wing tiles point. */
-function deriveBossRotation(center: HexCoord, others: HexCoord[], bossSize: number): number {
-  if (bossSize !== 3 || others.length < 2) return 0
-  const directions: HexCoord[] = [
-    { q: 1, r: 0 },
-    { q: 1, r: -1 },
-    { q: 0, r: -1 },
-    { q: -1, r: 0 },
-    { q: -1, r: 1 },
-    { q: 0, r: 1 },
-  ]
-  for (let i = 0; i < directions.length; i++) {
-    const nq = center.q + directions[i].q
-    const nr = center.r + directions[i].r
-    if (others.some((h) => h.q === nq && h.r === nr)) return i * 60
+/**
+ * Recover the boss's anchor hex (where its image/token sits) and rotation from a
+ * platform's raw footprint tiles. `InitialSpawnPosition` is a 0/1 flag on the
+ * platform — NOT an index into Tiles — so we derive placement from the geometry:
+ * - size 1: the single tile.
+ * - size 7: the tile whose 6 neighbours are all in the footprint (the centre).
+ * - size 3: the anchor + rotation (0/90) whose getBossOccupiedHexes reproduces it.
+ */
+function deriveBossPlacement(
+  tiles: HexCoord[],
+  size: BossSize,
+): { anchor: HexCoord; rotation: number } {
+  if (size === 1 || tiles.length <= 1) return { anchor: tiles[0], rotation: 0 }
+  const inSet = new Set(tiles.map(hexKey))
+  if (size === 7) {
+    const centre = tiles.find((t) => hexNeighbors(t).every((n) => inSet.has(hexKey(n))))
+    return { anchor: centre ?? tiles[0], rotation: 0 }
   }
-  return 0
+  for (const anchor of tiles) {
+    for (const rotation of [0, 90]) {
+      const occ = getBossOccupiedHexes(anchor, 3, rotation)
+      if (occ.length === tiles.length && occ.every((h) => inSet.has(hexKey(h))))
+        return { anchor, rotation }
+    }
+  }
+  return { anchor: tiles[0], rotation: 0 }
 }
 
 /**
@@ -187,10 +197,11 @@ export function parseBoard(board: BoardData, spawnPointsSet = 0): ParsedBoard {
     })
   })
 
-  // Player deployment slots (team index 1) from the chosen spawn set.
+  // Player deployment slots (team index 0) from the chosen spawn set. Team 0 is
+  // the player's 5 squad slots; team 1 is the enemy group beside the boss.
   const spawnSet = board.SpawnPointSets?.[spawnPointsSet] ?? board.SpawnPointSets?.[0]
   for (const group of spawnSet?.SpawnPointGroups ?? []) {
-    if (group.TeamWithPlayerIndex !== 1) continue
+    if (group.TeamWithPlayerIndex !== 0) continue
     let idx = 0
     for (const sp of group.SpawnPoints) {
       if (sp.SpawnPointType === 10) continue // not a deployment slot
@@ -203,23 +214,29 @@ export function parseBoard(board: BoardData, spawnPointsSet = 0): ParsedBoard {
     }
   }
 
-  // Boss platform → start position, rotation, size.
+  // Boss platforms → start position(s), rotation, size. Every platform flagged
+  // InitialSpawnPosition === 1 is a valid boss start; some boards offer several
+  // (mark them all as boss-start cells). The default token sits on the first.
   let bossSize: BossSize = 3
   let bossStart: HexCoord = { q: Math.floor(board.Width / 2), r: 0 }
   let bossRotation = 0
-  const platform = board.BossPlatforms?.[0]
-  if (platform && platform.Tiles.length > 0) {
-    bossSize = coerceBossSize(platform.Size)
-    const centerTile = platform.Tiles[platform.InitialSpawnPosition] ?? platform.Tiles[0]
-    bossStart = tdbToAxial(centerTile.Column, centerTile.Row, board.Height)
-    const axialTiles = platform.Tiles.map((t) => tdbToAxial(t.Column, t.Row, board.Height))
-    const others = axialTiles.filter((h) => h.q !== bossStart.q || h.r !== bossStart.r)
-    bossRotation = deriveBossRotation(bossStart, others, platform.Size)
+  const platforms = board.BossPlatforms ?? []
+  const startPlatforms = platforms.filter((p) => p.InitialSpawnPosition === 1)
+  const activePlatforms = startPlatforms.length ? startPlatforms : platforms.slice(0, 1)
+  activePlatforms.forEach((platform, i) => {
+    if (platform.Tiles.length === 0) return
     for (const t of platform.Tiles) {
       const cell = byOffset.get(`${t.Column},${t.Row}`)
       if (cell) cell.spawnRole = 'boss'
     }
-  }
+    if (i === 0) {
+      bossSize = coerceBossSize(platform.Size)
+      const tilesAxial = platform.Tiles.map((t) => tdbToAxial(t.Column, t.Row, board.Height))
+      const placement = deriveBossPlacement(tilesAxial, bossSize)
+      bossStart = placement.anchor
+      bossRotation = placement.rotation
+    }
+  })
 
   return {
     id: board.Id,

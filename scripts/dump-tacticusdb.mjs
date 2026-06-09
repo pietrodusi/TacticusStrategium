@@ -326,22 +326,98 @@ async function buildSpawns(seasonConfig, stems) {
   const traitsOf = (id) =>
     summons[id]?.traits ?? npc[id]?.traits ?? characters[id]?.traits ?? bossUnits[id]?.traits ?? [];
 
+  const identity = (id) => ({
+    name: (summons[id] ?? npc[id] ?? characters[id])?.name ?? deriveName(id),
+    faction:
+      (summons[id] ?? npc[id] ?? characters[id])?.FactionId ?? bossUnits[id]?.FactionId ?? null,
+    stem: stemFor(id),
+    kind: summons[id] ? 'summon' : 'npc',
+    size: traitsOf(id).includes('BigTarget') ? 3 : 1,
+    // Enemy NPCs often have no portrait stem; keep visualId as a fallback handle.
+    visualId: bossUnits[id]?.visualId ?? npc[id]?.visualId ?? summons[id]?.visualId ?? null,
+  });
+
   const units = {};
   for (const ids of Object.values(byUnit)) {
     for (const id of ids) {
-      if (units[id]) continue;
-      const src = summons[id] ?? npc[id] ?? characters[id];
-      units[id] = {
-        name: src?.name ?? deriveName(id),
-        faction: src?.FactionId ?? bossUnits[id]?.FactionId ?? null,
-        stem: stemFor(id),
-        kind: summons[id] ? 'summon' : 'npc',
-        size: traitsOf(id).includes('BigTarget') ? 3 : 1,
-      };
+      if (!units[id]) units[id] = identity(id);
     }
   }
 
-  return { byUnit, units };
+  // --- initial enemy deployments (per board) + prime-removable flags --------
+  // The Boss encounter's `enemies[]` is the full initial enemy line-up, deployed
+  // positionally onto the board's enemy spawn group (TeamWithPlayerIndex === 1).
+  // The count scales with difficulty, so we keep the top tier (Legendary, which
+  // also serves Mythic). Defeating "primes" removes some adds — guildBossMods +
+  // guildBossModDetails encode how many of each unit vanish (the red-cross marks
+  // in TacticusDB's GR map preview). Mirrors their map component (chunk 6947).
+  const [mods, modDetails] = await Promise.all([
+    fetchWithRetry(`${BASE}/api/data/guildBossMods`).catch(() => ({})),
+    fetchWithRetry(`${BASE}/api/data/guildBossModDetails`).catch(() => ({})),
+  ]);
+
+  // boss unitId (rankless) -> { enemyUnitId: removableCount } when all primes die
+  const removableFor = (bossUnitId) => {
+    const key = bossUnitId.replace(/:\d+$/, '');
+    const mod = Object.values(mods).find((m) => m.unitIds?.includes(key));
+    const tokens = (mod?.modifiers ?? []).flat(2);
+    const out = {};
+    for (const tk of tokens) {
+      const d = modDetails[tk];
+      if (d?.type === 'unitAmountDecrease' && d.subtarget && typeof d.amount === 'number') {
+        out[d.subtarget] = (out[d.subtarget] ?? 0) + d.amount;
+      }
+    }
+    return out;
+  };
+
+  const RARITY_RANK = { common: 0, uncommon: 1, rare: 2, epic: 3, legendary: 4, mythic: 5 };
+  // Top-rarity (Legendary+) Boss encounter per board that actually lists enemies.
+  const bestEnc = new Map(); // boardId -> { enc, rarity, rank }
+  for (const season of seasonConfig)
+    for (const tier of season.tiers ?? []) {
+      const rank = RARITY_RANK[tier.rarity] ?? -1;
+      for (const set of tier.sets ?? [])
+        for (const e of set.encounters ?? []) {
+          if (e.guildBossEncounterType !== 'Boss' || !e.enemies?.length || !e.boardId) continue;
+          const cur = bestEnc.get(e.boardId);
+          if (!cur || rank > cur.rank) bestEnc.set(e.boardId, { enc: e, rarity: tier.rarity, rank });
+        }
+    }
+
+  const deployments = {};
+  for (const [boardId, { enc, rarity }] of bestEnc) {
+    const board = await readJson(join(BOARDS_DIR, `${boardId}.json`));
+    const group = board?.SpawnPointSets?.[enc.spawnPointsSet ?? 0]?.SpawnPointGroups?.find(
+      (g) => g.TeamWithPlayerIndex === 1,
+    );
+    if (!group) continue;
+    const removable = removableFor(enc.unitId);
+    const enemies = [];
+    const seen = {}; // enemyUnitId -> how many already flagged removable
+    let placed = 0;
+    let dp = 0;
+    for (const sp of group.SpawnPoints) {
+      let deploymentOrder = null;
+      if (sp.SpawnPointType !== 10) deploymentOrder = ++dp;
+      if (placed >= enc.enemies.length) continue;
+      const unitId = enc.enemies[placed++].split(':')[0];
+      const taken = seen[unitId] ?? 0;
+      const isRemovable = taken < (removable[unitId] ?? 0);
+      if (isRemovable) seen[unitId] = taken + 1;
+      if (!units[unitId]) units[unitId] = identity(unitId);
+      enemies.push({ unitId, col: sp.Column, row: sp.Row, deploymentOrder, removable: isRemovable });
+    }
+    deployments[boardId] = {
+      bossType: enc.bossType ?? null,
+      bossUnitId: enc.unitId.split(':')[0],
+      rarity,
+      enemies,
+      removable, // { enemyUnitId: count } — total removable once all primes are dead
+    };
+  }
+
+  return { byUnit, units, deployments };
 }
 
 // --- main -------------------------------------------------------------------
@@ -465,7 +541,7 @@ async function main() {
       const spawns = await buildSpawns(seasonConfig, stems);
       await writeFile(join(DATA_DIR, 'spawns.json'), JSON.stringify(spawns, null, 2));
       console.log(
-        `  ✓ spawns.json (${Object.keys(spawns.byUnit).length} summoners, ${Object.keys(spawns.units).length} spawnable units)`,
+        `  ✓ spawns.json (${Object.keys(spawns.byUnit).length} summoners, ${Object.keys(spawns.units).length} spawnable units, ${Object.keys(spawns.deployments).length} boards with initial enemy deployments)`,
       );
     } catch (err) {
       console.log(`  ✗ spawns (${err.message})`);

@@ -41,8 +41,29 @@ export interface SpawnUnit {
   stem: string | null
   kind: 'summon' | 'npc'
   size: number // 1 or 3 (BigTarget)
+  visualId?: string | null // portrait fallback when `stem` is null (enemy NPCs)
 }
+
+/** One pre-placed enemy in a board's initial line-up (Legendary tier). */
+export interface DeployedEnemy {
+  unitId: string
+  col: number
+  row: number
+  deploymentOrder: number | null
+  removable: boolean // disappears once the boss's primes are defeated
+}
+
+/** Initial enemy deployment for a board (keyed by boardId in SpawnsData). */
+export interface BoardDeployment {
+  bossType: string | null
+  bossUnitId: string
+  rarity: string | null
+  enemies: DeployedEnemy[]
+  removable: Record<string, number> // enemyUnitId -> total removable when primes die
+}
+
 export interface SpawnsData {
   byUnit: Record<string, string[]>
   units: Record<string, SpawnUnit>
+  deployments: Record<string, BoardDeployment>
 }

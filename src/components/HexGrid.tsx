@@ -13,6 +13,8 @@ export interface BoardToken {
   name: string
   size: number // 1 | 3 | 7
   pos: TokenPos
+  /** Initial add that disappears once the boss's primes are defeated. */
+  removable?: boolean
 }
 
 export interface BoardMovement {
@@ -28,6 +30,8 @@ interface Props {
   movements?: BoardMovement[]
   /** hexKey → color, for the current turn. */
   paint?: Record<string, string>
+  /** Tint the player (teal) and boss (purple) starting hexes. */
+  showStartHexes?: boolean
   selectedTokenId?: string | null
   /** When true, dragging paints/erases hexes instead of moving tokens. */
   painting?: boolean
@@ -37,7 +41,7 @@ interface Props {
   onPaint?: (hexKey: string, erase: boolean) => void
 }
 
-const GRID_STROKE = 'rgba(255,215,0,0.5)'
+const GRID_STROKE = 'rgba(255,215,0,0.2)'
 
 interface DragState {
   id: string | null // token being dragged, or null for a background gesture
@@ -54,6 +58,7 @@ export function HexGrid({
   tokens = [],
   movements = [],
   paint,
+  showStartHexes = false,
   selectedTokenId,
   painting = false,
   onHexClick,
@@ -180,7 +185,7 @@ export function HexGrid({
               <polygon
                 key={`g-${c.col}-${c.row}`}
                 points={pointsOf(c)}
-                fill="rgba(255,255,255,0.04)"
+                fill="rgba(255,255,255,0.02)"
                 stroke={GRID_STROKE}
                 strokeWidth={1.5}
                 strokeLinejoin="round"
@@ -189,6 +194,21 @@ export function HexGrid({
           )}
         </g>
       )}
+
+      {/* Starting hexes: player deployment (teal) + boss platform(s) (purple) */}
+      {showStartHexes &&
+        board.cells.map((c) =>
+          c.spawnRole ? (
+            <polygon
+              key={`s-${c.col}-${c.row}`}
+              points={pointsOf(c)}
+              fill={c.spawnRole === 'player' ? 'rgba(44,208,216,0.22)' : 'rgba(168,85,247,0.22)'}
+              stroke={c.spawnRole === 'player' ? '#2cd0d8' : '#a855f7'}
+              strokeWidth={2}
+              strokeLinejoin="round"
+            />
+          ) : null,
+        )}
 
       {/* Painted hexes */}
       {paint &&
@@ -364,6 +384,23 @@ function TokenMarker({
         fill="none"
         stroke={selected || dragging ? '#66f0f5' : ring}
         strokeWidth={selected || dragging ? 4 : 2.5}
+      />
+      {token.removable && <RemovableBadge cx={center.x + r * 0.72} cy={center.y - r * 0.72} r={r * 0.4} />}
+    </g>
+  )
+}
+
+/** Red ⊗ badge marking an add that's removed when the boss's primes are defeated. */
+function RemovableBadge({ cx, cy, r }: { cx: number; cy: number; r: number }) {
+  const d = r * 0.5
+  return (
+    <g pointerEvents="none">
+      <circle cx={cx} cy={cy} r={r} fill="#cf4632" stroke="#0b0d11" strokeWidth={1.5} />
+      <path
+        d={`M ${cx - d} ${cy - d} L ${cx + d} ${cy + d} M ${cx - d} ${cy + d} L ${cx + d} ${cy - d}`}
+        stroke="#fff"
+        strokeWidth={1.6}
+        strokeLinecap="round"
       />
     </g>
   )

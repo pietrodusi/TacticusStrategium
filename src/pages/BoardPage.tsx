@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeftRight, Brush, ChevronDown, LogOut, Plus, RotateCw, Trash2 } from 'lucide-react'
+import { ArrowLeftRight, Brush, ChevronDown, LogOut, Plus, RotateCw, Skull, Trash2 } from 'lucide-react'
 import { usePlanStore, posAtTurn, paintAtTurn } from '../stores/planStore'
 import { useBosses, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
@@ -21,6 +21,7 @@ interface TrayDef {
   stem: string | null
   name: string
   size: number
+  removable?: boolean // initial add removed when the boss's primes are defeated
 }
 interface PaletteType {
   unitId: string
@@ -39,7 +40,9 @@ const PAINT_COLORS = [
 export function BoardPage() {
   const navigate = useNavigate()
   const { bossUnitId, boardId, team, machineOfWar, currentTurn, positions, paint, instances } = usePlanStore()
+  const { seededBoard, primesDefeated } = usePlanStore()
   const { setCurrentTurn, placeToken, removeFromTurn, addInstance, setPaint, resetPlan } = usePlanStore()
+  const { seedDeployment, setPrimesDefeated } = usePlanStore()
 
   const bosses = useBosses()
   const { roster, machinesOfWar } = useRoster()
@@ -65,6 +68,18 @@ export function BoardPage() {
       html.style.overscrollBehavior = prev.over
     }
   }, [])
+
+  // Seed the board's initial enemy line-up once (turn-0 enemy instances). The
+  // deployment lists offset (col,row); resolve to axial via the parsed cells.
+  useEffect(() => {
+    if (!boardId || !board.data || !spawns.data || seededBoard === boardId) return
+    const byColRow = new Map(board.data.cells.map((c) => [`${c.col},${c.row}`, { q: c.q, r: c.r }]))
+    const enemies = (spawns.data.deployments[boardId]?.enemies ?? []).flatMap((e) => {
+      const ax = byColRow.get(`${e.col},${e.row}`)
+      return ax ? [{ unitId: e.unitId, q: ax.q, r: ax.r, removable: e.removable }] : []
+    })
+    seedDeployment(boardId, enemies)
+  }, [boardId, board.data, spawns.data, seededBoard, seedDeployment])
 
   // Paint visible at the current phase: this phase's marks + those carried over
   // from the previous phase (paint persists one phase, then auto-clears).
@@ -111,19 +126,22 @@ export function BoardPage() {
     const data = spawns.data
     return Object.entries(instances).map(([id, inst]) => {
       const u = data?.units[inst.unitId]
-      return { id, type: (inst.side === 'ally' ? 'summon' : 'npc') as TokenKind, stem: u?.stem ?? null, name: u?.name ?? inst.unitId, size: u?.size ?? 1 }
+      return { id, type: (inst.side === 'ally' ? 'summon' : 'npc') as TokenKind, stem: u?.stem ?? null, name: u?.name ?? inst.unitId, size: u?.size ?? 1, removable: inst.removable }
     })
   }, [instances, spawns.data])
 
   const allDefs = useMemo(() => [...uniqueDefs, ...instanceDefs], [uniqueDefs, instanceDefs])
+  const hasRemovable = useMemo(() => Object.values(instances).some((i) => i.removable), [instances])
 
   if (!bossUnitId || !boardId) return <Navigate to="/plan" replace />
 
-  // Effective tokens + movement arrows.
+  // Effective tokens + movement arrows. Removable adds are hidden once the
+  // boss's primes are marked defeated.
+  const visibleDefs = primesDefeated ? allDefs.filter((d) => !d.removable) : allDefs
   const boardTokens: BoardToken[] = []
   const movements: BoardMovement[] = []
   if (board.data) {
-    for (const d of allDefs) {
+    for (const d of visibleDefs) {
       const fallback = d.type === 'boss' ? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation } : null
       const pos = posAtTurn(positions[d.id], currentTurn) ?? fallback
       if (pos) boardTokens.push({ ...d, pos })
@@ -201,6 +219,7 @@ export function BoardPage() {
             tokens={boardTokens}
             movements={movements}
             paint={visiblePaint}
+            showStartHexes={currentTurn === 0}
             selectedTokenId={selectedId}
             painting={paintOpen}
             onHexClick={handleHex}
@@ -235,9 +254,19 @@ export function BoardPage() {
         {dockOpen && (
           <div className="space-y-3 border-b border-iron/50 px-3 py-3">
             {/* Tabs */}
-            <div className="flex gap-1">
+            <div className="flex items-center gap-1">
               <TabBtn active={tab === 'allies'} onClick={() => setTab('allies')}>Allies</TabBtn>
               <TabBtn active={tab === 'enemies'} onClick={() => setTab('enemies')}>Enemies</TabBtn>
+              {tab === 'enemies' && hasRemovable && (
+                <button
+                  onClick={() => setPrimesDefeated(!primesDefeated)}
+                  title="Hide the adds that disappear once the boss's primes are defeated"
+                  className={`ml-auto flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.08em] transition-colors ${primesDefeated ? 'border-blood bg-blood/15 text-blood-bright' : 'border-iron text-ash hover:border-brass-dim hover:text-bone'}`}
+                >
+                  <Skull size={14} />
+                  Primes defeated
+                </button>
+              )}
             </div>
 
             {/* Tray — min-height reserves room for the horizontal scrollbar so the

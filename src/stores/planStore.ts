@@ -67,9 +67,15 @@ interface PlanState {
   /** phase → (hexKey → color). Per-phase hex annotations; null = manual erase
    *  marker (masks a hex inherited from the previous phase). See paintAtTurn. */
   paint: Record<number, Record<string, string | null>>
-  /** Spawn instances (summons / boss minions). instanceId → its source unit + side. */
-  instances: Record<string, { unitId: string; side: 'ally' | 'enemy' }>
+  /** Spawn instances (summons / boss minions). instanceId → its source unit +
+   *  side; `removable` marks initial-deployment adds that vanish once the boss's
+   *  primes are defeated (hidden by the Primes-defeated toggle). */
+  instances: Record<string, { unitId: string; side: 'ally' | 'enemy'; removable?: boolean }>
   instanceSeq: number
+  /** Board whose initial enemy deployment has been seeded (idempotency guard). */
+  seededBoard: string | null
+  /** When true, hide the removable initial adds (boss's primes defeated). */
+  primesDefeated: boolean
 
   // ── Setup actions ──
   selectBoss: (unitId: string) => void
@@ -87,12 +93,27 @@ interface PlanState {
   removeFromTurn: (id: string) => void
   /** Create a spawn instance; returns its instanceId. */
   addInstance: (unitId: string, side: 'ally' | 'enemy') => string
+  /** Seed a board's initial enemy deployment as turn-0 enemy instances (once). */
+  seedDeployment: (
+    boardId: string,
+    enemies: { unitId: string; q: number; r: number; removable: boolean }[],
+  ) => void
+  /** Toggle whether the boss's primes are defeated (hides removable adds). */
+  setPrimesDefeated: (defeated: boolean) => void
   /** Set a hex colour at the current turn, or erase it when color is null. */
   setPaint: (hexKey: string, color: string | null) => void
   resetPlan: () => void
 }
 
-const EMPTY_PLAN = { currentTurn: 0, positions: {}, paint: {}, instances: {}, instanceSeq: 0 }
+const EMPTY_PLAN = {
+  currentTurn: 0,
+  positions: {},
+  paint: {},
+  instances: {},
+  instanceSeq: 0,
+  seededBoard: null,
+  primesDefeated: false,
+}
 
 export const usePlanStore = create<PlanState>()(
   persist(
@@ -157,6 +178,24 @@ export const usePlanStore = create<PlanState>()(
         set((s) => ({ instanceSeq: seq, instances: { ...s.instances, [id]: { unitId, side } } }))
         return id
       },
+
+      // Place the board's initial enemy line-up as turn-0 enemy instances. Guarded
+      // by seededBoard so it runs once per board (survives reloads via persist).
+      seedDeployment: (boardId, enemies) =>
+        set((s) => {
+          if (s.seededBoard === boardId) return s
+          let seq = s.instanceSeq
+          const instances = { ...s.instances }
+          const positions = { ...s.positions }
+          for (const e of enemies) {
+            const id = `inst-${++seq}`
+            instances[id] = { unitId: e.unitId, side: 'enemy', removable: e.removable }
+            positions[id] = { 0: { q: e.q, r: e.r } }
+          }
+          return { instanceSeq: seq, instances, positions, seededBoard: boardId }
+        }),
+
+      setPrimesDefeated: (defeated) => set({ primesDefeated: defeated }),
 
       setPaint: (hexKey, color) =>
         set((s) => {
