@@ -28,7 +28,8 @@
  *   public/data/boards-manifest.json          (list of boards + metadata)
  *   public/data/imageStems.json               (unitId -> portrait stem, by type)
  *   public/data/bosses.json                   (boss picker index)
- *   public/data/spawns.json                   (unit -> spawnable units + identities)
+ *   public/data/primes.json                   (prime/mini-boss picker index)
+ *   public/data/spawns.json                   (spawnable units + boss/prime deployments)
  *   public/images/maps/{boardId}_Visual.jpeg  (map backgrounds)
  *
  * Re-run any time to refresh. Idempotent: re-downloads everything by default,
@@ -188,6 +189,18 @@ function splitCamel(s) {
     .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2');
 }
 
+/** Best-effort display name from a raw unit id (strips id prefix + faction tag). */
+function prettyUnitName(id) {
+  const s = id
+    .replace(/^GuildBoss\d+(?:MiniBoss|Boss|Npc|Minion)\d+/, '')
+    .replace(/^[a-z]+(?=[A-Z])/, '')
+    .replace(
+      /^(Tyran|Necro|Astra|Adept|Ultra|Blood|Black|Death|Thous|Orks|Tau|Genes|Votan|Admec|Darka|Eldar)/,
+      '',
+    );
+  return splitCamel(s) || id;
+}
+
 /**
  * Build the boss picker index: one entry per distinct unit that appears in a
  * "Boss" encounter, with the maps it's fought on, faction, image stem and size.
@@ -311,16 +324,7 @@ async function buildSpawns(seasonConfig, stems) {
   }
 
   // Identity for every referenced spawn unit.
-  const deriveName = (id) => {
-    const s = id
-      .replace(/^GuildBoss\d+(?:MiniBoss|Boss|Npc)\d+/, '')
-      .replace(/^[a-z]+(?=[A-Z])/, '')
-      .replace(
-        /^(Tyran|Necro|Astra|Adept|Ultra|Blood|Black|Death|Thous|Orks|Tau|Genes|Votan|Admec|Darka|Eldar)/,
-        '',
-      );
-    return splitCamel(s) || id;
-  };
+  const deriveName = prettyUnitName;
   // Portrait stems are keyed by unitId for bosses but by **visualId** for the
   // npc/summon catalog (e.g. summon.tauSmnDroneShield → "tauta_drone_02"), so we
   // resolve by both.
@@ -410,15 +414,14 @@ async function buildSpawns(seasonConfig, stems) {
         }
     }
 
-  const deployments = {};
-  for (const [boardId, { enc, rarity }] of bestEnc) {
-    const board = await readJson(join(BOARDS_DIR, `${boardId}.json`));
+  // Place an encounter's `enemies[]` onto the board's enemy spawn group, marking
+  // each add's removeAtPrime from `q` (a mutable per-unit queue of prime levels;
+  // empty {} for prime fights, which have no further reduction).
+  const buildEnemies = (board, enc, q) => {
     const group = board?.SpawnPointSets?.[enc.spawnPointsSet ?? 0]?.SpawnPointGroups?.find(
       (g) => g.TeamWithPlayerIndex === 1,
     );
-    if (!group) continue;
-    const { primes, queue } = primesFor(enc.unitId);
-    const q = Object.fromEntries(Object.entries(queue).map(([u, arr]) => [u, [...arr]]));
+    if (!group) return null;
     const enemies = [];
     let placed = 0;
     let dp = 0;
@@ -427,11 +430,20 @@ async function buildSpawns(seasonConfig, stems) {
       if (sp.SpawnPointType !== 10) deploymentOrder = ++dp;
       if (placed >= enc.enemies.length) continue;
       const unitId = enc.enemies[placed++].split(':')[0];
-      // The earlier-defeated primes remove the earlier-deployed adds of each type.
       const removeAtPrime = q[unitId]?.length ? q[unitId].shift() : null;
       if (!units[unitId]) units[unitId] = identity(unitId);
       enemies.push({ unitId, col: sp.Column, row: sp.Row, deploymentOrder, removeAtPrime });
     }
+    return enemies;
+  };
+
+  const deployments = {};
+  for (const [boardId, { enc, rarity }] of bestEnc) {
+    const board = await readJson(join(BOARDS_DIR, `${boardId}.json`));
+    const { primes, queue } = primesFor(enc.unitId);
+    const q = Object.fromEntries(Object.entries(queue).map(([u, arr]) => [u, [...arr]]));
+    const enemies = buildEnemies(board, enc, q);
+    if (!enemies) continue;
     deployments[boardId] = {
       bossType: enc.bossType ?? null,
       bossUnitId: enc.unitId.split(':')[0],
@@ -441,7 +453,86 @@ async function buildSpawns(seasonConfig, stems) {
     };
   }
 
-  return { byUnit, units, deployments };
+  // Prime (Crystal/mini-boss) deployments. Support boards can be shared across
+  // mini-bosses, so key by primeUnitId → boardId. No further reduction, so every
+  // add's removeAtPrime is null.
+  const bestPrime = new Map(); // `${prime}|${board}` -> { enc, prime, rarity, rank }
+  for (const season of seasonConfig)
+    for (const tier of season.tiers ?? []) {
+      const rank = RARITY_RANK[tier.rarity] ?? -1;
+      for (const set of tier.sets ?? [])
+        for (const e of set.encounters ?? []) {
+          if (e.guildBossEncounterType !== 'Crystal' || !e.enemies?.length || !e.boardId || !e.unitId)
+            continue;
+          const prime = e.unitId.split(':')[0];
+          const k = `${prime}|${e.boardId}`;
+          const cur = bestPrime.get(k);
+          if (!cur || rank > cur.rank) bestPrime.set(k, { enc: e, prime, rarity: tier.rarity, rank });
+        }
+    }
+  const primeDeployments = {};
+  for (const { enc, prime, rarity } of bestPrime.values()) {
+    const board = await readJson(join(BOARDS_DIR, `${enc.boardId}.json`));
+    const enemies = buildEnemies(board, enc, {});
+    if (!enemies) continue;
+    (primeDeployments[prime] ??= {})[enc.boardId] = { rarity, enemies };
+  }
+
+  return { byUnit, units, deployments, primeDeployments };
+}
+
+/**
+ * Build the prime (mini-boss) picker index from the "Crystal" encounters — one
+ * entry per distinct mini-boss, with its parent boss, maps, faction, stem, size.
+ */
+async function buildPrimeIndex(seasonConfig, stems) {
+  const byUnit = new Map();
+  for (const season of seasonConfig)
+    for (const tier of season.tiers ?? [])
+      for (const set of tier.sets ?? [])
+        for (const e of set.encounters ?? []) {
+          if (e.guildBossEncounterType !== 'Crystal' || !e.unitId) continue;
+          const unitId = e.unitId.split(':')[0];
+          if (!byUnit.has(unitId))
+            byUnit.set(unitId, { unitId, bossType: e.bossType ?? null, boardIds: new Set() });
+          if (e.boardId) byUnit.get(unitId).boardIds.add(e.boardId);
+        }
+
+  let units = {};
+  try {
+    units = await fetchWithRetry(`${BASE}/api/data/guildBossUnits`);
+  } catch {
+    /* faction is optional */
+  }
+  const stemFor = (id, vid) =>
+    stems.boss?.[id] ??
+    stems.npc?.[id] ??
+    (vid && (stems.boss[vid] ?? stems.npc[vid] ?? stems.summon[vid] ?? stems.character[vid])) ??
+    null;
+
+  const primes = [];
+  for (const p of byUnit.values()) {
+    const boardIds = [...p.boardIds].sort();
+    let size = null;
+    for (const bid of boardIds) {
+      const board = await readJson(join(BOARDS_DIR, `${bid}.json`));
+      const s = board?.BossPlatforms?.[0]?.Size;
+      if (s) {
+        size = s;
+        break;
+      }
+    }
+    primes.push({
+      unitId: p.unitId,
+      bossType: p.bossType,
+      name: prettyUnitName(p.unitId),
+      faction: units[p.unitId]?.FactionId ?? null,
+      imageStem: stemFor(p.unitId, units[p.unitId]?.visualId),
+      size,
+      boardIds,
+    });
+  }
+  return primes.sort((a, b) => a.unitId.localeCompare(b.unitId));
 }
 
 // --- main -------------------------------------------------------------------
@@ -561,11 +652,23 @@ async function main() {
         ')',
     );
 
+    const primes = await buildPrimeIndex(seasonConfig, stems);
+    await writeFile(
+      join(DATA_DIR, 'primes.json'),
+      JSON.stringify({ generatedFrom: BASE, primeCount: primes.length, primes }, null, 2),
+    );
+    const primesNoImage = primes.filter((p) => !p.imageStem).length;
+    console.log(
+      `  ✓ primes.json (${primes.length} primes` +
+        (primesNoImage ? `, ${primesNoImage} without an image stem` : '') +
+        ')',
+    );
+
     try {
       const spawns = await buildSpawns(seasonConfig, stems);
       await writeFile(join(DATA_DIR, 'spawns.json'), JSON.stringify(spawns, null, 2));
       console.log(
-        `  ✓ spawns.json (${Object.keys(spawns.byUnit).length} summoners, ${Object.keys(spawns.units).length} spawnable units, ${Object.keys(spawns.deployments).length} boards with initial enemy deployments)`,
+        `  ✓ spawns.json (${Object.keys(spawns.byUnit).length} summoners, ${Object.keys(spawns.units).length} spawnable units, ${Object.keys(spawns.deployments).length} boss + ${Object.keys(spawns.primeDeployments).length} prime deployments)`,
       );
     } catch (err) {
       console.log(`  ✗ spawns (${err.message})`);

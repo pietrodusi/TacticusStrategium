@@ -847,7 +847,7 @@
       "visualId": "thousNpc4Terminator"
     },
     "GuildBoss3Minion2NecroHapthatra": {
-      "name": "Guild Boss3 Minion2 Necro Hapthatra",
+      "name": "Hapthatra",
       "faction": "Necrons",
       "stem": "necro_hapthatra",
       "kind": "npc",
@@ -855,7 +855,7 @@
       "visualId": null
     },
     "GuildBoss3Minion1NecroMesophet": {
-      "name": "Guild Boss3 Minion1 Necro Mesophet",
+      "name": "Mesophet",
       "faction": "Necrons",
       "stem": "necro_mesophet",
       "kind": "npc",
@@ -869,6 +869,174 @@
       "kind": "npc",
       "size": 1,
       "visualId": "darkaNpc4Watcher"
+    },
+    "GuildBoss1Npc4TyranHormagauntLeviathan": {
+      "name": "Hormagaunt Leviathan",
+      "faction": "Tyranids",
+      "stem": "tyran_hormagaunt",
+      "kind": "npc",
+      "size": 1,
+      "visualId": null
+    },
+    "GuildBoss1Npc6TyranHormagauntGorgon": {
+      "name": "Hormagaunt Gorgon",
+      "faction": "Tyranids",
+      "stem": "tyran_hormagaunt_03",
+      "kind": "npc",
+      "size": 1,
+      "visualId": null
+    },
+    "GuildBoss6Npc3TyranTermagant": {
+      "name": "Termagant",
+      "faction": "Tyranids",
+      "stem": "tyran_termagant",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "tyranNpc3Termagant"
+    },
+    "GuildBoss6Npc2TyranRipperSwarm": {
+      "name": "Ripper Swarm",
+      "faction": "Tyranids",
+      "stem": "tyran_ripper",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "tyranNpc2RipperSwarm"
+    },
+    "GuildBoss1Npc5TyranHormagauntKronos": {
+      "name": "Hormagaunt Kronos",
+      "faction": "Tyranids",
+      "stem": "tyran_hormagaunt_02",
+      "kind": "npc",
+      "size": 1,
+      "visualId": null
+    },
+    "GuildBoss7Npc3AstraVoxcaster": {
+      "name": "Voxcaster",
+      "faction": "AstraMilitarum",
+      "stem": "astra_npc_03",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "astraNpc3Voxcaster"
+    },
+    "GuildBoss7Npc2AstraLascannon": {
+      "name": "Lascannon",
+      "faction": "AstraMilitarum",
+      "stem": "astra_npc_02",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "astraNpc2Lascannon"
+    },
+    "GuildBoss8Npc3EldarHarlequin": {
+      "name": "Harlequin",
+      "faction": "Aeldari",
+      "stem": "aelda_harlequin",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "eldarNpc3Harlequin"
+    },
+    "GuildBoss4Minion1OrksKillaKan": {
+      "name": "Killa Kan",
+      "faction": "Orks",
+      "stem": "orkss_killakan",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "orksKillaKan"
+    },
+    "GuildBoss4Npc3OrksGrotTank": {
+      "name": "Grot Tank",
+      "faction": "Orks",
+      "stem": "orkss_tank",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "orksNpc3GrotTank"
+    },
+    "GuildBoss4Minion2OrksRuntherd": {
+      "name": "Runtherd",
+      "faction": "Orks",
+      "stem": "orkss_runtherd",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "orksRuntherd"
+    },
+    "GuildBoss10Minion1AdmecRuststalker": {
+      "name": "Ruststalker",
+      "faction": "AdeptusMechanicus",
+      "stem": "admec_ruststalker",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "admecRuststalker"
+    },
+    "GuildBoss10Minion2AdmecDestroyer": {
+      "name": "Destroyer",
+      "faction": "AdeptusMechanicus",
+      "stem": "admec_destroyer",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "admecDestroyer"
+    },
+    "GuildBoss11Npc2TauDroneSniper": {
+      "name": "Drone Sniper",
+      "faction": "Tau",
+      "stem": "tauta_drone",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "tauSmnDroneSniper"
+    },
+    "GuildBoss9Npc1ThousPinkHorror": {
+      "name": "Pink Horror",
+      "faction": "ThousandSons",
+      "stem": "thous_horror",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "thousNpc1PinkHorror"
+    },
+    "GuildBoss3Npc1NecroWarrior": {
+      "name": "Warrior",
+      "faction": "Necrons",
+      "stem": "necro_npc",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "necroNpc1Warrior"
+    },
+    "GuildBoss3Npc5NecroSwarm": {
+      "name": "Swarm",
+      "faction": "Necrons",
+      "stem": "necro_scarab",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "necroSmnSwarm"
+    },
+    "GuildBoss3Npc2NecroFlayedOne": {
+      "name": "Flayed One",
+      "faction": "Necrons",
+      "stem": "necro_npc_02",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "necroNpc2FlayedOne"
+    },
+    "GuildBoss5Minion1DeathBlightlord": {
+      "name": "Blightlord",
+      "faction": "DeathGuard",
+      "stem": "death_blightlord",
+      "kind": "npc",
+      "size": 1,
+      "visualId": null
+    },
+    "GuildBoss12Npc3DarkaTerminator": {
+      "name": "Terminator",
+      "faction": "DarkAngels",
+      "stem": "darka_terminator_02",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "darkaNpc3Terminator"
+    },
+    "GuildBoss12Npc1DarkaInfiltrator": {
+      "name": "Infiltrator",
+      "faction": "DarkAngels",
+      "stem": "darka_infiltrator",
+      "kind": "npc",
+      "size": 1,
+      "visualId": "darkaNpc1Infiltrator"
     }
   },
   "deployments": {
@@ -2126,11 +2294,11 @@
       "primes": [
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Guild Boss3 Minion3 Necro Menhir"
+          "name": "Menhir"
         },
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Guild Boss3 Minion3 Necro Menhir"
+          "name": "Menhir"
         }
       ]
     },
@@ -2515,11 +2683,11 @@
       "primes": [
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Guild Boss3 Minion3 Necro Menhir"
+          "name": "Menhir"
         },
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Guild Boss3 Minion3 Necro Menhir"
+          "name": "Menhir"
         }
       ]
     },
@@ -2744,11 +2912,11 @@
       "primes": [
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Guild Boss3 Minion3 Necro Menhir"
+          "name": "Menhir"
         },
         {
           "unitId": "GuildBoss3Minion3NecroMenhir",
-          "name": "Guild Boss3 Minion3 Necro Menhir"
+          "name": "Menhir"
         }
       ]
     },
@@ -2824,6 +2992,3358 @@
           "name": "Manipulus"
         }
       ]
+    }
+  },
+  "primeDeployments": {
+    "GuildBoss1MiniBoss1TyranWarriorLeviathan": {
+      "GB_support_01": {
+        "rarity": "rare",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc1TyranTermagantLeviathan",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc1TyranTermagantLeviathan",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc1TyranRipperSwarmLeviathan",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc4TyranHormagauntLeviathan",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_support_02": {
+        "rarity": "rare",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc1TyranTermagantLeviathan",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc1TyranTermagantLeviathan",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc1TyranRipperSwarmLeviathan",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc4TyranHormagauntLeviathan",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_support_03": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc1TyranTermagantLeviathan",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc1TyranTermagantLeviathan",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc1TyranRipperSwarmLeviathan",
+            "col": 4,
+            "row": 4,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc4TyranHormagauntLeviathan",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc4TyranHormagauntLeviathan",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_support_04": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc1TyranTermagantLeviathan",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc1TyranTermagantLeviathan",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc1TyranRipperSwarmLeviathan",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc4TyranHormagauntLeviathan",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc4TyranHormagauntLeviathan",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss1MiniBoss3TyranWarriorGorgon": {
+      "GB_support_05": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc3TyranTermagantGorgon",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc3TyranTermagantGorgon",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc3TyranRipperSwarmGorgon",
+            "col": 0,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc6TyranHormagauntGorgon",
+            "col": 0,
+            "row": 3,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc6TyranHormagauntGorgon",
+            "col": 2,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_support_06": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc3TyranTermagantGorgon",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc3TyranTermagantGorgon",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc3TyranRipperSwarmGorgon",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc6TyranHormagauntGorgon",
+            "col": 2,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc6TyranHormagauntGorgon",
+            "col": 5,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_support_09": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc3TyranTermagantGorgon",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc3TyranTermagantGorgon",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc3TyranRipperSwarmGorgon",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc6TyranHormagauntGorgon",
+            "col": 5,
+            "row": 4,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc6TyranHormagauntGorgon",
+            "col": 1,
+            "row": 4,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_support_11": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc3TyranTermagantGorgon",
+            "col": 5,
+            "row": 5,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc3TyranTermagantGorgon",
+            "col": 6,
+            "row": 4,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc3TyranRipperSwarmGorgon",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc6TyranHormagauntGorgon",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc6TyranHormagauntGorgon",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss6MiniBoss1TyranNeurothrope": {
+      "GB_Screamer_support_07": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Screamer_support_01": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 4,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Screamer_support_03": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 2,
+            "row": 5,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Screamer_support_05": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc5TyranBarbgaunt",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc3TyranTermagant",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss6MiniBoss2TyranWingedPrime": {
+      "GB_Screamer_support_08": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 3,
+            "row": 8,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 2,
+            "row": 4,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Screamer_support_02": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 5,
+            "row": 5,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Screamer_support_04": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 5,
+            "row": 9,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Screamer_support_06": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc4TyranWarrior",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 4,
+            "row": 8,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss6Npc2TyranRipperSwarm",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss1MiniBoss2TyranWarriorKronos": {
+      "GB_support_07": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc2TyranRipperSwarmKronos",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc5TyranHormagauntKronos",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc5TyranHormagauntKronos",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_support_08": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc2TyranRipperSwarmKronos",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc5TyranHormagauntKronos",
+            "col": 5,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc5TyranHormagauntKronos",
+            "col": 1,
+            "row": 4,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_support_05": {
+        "rarity": "rare",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc2TyranRipperSwarmKronos",
+            "col": 0,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc5TyranHormagauntKronos",
+            "col": 0,
+            "row": 3,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_support_06": {
+        "rarity": "rare",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc2TyranRipperSwarmKronos",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc5TyranHormagauntKronos",
+            "col": 2,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_support_03": {
+        "rarity": "rare",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc2TyranRipperSwarmKronos",
+            "col": 4,
+            "row": 4,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc5TyranHormagauntKronos",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_support_04": {
+        "rarity": "rare",
+        "enemies": [
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc2TyranTermagantKronos",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss2Npc2TyranRipperSwarmKronos",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss1Npc5TyranHormagauntKronos",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss7MiniBoss1AstraPrimarisPsy": {
+      "GB_RogalDorn_support_03": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 4,
+            "row": 8,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 6,
+            "row": 8,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 0,
+            "row": 8,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_RogalDorn_support_01": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 3,
+            "row": 8,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 2,
+            "row": 5,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_RogalDorn_support_05": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 3,
+            "row": 9,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 5,
+            "row": 9,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc3AstraVoxcaster",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 0,
+            "row": 9,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss7MiniBoss2AstraOrdnance": {
+      "GB_RogalDorn_support_04": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 0,
+            "row": 2,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 1,
+            "row": 3,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 5,
+            "row": 3,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 5,
+            "row": 5,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 6,
+            "row": 3,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_RogalDorn_support_02": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 2,
+            "row": 3,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 0,
+            "row": 2,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 6,
+            "row": 3,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 0,
+            "row": 4,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_RogalDorn_support_06": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 0,
+            "row": 3,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc4Mortar",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 0,
+            "row": 2,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss7Npc2AstraLascannon",
+            "col": 6,
+            "row": 3,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss8MiniBoss1EldarAutarch": {
+      "GB_Khaine_support_03": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss8Npc1EldarGuardian",
+            "col": 0,
+            "row": 3,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc1EldarGuardian",
+            "col": 2,
+            "row": 4,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc1EldarGuardian",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc3EldarHarlequin",
+            "col": 5,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc3EldarHarlequin",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Khaine_support_01": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss8Npc1EldarGuardian",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc1EldarGuardian",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc1EldarGuardian",
+            "col": 4,
+            "row": 5,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc1EldarGuardian",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc3EldarHarlequin",
+            "col": 3,
+            "row": 8,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Khaine_support_05": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss8Npc1EldarGuardian",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc1EldarGuardian",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc1EldarGuardian",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc3EldarHarlequin",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc3EldarHarlequin",
+            "col": 4,
+            "row": 8,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss8MiniBoss2EldarFarseer": {
+      "GB_Khaine_support_04": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 1,
+            "row": 4,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 3,
+            "row": 3,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 5,
+            "row": 4,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Khaine_support_02": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Khaine_support_06": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 4,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss8Npc2EldarWarlock",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss4MiniBoss1OrksBigMek": {
+      "GB_Dakka_support_03": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss4Minion1OrksKillaKan",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 4,
+            "row": 5,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 6,
+            "row": 4,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 4,
+            "row": 3,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 2,
+            "row": 3,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Dakka_support_01": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss4Minion1OrksKillaKan",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 1,
+            "row": 5,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Dakka_support_05_1": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss4Minion1OrksKillaKan",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 4,
+            "row": 5,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Dakka_support_05": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss4Minion1OrksKillaKan",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 5,
+            "row": 5,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc3OrksGrotTank",
+            "col": 4,
+            "row": 4,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss4MiniBoss2OrksNob": {
+      "GB_Dakka_support_04_1": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss4Minion2OrksRuntherd",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Dakka_support_02": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss4Minion2OrksRuntherd",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Dakka_support_06": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss4Minion2OrksRuntherd",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 4,
+            "row": 5,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Dakka_support_04": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss4Minion2OrksRuntherd",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss4Npc1OrksGrot",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss10MiniBoss1AdmecMarshall": {
+      "GB_Belisarius_support_01": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss10Minion1AdmecRuststalker",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 0,
+            "row": 4,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 3,
+            "row": 8,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Belisarius_support_02": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss10Minion1AdmecRuststalker",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 5,
+            "row": 3,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 6,
+            "row": 2,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Belisarius_support_03": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss10Minion1AdmecRuststalker",
+            "col": 6,
+            "row": 4,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 4,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 5,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc1AdmecTechpriest",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss10MiniBoss2AdmecManipulus": {
+      "GB_Belisarius_support_04": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss10Minion2AdmecDestroyer",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 3,
+            "row": 4,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc2AdmecElectropriest",
+            "col": 1,
+            "row": 5,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc2AdmecElectropriest",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Belisarius_support_05": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss10Minion2AdmecDestroyer",
+            "col": 0,
+            "row": 9,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 1,
+            "row": 4,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 5,
+            "row": 4,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 3,
+            "row": 8,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc2AdmecElectropriest",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc2AdmecElectropriest",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Belisarius_support_06": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss10Minion2AdmecDestroyer",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 1,
+            "row": 3,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 5,
+            "row": 3,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10LootObjArcheotecCrate",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc2AdmecElectropriest",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss10Npc2AdmecElectropriest",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss11MiniBoss1TauMarksman": {
+      "GB_Riptide_support_02": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss11Npc3TauDroneShield",
+            "col": 4,
+            "row": 5,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 1,
+            "row": 4,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 5,
+            "row": 4,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc2TauDroneSniper",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc2TauDroneSniper",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Riptide_support_01": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss11Npc3TauDroneShield",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 4,
+            "row": 5,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc2TauDroneSniper",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc2TauDroneSniper",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss11MiniBoss2TauCrisis": {
+      "GB_Riptide_support_04": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 1,
+            "row": 3,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 5,
+            "row": 2,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 2,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 4,
+            "row": 4,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc4TauStealthSuit",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc4TauStealthSuit",
+            "col": 4,
+            "row": 8,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Riptide_support_03": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss11Npc1TauFireWarrior",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss9MiniBoss2ThousInfernalMaster": {
+      "GB_Magnus_support_05": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 0,
+            "row": 9,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 0,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 6,
+            "row": 9,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 3,
+            "row": 8,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 4,
+            "row": 8,
+            "deploymentOrder": 9,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Magnus_support_01": {
+        "rarity": "tier5",
+        "enemies": [
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss9Npc1ThousPinkHorror",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 9,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss3Minion3NecroMenhir": {
+      "GB_SK_support_06": {
+        "rarity": "tier5",
+        "enemies": [
+          {
+            "unitId": "GuildBoss3Minion2NecroHapthatra",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 3,
+            "row": 4,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc3NecroDeathmark",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc3NecroDeathmark",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_SK_support_05": {
+        "rarity": "tier5",
+        "enemies": [
+          {
+            "unitId": "GuildBoss3Minion1NecroMesophet",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc5NecroSwarm",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 6,
+            "row": 4,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 4,
+            "row": 3,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 2,
+            "row": 4,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_SK_support_02": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss3Minion2NecroHapthatra",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 4,
+            "row": 9,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 2,
+            "row": 9,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc3NecroDeathmark",
+            "col": 1,
+            "row": 9,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc3NecroDeathmark",
+            "col": 0,
+            "row": 8,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_SK_support_01": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss3Minion1NecroMesophet",
+            "col": 3,
+            "row": 5,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc5NecroSwarm",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_SK_support_04": {
+        "rarity": "tier5",
+        "enemies": [
+          {
+            "unitId": "GuildBoss3Minion2NecroHapthatra",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 4,
+            "row": 3,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 4,
+            "row": 4,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc1NecroWarrior",
+            "col": 5,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc3NecroDeathmark",
+            "col": 5,
+            "row": 4,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc3NecroDeathmark",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_SK_support_03": {
+        "rarity": "tier5",
+        "enemies": [
+          {
+            "unitId": "GuildBoss3Minion1NecroMesophet",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc5NecroSwarm",
+            "col": 4,
+            "row": 9,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 2,
+            "row": 8,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 2,
+            "row": 9,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 1,
+            "row": 9,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 0,
+            "row": 8,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss3Npc2NecroFlayedOne",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss5MiniBoss1DeathRotbone": {
+      "GB_Mortarion_support_01": {
+        "rarity": "tier5",
+        "enemies": [
+          {
+            "unitId": "GuildBoss5Minion1DeathBlightlord",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Minion1DeathBlightlord",
+            "col": 5,
+            "row": 8,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 0,
+            "row": 3,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 6,
+            "row": 3,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Mortarion_support_03": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss5Minion1DeathBlightlord",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Minion1DeathBlightlord",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss5MiniBoss2DeathBlightbringer": {
+      "GB_Mortarion_support_02": {
+        "rarity": "tier5",
+        "enemies": [
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 4,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 2,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Mortarion_support_04": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 0,
+            "row": 5,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 1,
+            "row": 8,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 4,
+            "row": 5,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss5Npc1Poxwalker",
+            "col": 3,
+            "row": 8,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss12MiniBoss1DarkaTerminator": {
+      "GB_Lion_support_01": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss12Npc3DarkaTerminator",
+            "col": 0,
+            "row": 7,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc3DarkaTerminator",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc3DarkaTerminator",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc3DarkaTerminator",
+            "col": 6,
+            "row": 8,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Lion_support_03": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss12Npc3DarkaTerminator",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc3DarkaTerminator",
+            "col": 5,
+            "row": 6,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc3DarkaTerminator",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc3DarkaTerminator",
+            "col": 1,
+            "row": 7,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc3DarkaTerminator",
+            "col": 5,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc2DarkaHellblaster",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          }
+        ]
+      }
+    },
+    "GuildBoss12MiniBoss2DarkaCompanion": {
+      "GB_Lion_support_02": {
+        "rarity": "epic",
+        "enemies": [
+          {
+            "unitId": "GuildBoss12Npc1DarkaInfiltrator",
+            "col": 4,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc1DarkaInfiltrator",
+            "col": 6,
+            "row": 5,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc1DarkaInfiltrator",
+            "col": 5,
+            "row": 5,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc1DarkaInfiltrator",
+            "col": 4,
+            "row": 5,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc1DarkaInfiltrator",
+            "col": 6,
+            "row": 7,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc2DarkaHellblaster",
+            "col": 2,
+            "row": 7,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc2DarkaHellblaster",
+            "col": 3,
+            "row": 7,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          }
+        ]
+      },
+      "GB_Lion_support_04": {
+        "rarity": "legendary",
+        "enemies": [
+          {
+            "unitId": "GuildBoss12Npc1DarkaInfiltrator",
+            "col": 1,
+            "row": 6,
+            "deploymentOrder": 1,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc1DarkaInfiltrator",
+            "col": 2,
+            "row": 2,
+            "deploymentOrder": 2,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc1DarkaInfiltrator",
+            "col": 6,
+            "row": 6,
+            "deploymentOrder": 3,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc2DarkaHellblaster",
+            "col": 4,
+            "row": 4,
+            "deploymentOrder": 4,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc2DarkaHellblaster",
+            "col": 5,
+            "row": 2,
+            "deploymentOrder": 5,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc2DarkaHellblaster",
+            "col": 2,
+            "row": 4,
+            "deploymentOrder": 6,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc2DarkaHellblaster",
+            "col": 2,
+            "row": 5,
+            "deploymentOrder": 7,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc2DarkaHellblaster",
+            "col": 4,
+            "row": 5,
+            "deploymentOrder": 8,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc2DarkaHellblaster",
+            "col": 3,
+            "row": 4,
+            "deploymentOrder": 9,
+            "removeAtPrime": null
+          },
+          {
+            "unitId": "GuildBoss12Npc3DarkaTerminator",
+            "col": 3,
+            "row": 6,
+            "deploymentOrder": 10,
+            "removeAtPrime": null
+          }
+        ]
+      }
     }
   }
 }

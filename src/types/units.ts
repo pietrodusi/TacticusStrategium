@@ -17,6 +17,23 @@ export interface BossIndex {
   bosses: BossIndexEntry[]
 }
 
+/** One entry in public/data/primes.json (a boss's mini-boss / "prime"). */
+export interface PrimeIndexEntry {
+  unitId: string
+  bossType: string | null // parent boss, for grouping
+  name: string
+  faction: string | null
+  size: number | null // 1 | 3
+  imageStem: string | null
+  boardIds: string[]
+}
+
+export interface PrimeIndex {
+  generatedFrom: string
+  primeCount: number
+  primes: PrimeIndexEntry[]
+}
+
 /** public/data/imageStems.json — unitId → portrait stem, by unit type. */
 export interface ImageStems {
   character: Record<string, string>
@@ -69,8 +86,17 @@ export interface BoardDeployment {
   primes: DeploymentPrime[] // defeating the first k removes adds with removeAtPrime ≤ k
 }
 
+/** A prime fight's initial enemy line-up on one support board. */
+export interface PrimeDeployment {
+  rarity: string | null
+  enemies: DeployedEnemy[]
+}
+
 export interface SpawnsData {
   byUnit: Record<string, string[]>
   units: Record<string, SpawnUnit>
+  /** Boss-fight initial deployments, keyed by boardId. */
   deployments: Record<string, BoardDeployment>
+  /** Prime-fight initial deployments, keyed by primeUnitId → boardId. */
+  primeDeployments: Record<string, Record<string, PrimeDeployment>>
 }

@@ -1,0 +1,296 @@
+{
+  "generatedFrom": "https://tacticusdb.com",
+  "primeCount": 22,
+  "primes": [
+    {
+      "unitId": "GuildBoss10MiniBoss1AdmecMarshall",
+      "bossType": "BelisariusRW",
+      "name": "Marshall",
+      "faction": "AdeptusMechanicus",
+      "imageStem": "admec_marshall",
+      "size": 1,
+      "boardIds": [
+        "GB_Belisarius_support_01",
+        "GB_Belisarius_support_02",
+        "GB_Belisarius_support_03"
+      ]
+    },
+    {
+      "unitId": "GuildBoss10MiniBoss2AdmecManipulus",
+      "bossType": "BelisariusRW",
+      "name": "Manipulus",
+      "faction": "AdeptusMechanicus",
+      "imageStem": "admec_manipulus",
+      "size": 1,
+      "boardIds": [
+        "GB_Belisarius_support_04",
+        "GB_Belisarius_support_05",
+        "GB_Belisarius_support_06"
+      ]
+    },
+    {
+      "unitId": "GuildBoss11MiniBoss1TauMarksman",
+      "bossType": "Riptide",
+      "name": "Marksman",
+      "faction": "Tau",
+      "imageStem": "tauta_marksman",
+      "size": 1,
+      "boardIds": [
+        "GB_Riptide_support_01",
+        "GB_Riptide_support_02"
+      ]
+    },
+    {
+      "unitId": "GuildBoss11MiniBoss2TauCrisis",
+      "bossType": "Riptide",
+      "name": "Crisis",
+      "faction": "Tau",
+      "imageStem": "tauta_crisis",
+      "size": 1,
+      "boardIds": [
+        "GB_Riptide_support_03",
+        "GB_Riptide_support_04"
+      ]
+    },
+    {
+      "unitId": "GuildBoss12MiniBoss1DarkaTerminator",
+      "bossType": "Lion",
+      "name": "Terminator",
+      "faction": "DarkAngels",
+      "imageStem": "darka_terminator",
+      "size": 1,
+      "boardIds": [
+        "GB_Lion_support_01",
+        "GB_Lion_support_03"
+      ]
+    },
+    {
+      "unitId": "GuildBoss12MiniBoss2DarkaCompanion",
+      "bossType": "Lion",
+      "name": "Companion",
+      "faction": "DarkAngels",
+      "imageStem": "darka_companion",
+      "size": 1,
+      "boardIds": [
+        "GB_Lion_support_02",
+        "GB_Lion_support_04"
+      ]
+    },
+    {
+      "unitId": "GuildBoss1MiniBoss1TyranWarriorLeviathan",
+      "bossType": "TervigonLeviathan",
+      "name": "Warrior Leviathan",
+      "faction": "Tyranids",
+      "imageStem": "tyran_warrior",
+      "size": 1,
+      "boardIds": [
+        "GB_support_01",
+        "GB_support_02",
+        "GB_support_03",
+        "GB_support_04"
+      ]
+    },
+    {
+      "unitId": "GuildBoss1MiniBoss2TyranWarriorKronos",
+      "bossType": "TervigonKronos",
+      "name": "Warrior Kronos",
+      "faction": "Tyranids",
+      "imageStem": "tyran_warrior_02",
+      "size": 1,
+      "boardIds": [
+        "GB_support_03",
+        "GB_support_04",
+        "GB_support_05",
+        "GB_support_06",
+        "GB_support_07",
+        "GB_support_08"
+      ]
+    },
+    {
+      "unitId": "GuildBoss1MiniBoss3TyranWarriorGorgon",
+      "bossType": "TervigonGorgon",
+      "name": "Warrior Gorgon",
+      "faction": "Tyranids",
+      "imageStem": "tyran_warrior_03",
+      "size": 1,
+      "boardIds": [
+        "GB_support_05",
+        "GB_support_06",
+        "GB_support_09",
+        "GB_support_11"
+      ]
+    },
+    {
+      "unitId": "GuildBoss3Minion3NecroMenhir",
+      "bossType": "SilentKing",
+      "name": "Menhir",
+      "faction": "Necrons",
+      "imageStem": "necro_menhir",
+      "size": 1,
+      "boardIds": [
+        "GB_SK_support_01",
+        "GB_SK_support_02",
+        "GB_SK_support_03",
+        "GB_SK_support_04",
+        "GB_SK_support_05",
+        "GB_SK_support_06"
+      ]
+    },
+    {
+      "unitId": "GuildBoss4MiniBoss1OrksBigMek",
+      "bossType": "Ghazghkull",
+      "name": "Big Mek",
+      "faction": "Orks",
+      "imageStem": "orkss_mek",
+      "size": 1,
+      "boardIds": [
+        "GB_Dakka_support_01",
+        "GB_Dakka_support_03",
+        "GB_Dakka_support_05",
+        "GB_Dakka_support_05_1"
+      ]
+    },
+    {
+      "unitId": "GuildBoss4MiniBoss2OrksNob",
+      "bossType": "Ghazghkull",
+      "name": "Nob",
+      "faction": "Orks",
+      "imageStem": "orkss_nob",
+      "size": 1,
+      "boardIds": [
+        "GB_Dakka_support_02",
+        "GB_Dakka_support_04",
+        "GB_Dakka_support_04_1",
+        "GB_Dakka_support_06"
+      ]
+    },
+    {
+      "unitId": "GuildBoss5MiniBoss1DeathRotbone",
+      "bossType": "Mortarion",
+      "name": "Rotbone",
+      "faction": "DeathGuard",
+      "imageStem": "death_rotbone",
+      "size": 1,
+      "boardIds": [
+        "GB_Mortarion_support_01",
+        "GB_Mortarion_support_03"
+      ]
+    },
+    {
+      "unitId": "GuildBoss5MiniBoss2DeathBlightbringer",
+      "bossType": "Mortarion",
+      "name": "Blightbringer",
+      "faction": "DeathGuard",
+      "imageStem": "death_blightbringer",
+      "size": 1,
+      "boardIds": [
+        "GB_Mortarion_support_02",
+        "GB_Mortarion_support_04"
+      ]
+    },
+    {
+      "unitId": "GuildBoss6MiniBoss1TyranNeurothrope",
+      "bossType": "ScreamerKiller",
+      "name": "Neurothrope",
+      "faction": "Tyranids",
+      "imageStem": "tyran_neurothrope",
+      "size": 1,
+      "boardIds": [
+        "GB_Screamer_support_01",
+        "GB_Screamer_support_03",
+        "GB_Screamer_support_05",
+        "GB_Screamer_support_07"
+      ]
+    },
+    {
+      "unitId": "GuildBoss6MiniBoss2TyranWingedPrime",
+      "bossType": "ScreamerKiller",
+      "name": "Winged Prime",
+      "faction": "Tyranids",
+      "imageStem": "tyran_wingedprime",
+      "size": 1,
+      "boardIds": [
+        "GB_Screamer_support_02",
+        "GB_Screamer_support_04",
+        "GB_Screamer_support_06",
+        "GB_Screamer_support_08"
+      ]
+    },
+    {
+      "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
+      "bossType": "RogalDorn",
+      "name": "Primaris Psy",
+      "faction": "AstraMilitarum",
+      "imageStem": "astra_psyker",
+      "size": 1,
+      "boardIds": [
+        "GB_RogalDorn_support_01",
+        "GB_RogalDorn_support_03",
+        "GB_RogalDorn_support_05"
+      ]
+    },
+    {
+      "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
+      "bossType": "RogalDorn",
+      "name": "Ordnance",
+      "faction": "AstraMilitarum",
+      "imageStem": "astra_ordnance",
+      "size": 1,
+      "boardIds": [
+        "GB_RogalDorn_support_02",
+        "GB_RogalDorn_support_04",
+        "GB_RogalDorn_support_06"
+      ]
+    },
+    {
+      "unitId": "GuildBoss8MiniBoss1EldarAutarch",
+      "bossType": "AvatarOfKhaine",
+      "name": "Autarch",
+      "faction": "Aeldari",
+      "imageStem": "aelda_autarch",
+      "size": 1,
+      "boardIds": [
+        "GB_Khaine_support_01",
+        "GB_Khaine_support_03",
+        "GB_Khaine_support_05"
+      ]
+    },
+    {
+      "unitId": "GuildBoss8MiniBoss2EldarFarseer",
+      "bossType": "AvatarOfKhaine",
+      "name": "Farseer",
+      "faction": "Aeldari",
+      "imageStem": "aelda_farseer",
+      "size": 1,
+      "boardIds": [
+        "GB_Khaine_support_02",
+        "GB_Khaine_support_04",
+        "GB_Khaine_support_06"
+      ]
+    },
+    {
+      "unitId": "GuildBoss9MiniBoss1ThousSorcerer",
+      "bossType": "Magnus",
+      "name": "Sorcerer",
+      "faction": "ThousandSons",
+      "imageStem": "thous_sorcerer",
+      "size": 1,
+      "boardIds": [
+        "GB_Magnus_support_02",
+        "GB_Magnus_support_06"
+      ]
+    },
+    {
+      "unitId": "GuildBoss9MiniBoss2ThousInfernalMaster",
+      "bossType": "Magnus",
+      "name": "Infernal Master",
+      "faction": "ThousandSons",
+      "imageStem": "thous_infernal",
+      "size": 1,
+      "boardIds": [
+        "GB_Magnus_support_01",
+        "GB_Magnus_support_05"
+      ]
+    }
+  ]
+}

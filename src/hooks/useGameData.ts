@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { asset } from '../services/paths'
-import type { BossIndex, ImageStems, SpawnsData, Unit } from '../types/units'
+import type { BossIndex, ImageStems, PrimeIndex, SpawnsData, Unit } from '../types/units'
 import type { TacticusCharacter } from '../services/tacticusdb/client'
 import { useCharacters } from './useTacticusData'
 
@@ -11,6 +11,17 @@ export const useBosses = () =>
     queryFn: async (): Promise<BossIndex> => {
       const res = await fetch(asset('data/bosses.json'))
       if (!res.ok) throw new Error(`bosses ${res.status}`)
+      return res.json()
+    },
+  })
+
+/** Bundled prime (mini-boss) picker index (public/data/primes.json). */
+export const usePrimes = () =>
+  useQuery({
+    queryKey: ['primes'],
+    queryFn: async (): Promise<PrimeIndex> => {
+      const res = await fetch(asset('data/primes.json'))
+      if (!res.ok) throw new Error(`primes ${res.status}`)
       return res.json()
     },
   })
