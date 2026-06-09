@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronDown, ChevronRight, Lock, Plus, X } from 'lucide-react'
-import { useBosses, useRoster } from '../hooks/useGameData'
+import { useBosses, usePrimes, useRoster } from '../hooks/useGameData'
 import { usePlanStore } from '../stores/planStore'
 import { mapImageUrl } from '../services/paths'
 import { bossDisplayName, factionLabel } from '../utils/format'
-import type { BossIndexEntry, Unit } from '../types/units'
+import type { BossIndexEntry, PrimeIndexEntry, Unit } from '../types/units'
 import { UnitPickerModal } from '../components/plan/UnitPickerModal'
 import { UnitImage } from '../components/UnitImage'
 
@@ -15,14 +15,34 @@ type PickerTarget = { kind: 'team'; index: number } | { kind: 'mow' }
 export function SetupPage() {
   const navigate = useNavigate()
   const bosses = useBosses()
+  const primes = usePrimes()
   const { roster, machinesOfWar } = useRoster()
-  const { bossUnitId, boardId, team, machineOfWar, selectBoss, selectBoard, setTeamSlot, setMachineOfWar } =
+  const { bossUnitId, targetKind, boardId, team, machineOfWar, selectBoss, selectPrime, selectBoard, setTeamSlot, setMachineOfWar } =
     usePlanStore()
 
   const [open, setOpen] = useState<StepKey | null>('boss')
   const [picker, setPicker] = useState<PickerTarget | null>(null)
 
-  const selectedBoss = bosses.data?.bosses.find((b) => b.unitId === bossUnitId) ?? null
+  // Each boss with its primes (mini-bosses), grouped for the triptych picker.
+  const groups = useMemo(() => {
+    const ps = primes.data?.primes ?? []
+    return (bosses.data?.bosses ?? []).map((boss) => ({
+      boss,
+      primes: ps.filter((p) => p.bossType === boss.bossType),
+    }))
+  }, [bosses.data, primes.data])
+
+  // The selected fight target (a boss or a prime) — normalised for the later steps.
+  const selectedTarget =
+    (targetKind === 'prime'
+      ? primes.data?.primes.find((p) => p.unitId === bossUnitId)
+      : bosses.data?.bosses.find((b) => b.unitId === bossUnitId)) ?? null
+  const targetName = selectedTarget
+    ? targetKind === 'prime'
+      ? selectedTarget.name
+      : bossDisplayName(selectedTarget.bossType, selectedTarget.name)
+    : ''
+
   const teamCount = team.filter(Boolean).length
   const ready = !!bossUnitId && !!boardId && teamCount > 0
 
@@ -35,6 +55,10 @@ export function SetupPage() {
   // Auto-advance: completing a step collapses it and opens the next.
   const chooseBoss = (id: string) => {
     selectBoss(id)
+    setOpen('map')
+  }
+  const choosePrime = (id: string) => {
+    selectPrime(id)
     setOpen('map')
   }
   const chooseMap = (id: string) => {
@@ -52,22 +76,28 @@ export function SetupPage() {
         </h1>
       </header>
 
-      {/* I — Raid Boss */}
+      {/* I — Target: raid boss (centre) flanked by its primes */}
       <Step
         numeral="I"
-        title="Raid Boss"
+        title="Target"
         open={open === 'boss'}
         onToggle={() => toggle('boss')}
-        summary={selectedBoss && <BossSummary boss={selectedBoss} />}
+        summary={selectedTarget && <TargetSummary stem={selectedTarget.imageStem} name={targetName} prime={targetKind === 'prime'} />}
       >
         {bosses.isLoading && <p className="text-sm text-ash">Loading bosses…</p>}
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
-          {bosses.data?.bosses.map((b) => (
-            <BossTile
-              key={b.unitId}
-              boss={b}
-              active={b.unitId === bossUnitId}
-              onClick={() => chooseBoss(b.unitId)}
+        <p className="mb-3 text-xs uppercase tracking-[0.12em] text-ash/60">
+          Pick the raid boss, or a prime on either side
+        </p>
+        <div className="space-y-2.5">
+          {groups.map((g) => (
+            <BossGroupRow
+              key={g.boss.unitId}
+              boss={g.boss}
+              primes={g.primes}
+              activeUnitId={bossUnitId}
+              targetKind={targetKind}
+              onBoss={() => chooseBoss(g.boss.unitId)}
+              onPrime={choosePrime}
             />
           ))}
         </div>
@@ -82,9 +112,9 @@ export function SetupPage() {
         onToggle={() => toggle('map')}
         summary={boardId && <span className="data text-xs">{boardId}</span>}
       >
-        {selectedBoss && (
+        {selectedTarget && (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {selectedBoss.boardIds.map((id) => (
+            {selectedTarget.boardIds.map((id) => (
               <MapTile key={id} boardId={id} active={id === boardId} onClick={() => chooseMap(id)} />
             ))}
           </div>
@@ -131,7 +161,7 @@ export function SetupPage() {
           style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
         >
           <p className="font-mono text-[0.68rem] uppercase tracking-[0.12em] text-ash">
-            {ready ? 'Ready to deploy' : !bossUnitId ? 'Pick a boss' : !boardId ? 'Pick a map' : 'Add a squad member'}
+            {ready ? 'Ready to deploy' : !bossUnitId ? 'Pick a target' : !boardId ? 'Pick a map' : 'Add a squad member'}
           </p>
           <button disabled={!ready} onClick={() => navigate('/plan/board')} className="btn btn-primary">
             Engage
@@ -209,14 +239,69 @@ function Step({
   )
 }
 
-function BossSummary({ boss }: { boss: BossIndexEntry }) {
+function TargetSummary({ stem, name, prime }: { stem: string | null; name: string; prime: boolean }) {
   return (
     <>
-      <UnitImage stem={boss.imageStem} alt={boss.name} className="h-7 w-7 shrink-0 rounded-full object-cover" />
+      <UnitImage stem={stem} alt={name} className="h-7 w-7 shrink-0 rounded-full object-cover" />
       <span className="truncate text-xs font-semibold text-bone">
-        {bossDisplayName(boss.bossType, boss.name)}
+        {prime && <span className="text-ash">Prime · </span>}
+        {name}
       </span>
     </>
+  )
+}
+
+/** One boss flanked by its primes: prime 1 (left) · boss (centre) · prime 2 (right). */
+function BossGroupRow({
+  boss,
+  primes,
+  activeUnitId,
+  targetKind,
+  onBoss,
+  onPrime,
+}: {
+  boss: BossIndexEntry
+  primes: PrimeIndexEntry[]
+  activeUnitId: string | null
+  targetKind: 'boss' | 'prime'
+  onBoss: () => void
+  onPrime: (id: string) => void
+}) {
+  return (
+    <div className="grid grid-cols-[1fr_1.5fr_1fr] items-center gap-2 rounded-lg border border-iron/60 bg-steel/30 p-2">
+      <PrimeTile
+        prime={primes[0]}
+        active={targetKind === 'prime' && primes[0]?.unitId === activeUnitId}
+        onClick={() => primes[0] && onPrime(primes[0].unitId)}
+      />
+      <BossTile boss={boss} active={targetKind === 'boss' && boss.unitId === activeUnitId} onClick={onBoss} />
+      <PrimeTile
+        prime={primes[1]}
+        active={targetKind === 'prime' && primes[1]?.unitId === activeUnitId}
+        onClick={() => primes[1] && onPrime(primes[1].unitId)}
+      />
+    </div>
+  )
+}
+
+function PrimeTile({ prime, active, onClick }: { prime?: PrimeIndexEntry; active: boolean; onClick: () => void }) {
+  if (!prime) return <span aria-hidden />
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center gap-1 rounded-md border p-1.5 transition-all ${
+        active ? 'border-blood bg-blood/10' : 'border-iron/70 hover:border-brass-dim'
+      }`}
+    >
+      <UnitImage
+        stem={prime.imageStem}
+        alt={prime.name}
+        className={`h-10 w-10 rounded-full object-cover ring-1 ${active ? 'ring-blood-bright' : 'ring-iron'}`}
+      />
+      <span className="line-clamp-1 w-full text-center text-[0.6rem] font-medium leading-tight text-ash">
+        {prime.name}
+      </span>
+    </button>
   )
 }
 

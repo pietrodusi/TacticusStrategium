@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ArrowLeftRight, Brush, Cog, LogOut, Mountain, Plus, RotateCw, Skull, SlidersHorizontal, Trash2 } from 'lucide-react'
 import { usePlanStore, posAtTurn, paintAtTurn } from '../stores/planStore'
-import { useBosses, useRoster, useSpawns } from '../hooks/useGameData'
+import { useBosses, usePrimes, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
 import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
 import { RING_COLOR, type TokenKind } from '../components/tokenColors'
@@ -41,12 +41,13 @@ const PAINT_COLORS = [
 
 export function BoardPage() {
   const navigate = useNavigate()
-  const { bossUnitId, boardId, team, machineOfWar, currentTurn, positions, paint, instances } = usePlanStore()
+  const { bossUnitId, targetKind, boardId, team, machineOfWar, currentTurn, positions, paint, instances } = usePlanStore()
   const { seededBoard, primesDefeated } = usePlanStore()
   const { setCurrentTurn, placeToken, removeFromTurn, addInstance, setPaint, resetPlan } = usePlanStore()
   const { seedDeployment, setPrimesDefeated } = usePlanStore()
 
   const bosses = useBosses()
+  const primes = usePrimes()
   const { roster, machinesOfWar } = useRoster()
   const spawns = useSpawns()
   const board = useBoard(boardId)
@@ -72,23 +73,42 @@ export function BoardPage() {
     }
   }, [])
 
+  // The fight's primary unit (raid boss or prime), normalised to a token def.
+  const target = useMemo(() => {
+    if (!bossUnitId) return null
+    if (targetKind === 'prime') {
+      const p = primes.data?.primes.find((x) => x.unitId === bossUnitId)
+      return p ? { unitId: p.unitId, name: p.name, stem: p.imageStem, size: p.size ?? 1 } : null
+    }
+    const b = bosses.data?.bosses.find((x) => x.unitId === bossUnitId)
+    return b
+      ? { unitId: b.unitId, name: bossDisplayName(b.bossType, b.name), stem: b.imageStem, size: b.bossSize }
+      : null
+  }, [bossUnitId, targetKind, primes.data, bosses.data])
+
+  // The initial enemy deployment for this fight: boss board-keyed, or a prime
+  // keyed primeUnitId → boardId.
+  const deployment =
+    targetKind === 'prime'
+      ? spawns.data?.primeDeployments[bossUnitId ?? '']?.[boardId ?? '']
+      : spawns.data?.deployments[boardId ?? '']
+
   // Seed the board's initial enemy line-up once (turn-0 enemy instances). The
   // deployment lists offset (col,row); resolve to axial via the parsed cells.
   useEffect(() => {
     if (!boardId || !board.data || !spawns.data || seededBoard === boardId) return
     const byColRow = new Map(board.data.cells.map((c) => [`${c.col},${c.row}`, { q: c.q, r: c.r }]))
-    const enemies = (spawns.data.deployments[boardId]?.enemies ?? []).flatMap((e) => {
+    const enemies = (deployment?.enemies ?? []).flatMap((e) => {
       const ax = byColRow.get(`${e.col},${e.row}`)
       return ax ? [{ unitId: e.unitId, q: ax.q, r: ax.r, removeAtPrime: e.removeAtPrime }] : []
     })
     seedDeployment(boardId, enemies)
-  }, [boardId, board.data, spawns.data, seededBoard, seedDeployment])
+  }, [boardId, board.data, spawns.data, deployment, seededBoard, seedDeployment])
 
   // Paint visible at the current phase: this phase's marks + those carried over
   // from the previous phase (paint persists one phase, then auto-clears).
   const visiblePaint = useMemo(() => paintAtTurn(paint, currentTurn), [paint, currentTurn])
 
-  const boss = bosses.data?.bosses.find((b) => b.unitId === bossUnitId)
   const unitById = useMemo(() => {
     const m = new Map<string, Unit>()
     for (const u of [...roster, ...machinesOfWar]) m.set(u.id, u)
@@ -100,14 +120,14 @@ export function BoardPage() {
   // in the Allies palette like a summon.
   const uniqueDefs = useMemo<TrayDef[]>(() => {
     const list: TrayDef[] = []
-    if (boss) list.push({ id: boss.unitId, type: 'boss', stem: boss.imageStem, name: bossDisplayName(boss.bossType, boss.name), size: boss.bossSize })
+    if (target) list.push({ id: target.unitId, type: 'boss', stem: target.stem, name: target.name, size: target.size })
     for (const id of team) {
       if (!id) continue
       const u = unitById.get(id)
       if (u) list.push({ id: u.id, type: 'character', stem: u.stem, name: u.name, size: 1 })
     }
     return list
-  }, [boss, team, unitById])
+  }, [target, team, unitById])
 
   // Spawn palettes (types you can add instances of).
   const allyPalette = useMemo<PaletteType[]>(() => {
@@ -121,12 +141,12 @@ export function BoardPage() {
   const enemyPalette = useMemo<PaletteType[]>(() => {
     const data = spawns.data
     if (!data || !bossUnitId) return []
-    // Boss's summonable units + the distinct types from this board's initial
-    // deployment (so the starting adds are addable from the palette too).
+    // The target's summonable units + the distinct types from this fight's
+    // initial deployment (so the starting adds are addable from the palette too).
     const ids = new Set<string>(data.byUnit[bossUnitId] ?? [])
-    for (const e of data.deployments[boardId ?? '']?.enemies ?? []) ids.add(e.unitId)
+    for (const e of deployment?.enemies ?? []) ids.add(e.unitId)
     return [...ids].map((unitId) => ({ unitId, name: data.units[unitId]?.name ?? unitId, stem: data.units[unitId]?.stem ?? null, side: 'enemy' as const }))
-  }, [spawns.data, bossUnitId, boardId])
+  }, [spawns.data, bossUnitId, deployment])
 
   // Spawn instances on the board.
   const instanceDefs = useMemo<TrayDef[]>(() => {
@@ -138,7 +158,9 @@ export function BoardPage() {
   }, [instances, spawns.data])
 
   const allDefs = useMemo(() => [...uniqueDefs, ...instanceDefs], [uniqueDefs, instanceDefs])
-  const nPrimes = (boardId && spawns.data?.deployments[boardId]?.primes.length) || 0
+  // Only boss fights have primes (and thus the Primes-defeated stepper).
+  const nPrimes =
+    (targetKind === 'boss' && boardId && spawns.data?.deployments[boardId]?.primes.length) || 0
 
   if (!bossUnitId || !boardId) return <Navigate to="/plan" replace />
 
@@ -221,7 +243,7 @@ export function BoardPage() {
           <LogOut size={16} className="rotate-180" />
           <span className="uppercase tracking-[0.1em]">Exit</span>
         </button>
-        <span className="data truncate text-xs">{boss ? bossDisplayName(boss.bossType, boss.name) : ''} // {boardId}</span>
+        <span className="data truncate text-xs">{target?.name ?? ''} // {boardId}</span>
       </div>
 
       {/* Board */}

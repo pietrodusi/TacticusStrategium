@@ -55,7 +55,10 @@ export function paintAtTurn(
 
 interface PlanState {
   // ── Setup ──
+  /** The fight's primary unit — a raid boss or a prime (per `targetKind`). */
   bossUnitId: string | null
+  /** Whether the fight targets a raid boss or one of its primes (mini-bosses). */
+  targetKind: 'boss' | 'prime'
   boardId: string | null
   team: (string | null)[]
   machineOfWar: string | null
@@ -82,6 +85,8 @@ interface PlanState {
 
   // ── Setup actions ──
   selectBoss: (unitId: string) => void
+  /** Select a prime (mini-boss) as the fight target; clears map + plan. */
+  selectPrime: (unitId: string) => void
   selectBoard: (boardId: string) => void
   setTeamSlot: (index: number, characterId: string | null) => void
   setMachineOfWar: (id: string | null) => void
@@ -122,14 +127,25 @@ export const usePlanStore = create<PlanState>()(
   persist(
     (set, get) => ({
       bossUnitId: null,
+      targetKind: 'boss',
       boardId: null,
       team: emptyTeam(),
       machineOfWar: null,
       ...EMPTY_PLAN,
 
-      // Changing boss clears the map + plan (different battlefield).
+      // Changing the target (boss or prime) clears the map + plan (new battlefield).
       selectBoss: (unitId) =>
-        set((s) => (s.bossUnitId === unitId ? s : { bossUnitId: unitId, boardId: null, ...EMPTY_PLAN })),
+        set((s) =>
+          s.bossUnitId === unitId && s.targetKind === 'boss'
+            ? s
+            : { bossUnitId: unitId, targetKind: 'boss', boardId: null, ...EMPTY_PLAN },
+        ),
+      selectPrime: (unitId) =>
+        set((s) =>
+          s.bossUnitId === unitId && s.targetKind === 'prime'
+            ? s
+            : { bossUnitId: unitId, targetKind: 'prime', boardId: null, ...EMPTY_PLAN },
+        ),
 
       // Changing the map clears the plan.
       selectBoard: (boardId) => set({ boardId, ...EMPTY_PLAN }),
@@ -144,7 +160,14 @@ export const usePlanStore = create<PlanState>()(
       setMachineOfWar: (id) => set({ machineOfWar: id }),
 
       reset: () =>
-        set({ bossUnitId: null, boardId: null, team: emptyTeam(), machineOfWar: null, ...EMPTY_PLAN }),
+        set({
+          bossUnitId: null,
+          targetKind: 'boss',
+          boardId: null,
+          team: emptyTeam(),
+          machineOfWar: null,
+          ...EMPTY_PLAN,
+        }),
 
       setCurrentTurn: (turn) => set({ currentTurn: Math.max(0, Math.min(MAX_PHASE, turn)) }),
       nextTurn: () => set((s) => ({ currentTurn: Math.min(MAX_PHASE, s.currentTurn + 1) })),
