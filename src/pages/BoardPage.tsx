@@ -260,12 +260,28 @@ export function BoardPage() {
                 ? `Move ${selectedDef.name}`
                 : 'Select a unit'}
         </p>
+
+        {/* Remove — appears beside the board only when a removable unit is selected */}
+        {selectedDef && selectedDef.type !== 'boss' && !paintOpen && (
+          <button
+            onClick={() => {
+              removeFromTurn(selectedDef.id)
+              setSelectedId(null)
+            }}
+            title={`Remove ${selectedDef.name}`}
+            className={`absolute top-1/2 z-20 -translate-y-1/2 ${paintSide === 'left' ? 'right-0 rounded-l-xl' : 'left-0 rounded-r-xl'} flex flex-col items-center gap-1 border border-iron bg-abyss/90 px-1.5 py-3 text-ash backdrop-blur transition-colors hover:border-blood hover:text-blood-bright`}
+          >
+            <Trash2 size={16} />
+            <span className="text-[0.55rem] font-semibold uppercase tracking-[0.14em]">Remove</span>
+          </button>
+        )}
       </div>
 
-      {/* Bottom control dock */}
-      <div className="z-10 border-t border-iron bg-abyss/95 backdrop-blur" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
+      {/* Bottom control dock. The expandable section overlays the board (absolute)
+          so opening it doesn't resize the map. */}
+      <div className="relative z-10 border-t border-iron bg-abyss/95 backdrop-blur" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
         {dockOpen && (
-          <div className="space-y-3 border-b border-iron/50 px-3 py-3">
+          <div className="absolute inset-x-0 bottom-full space-y-3 border-t border-iron bg-abyss/95 px-3 py-3 backdrop-blur">
             {/* Tabs — unit trays on the left, view options pinned right */}
             <div className="flex items-center gap-1">
               <TabBtn active={tab === 'allies'} onClick={() => setTab('allies')}>Allies</TabBtn>
@@ -328,37 +344,22 @@ export function BoardPage() {
               )}
             </div>
 
-            {/* Selected-unit actions */}
-            {selectedDef && !paintOpen && (
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="ml-auto flex items-center gap-2">
-                  {selectedDef.size === 3 && (
-                    <ToolButton
-                      onClick={() => {
-                        const cur =
-                          posAtTurn(positions[selectedDef.id], currentTurn) ??
-                          (selectedDef.type === 'boss' && board.data
-                            ? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation }
-                            : null)
-                        if (!cur) return
-                        placeToken(selectedDef.id, { q: cur.q, r: cur.r, rot: (cur.rot ?? 0) % 180 === 0 ? 90 : 0 })
-                      }}
-                      icon={<RotateCw size={15} />}
-                      label="Rotate"
-                    />
-                  )}
-                  {selectedDef.type !== 'boss' && (
-                    <ToolButton
-                      onClick={() => {
-                        removeFromTurn(selectedDef.id)
-                        setSelectedId(null)
-                      }}
-                      icon={<Trash2 size={15} />}
-                      label="Remove"
-                      danger
-                    />
-                  )}
-                </div>
+            {/* Selected-unit actions (Remove lives on a floating board button) */}
+            {selectedDef && selectedDef.size === 3 && !paintOpen && (
+              <div className="flex items-center justify-end">
+                <ToolButton
+                  onClick={() => {
+                    const cur =
+                      posAtTurn(positions[selectedDef.id], currentTurn) ??
+                      (selectedDef.type === 'boss' && board.data
+                        ? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation }
+                        : null)
+                    if (!cur) return
+                    placeToken(selectedDef.id, { q: cur.q, r: cur.r, rot: (cur.rot ?? 0) % 180 === 0 ? 90 : 0 })
+                  }}
+                  icon={<RotateCw size={15} />}
+                  label="Rotate"
+                />
               </div>
             )}
           </div>
