@@ -344,7 +344,7 @@ function PaintPanel({
       <button
         onClick={onToggle}
         title="Paint"
-        className={`absolute top-1/2 z-20 -translate-y-1/2 ${edge} ${round} flex flex-col items-center gap-1.5 border border-iron bg-abyss/90 px-1.5 py-3 text-ash backdrop-blur transition-colors hover:border-teal hover:text-teal-bright`}
+        className={`absolute top-3 z-20 ${edge} ${round} flex flex-col items-center gap-1.5 border border-iron bg-abyss/90 px-1.5 py-3 text-ash backdrop-blur transition-colors hover:border-teal hover:text-teal-bright`}
       >
         <Brush size={16} />
         <span className="text-[0.6rem] font-semibold uppercase tracking-[0.15em]" style={{ writingMode: 'vertical-rl' }}>
@@ -356,7 +356,7 @@ function PaintPanel({
 
   return (
     <div
-      className={`absolute top-1/2 z-20 -translate-y-1/2 ${edge} ${round} flex flex-col items-center gap-2.5 border border-teal/60 bg-abyss/95 px-2 py-3 backdrop-blur`}
+      className={`absolute top-3 z-20 ${edge} ${round} flex flex-col items-center gap-2.5 border border-teal/60 bg-abyss/95 px-2 py-3 backdrop-blur`}
     >
       <button onClick={onToggle} title="Close paint" className="flex flex-col items-center gap-1 text-teal-bright">
         <Brush size={16} />
