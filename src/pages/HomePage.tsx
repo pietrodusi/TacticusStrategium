@@ -8,7 +8,8 @@ export function HomePage() {
       {/* Hero */}
       <section className="relative flex flex-col items-center pt-6 text-center sm:pt-12">
         <img
-          src={asset('icon-512.png')}
+          // src={asset('icon-512.png')}
+          src={asset('icon-512-noglow.png')}
           alt="Tacticus Strategium sigil"
           className="rise glow-teal h-36 w-36 animate-sigil sm:h-44 sm:w-44"
           style={{ animationDelay: '0ms' }}
@@ -84,9 +85,9 @@ export function HomePage() {
       <section className="rise mt-12 w-full max-w-sm" style={{ animationDelay: '760ms' }}>
         <div className="panel riveted flex flex-col items-center gap-4 p-6 text-center">
           <img
-            src={asset('God_icon.png')}
+            src={asset('GODS_OF_DEATH.webp')}
             alt="GOD cluster"
-            className="w-full max-w-[240px] rounded-lg bg-white p-3 shadow-lg"
+            className="w-full max-w-[240px] rounded-lg p-3 shadow-lg"
             draggable={false}
           />
           <div>
