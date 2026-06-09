@@ -294,10 +294,12 @@ export function BoardPage() {
               setSelectedId(null)
             }}
             title={`Remove ${selectedDef.name}`}
-            className={`absolute top-28 z-20 ${paintSide === 'left' ? 'left-0 rounded-r-xl' : 'right-0 rounded-l-xl'} flex flex-col items-center gap-1 border border-iron bg-abyss/90 px-1.5 py-3 text-ash backdrop-blur transition-colors hover:border-blood hover:text-blood-bright`}
+            className={`absolute top-28 z-20 ${paintSide === 'left' ? 'left-0 rounded-r-xl' : 'right-0 rounded-l-xl'} flex flex-col items-center gap-1.5 border border-blood bg-blood/20 px-1.5 py-3 text-blood-bright backdrop-blur transition-colors hover:bg-blood/35`}
           >
             <Trash2 size={16} />
-            <span className="text-[0.55rem] font-semibold uppercase tracking-[0.14em]">Remove</span>
+            <span className="rotate-180 text-[0.6rem] font-semibold uppercase tracking-[0.15em]" style={{ writingMode: 'vertical-rl' }}>
+              Remove
+            </span>
           </button>
         )}
       </div>
