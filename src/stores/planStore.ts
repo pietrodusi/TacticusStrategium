@@ -120,7 +120,9 @@ const EMPTY_PLAN = {
   instances: {},
   instanceSeq: 0,
   seededBoard: null,
-  primesDefeated: 0,
+  // Default to all primes defeated (the usual plan-the-boss-after-primes case);
+  // bosses have at most 2 primes, and the stepper/filter clamp to nPrimes.
+  primesDefeated: 2,
 }
 
 export const usePlanStore = create<PlanState>()(

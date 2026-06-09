@@ -45,13 +45,14 @@ interface Props {
 
 const GRID_STROKE = 'rgba(255,215,0,0.2)'
 
-/** Elevation heatmap fill by level (0 low → 4 high). */
+/** Elevation heatmap fill by level (0 low → 4 high) — saturated blue→red ramp
+ *  at high opacity so adjacent levels are easy to tell apart over the map. */
 const ELEV_FILL = [
-  'rgba(40,90,165,0.32)',
-  'rgba(38,150,150,0.32)',
-  'rgba(95,180,80,0.32)',
-  'rgba(214,176,60,0.34)',
-  'rgba(214,110,48,0.40)',
+  'rgba(37,99,235,0.62)', // 0 — blue
+  'rgba(6,182,212,0.6)', // 1 — cyan
+  'rgba(34,197,94,0.58)', // 2 — green
+  'rgba(245,158,11,0.62)', // 3 — amber
+  'rgba(239,68,68,0.66)', // 4 — red
 ]
 
 /** Tile-hazard fills (fire also overlays the bundled flame icon). */
