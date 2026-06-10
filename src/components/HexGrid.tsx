@@ -44,6 +44,8 @@ interface Props {
   onHexClick?: (hex: HexCoord) => void
   onTokenClick?: (id: string) => void
   onTokenMove?: (id: string, hex: HexCoord) => void
+  /** A paint/erase stroke is starting (fires before its first onPaint). */
+  onPaintStart?: () => void
   onPaint?: (hexKey: string, erase: boolean) => void
 }
 
@@ -89,6 +91,7 @@ export function HexGrid({
   onHexClick,
   onTokenClick,
   onTokenMove,
+  onPaintStart,
   onPaint,
 }: Props) {
   const size = board.imageSize
@@ -139,6 +142,7 @@ export function HexGrid({
       const key = cell ? hexKey({ q: cell.q, r: cell.r }) : null
       // The whole stroke erases if it starts on a painted hex, else it paints.
       const erase = key ? !!paint?.[key] : false
+      onPaintStart?.()
       setPaintStroke({ erase, last: key })
       if (key) onPaint?.(key, erase)
       return

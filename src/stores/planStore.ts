@@ -9,6 +9,7 @@ export interface TokenPos {
 }
 
 const TEAM_SIZE = 5
+const HISTORY_MAX = 30
 /** Battle phases as a flat index: 0 = S (deployment), then per turn k:
  *  player phase = 2k-1, enemy phase = 2k. The final turn (6) is player-only — no
  *  enemy phase — so S,1,1E,2,2E,…,5,5E,6 → 0..11. */
@@ -53,6 +54,20 @@ export function paintAtTurn(
   return result
 }
 
+type InstanceMap = Record<
+  string,
+  { unitId: string; side: 'ally' | 'enemy'; removeAtPrime?: number | null }
+>
+
+/** The undoable slice of the plan — captured at each gesture boundary. */
+interface MapSnapshot {
+  currentTurn: number
+  positions: Record<string, Record<number, TokenPos | null>>
+  paint: Record<number, Record<string, string | null>>
+  instances: InstanceMap
+  instanceSeq: number
+}
+
 interface PlanState {
   // ── Setup ──
   /** The fight's primary unit — a raid boss or a prime (per `targetKind`). */
@@ -73,11 +88,10 @@ interface PlanState {
   /** Spawn instances (summons / boss minions). instanceId → its source unit +
    *  side; `removeAtPrime` (initial-deployment adds only) is how many primes must
    *  fall for it to be hidden by the Primes-defeated stepper (null/undef = never). */
-  instances: Record<
-    string,
-    { unitId: string; side: 'ally' | 'enemy'; removeAtPrime?: number | null }
-  >
+  instances: InstanceMap
   instanceSeq: number
+  /** Undo snapshots, newest last (gesture boundaries; capped). Not persisted. */
+  history: MapSnapshot[]
   /** Board whose initial enemy deployment has been seeded (idempotency guard). */
   seededBoard: string | null
   /** How many of the boss's primes are defeated — hides adds with removeAtPrime ≤ it. */
@@ -110,6 +124,10 @@ interface PlanState {
   setPrimesDefeated: (defeated: number) => void
   /** Set a hex colour at the current turn, or erase it when color is null. */
   setPaint: (hexKey: string, color: string | null) => void
+  /** Snapshot the map state before a user gesture mutates it (enables undo). */
+  checkpoint: () => void
+  /** Restore the latest snapshot (also jumps back to that gesture's phase). */
+  undo: () => void
   resetPlan: () => void
 }
 
@@ -119,6 +137,7 @@ const EMPTY_PLAN = {
   paint: {},
   instances: {},
   instanceSeq: 0,
+  history: [] as MapSnapshot[],
   seededBoard: null,
   // Default to all primes defeated (the usual plan-the-boss-after-primes case);
   // bosses have at most 2 primes, and the stepper/filter clamp to nPrimes.
@@ -241,11 +260,33 @@ export const usePlanStore = create<PlanState>()(
           return { paint: { ...s.paint, [P]: turnPaint } }
         }),
 
+      checkpoint: () =>
+        set((s) => ({
+          history: [
+            ...s.history.slice(1 - HISTORY_MAX),
+            {
+              currentTurn: s.currentTurn,
+              positions: s.positions,
+              paint: s.paint,
+              instances: s.instances,
+              instanceSeq: s.instanceSeq,
+            },
+          ],
+        })),
+
+      undo: () =>
+        set((s) => {
+          const prev = s.history[s.history.length - 1]
+          return prev ? { ...prev, history: s.history.slice(0, -1) } : s
+        }),
+
       resetPlan: () => set({ ...EMPTY_PLAN }),
     }),
     {
       name: 'tacticus-strategium-plan',
       version: 1,
+      // Undo history is session-only — persist it emptied.
+      partialize: (s) => ({ ...s, history: [] }),
       // v0 (pre-versioning) has the same shape as v1, so carry it over. Any other
       // mismatch discards the saved plan — plans are cheap to rebuild, while
       // hydrating an incompatible shape can break the board page.

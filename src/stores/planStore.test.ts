@@ -79,6 +79,7 @@ describe('plan actions', () => {
       paint: {},
       instances: {},
       instanceSeq: 0,
+      history: [],
       seededBoard: null,
       primesDefeated: 2,
     }),
@@ -140,6 +141,52 @@ describe('plan actions', () => {
       store().seedDeployment('GB_01', enemies)
       expect(Object.keys(store().instances)).toHaveLength(1)
       expect(store().seededBoard).toBe('GB_01')
+    })
+  })
+
+  describe('checkpoint / undo', () => {
+    it('undo restores the snapshot, including the phase it was taken on', () => {
+      store().setCurrentTurn(2)
+      store().checkpoint()
+      store().placeToken('tok', { q: 1, r: 1 })
+      store().setCurrentTurn(5)
+      store().undo()
+      expect(store().positions['tok']).toBeUndefined()
+      expect(store().currentTurn).toBe(2)
+      expect(store().history).toHaveLength(0)
+    })
+
+    it('one checkpoint covers a compound gesture (instance + placement)', () => {
+      store().checkpoint()
+      const id = store().addInstance('orkBoy', 'enemy')
+      store().placeToken(id, { q: 0, r: 0 })
+      store().undo()
+      expect(store().instances[id]).toBeUndefined()
+      expect(store().positions[id]).toBeUndefined()
+      expect(store().instanceSeq).toBe(0)
+    })
+
+    it('undoes steps in reverse order', () => {
+      store().checkpoint()
+      store().placeToken('a', { q: 1, r: 1 })
+      store().checkpoint()
+      store().placeToken('b', { q: 2, r: 2 })
+      store().undo()
+      expect(store().positions['a']).toBeDefined()
+      expect(store().positions['b']).toBeUndefined()
+      store().undo()
+      expect(store().positions['a']).toBeUndefined()
+    })
+
+    it('undo with no history is a no-op', () => {
+      store().placeToken('tok', { q: 1, r: 1 })
+      store().undo()
+      expect(store().positions['tok']).toEqual({ 0: { q: 1, r: 1 } })
+    })
+
+    it('caps the history depth', () => {
+      for (let i = 0; i < 40; i++) store().checkpoint()
+      expect(store().history.length).toBe(30)
     })
   })
 

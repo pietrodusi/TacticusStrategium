@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeftRight, Brush, Cog, LogOut, Mountain, Plus, RotateCw, Skull, SlidersHorizontal, Trash2 } from 'lucide-react'
+import { ArrowLeftRight, Brush, Cog, LogOut, Mountain, Plus, RotateCw, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
 import { usePlanStore, posAtTurn, paintAtTurn } from '../stores/planStore'
 import { useBosses, usePrimes, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
@@ -43,9 +43,9 @@ const PAINT_COLORS = [
 export function BoardPage() {
   const navigate = useNavigate()
   const { bossUnitId, targetKind, boardId, team, machineOfWar, currentTurn, positions, paint, instances } = usePlanStore()
-  const { seededBoard, primesDefeated } = usePlanStore()
+  const { seededBoard, primesDefeated, history } = usePlanStore()
   const { setCurrentTurn, placeToken, removeFromTurn, addInstance, setPaint, resetPlan } = usePlanStore()
-  const { seedDeployment, setPrimesDefeated } = usePlanStore()
+  const { seedDeployment, setPrimesDefeated, checkpoint, undo } = usePlanStore()
 
   const bosses = useBosses()
   const primes = usePrimes()
@@ -61,6 +61,8 @@ export function BoardPage() {
   const [dockOpen, setDockOpen] = useState(true)
   const [tab, setTab] = useState<Tab>('allies')
   const [showElevation, setShowElevation] = useState(false)
+  // One undo step per paint stroke: snapshot lazily on the stroke's first hex.
+  const strokeNeedsCheckpoint = useRef(false)
 
   // Lock the page (no scroll/bounce) while planning.
   useEffect(() => {
@@ -192,6 +194,12 @@ export function BoardPage() {
     if (!board.data) return
     const def = allDefs.find((d) => d.id === id)
     const rot = def?.type === 'boss' ? posAtTurn(positions[id], currentTurn)?.rot ?? board.data.bossRotation : undefined
+    const cur = posAtTurn(positions[id], currentTurn)
+    if (cur && cur.q === hex.q && cur.r === hex.r && cur.rot === rot) {
+      setSelectedId(null) // dropped in place — nothing to record
+      return
+    }
+    checkpoint()
     placeToken(id, { q: hex.q, r: hex.r, ...(rot !== undefined ? { rot } : {}) })
     setSelectedId(null)
   }
@@ -199,6 +207,7 @@ export function BoardPage() {
   // Move-mode hex tap: drop a pending spawn (keeps adding), or move the selection.
   const handleHex = (hex: HexCoord) => {
     if (pending) {
+      checkpoint()
       const id = addInstance(pending.unitId, pending.side)
       placeToken(id, { q: hex.q, r: hex.r })
       return
@@ -299,7 +308,16 @@ export function BoardPage() {
             onHexClick={handleHex}
             onTokenClick={selectToken}
             onTokenMove={(id, hex) => placeAt(id, hex)}
-            onPaint={(key, erase) => setPaint(key, erase ? null : paintColor)}
+            onPaintStart={() => {
+              strokeNeedsCheckpoint.current = true
+            }}
+            onPaint={(key, erase) => {
+              if (strokeNeedsCheckpoint.current) {
+                strokeNeedsCheckpoint.current = false
+                checkpoint()
+              }
+              setPaint(key, erase ? null : paintColor)
+            }}
           />
         )}
 
@@ -317,6 +335,7 @@ export function BoardPage() {
         {selectedDef && selectedDef.type !== 'boss' && !paintOpen && (
           <button
             onClick={() => {
+              checkpoint()
               removeFromTurn(selectedDef.id)
               setSelectedId(null)
             }}
@@ -396,6 +415,7 @@ export function BoardPage() {
                         ? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation }
                         : null)
                     if (!cur) return
+                    checkpoint()
                     placeToken(selectedDef.id, { q: cur.q, r: cur.r, rot: (cur.rot ?? 0) % 180 === 0 ? 90 : 0 })
                   }}
                   icon={<RotateCw size={15} />}
@@ -414,6 +434,15 @@ export function BoardPage() {
           >
             <Cog size={16} />
             Tools
+          </button>
+          <button
+            onClick={undo}
+            disabled={history.length === 0}
+            title="Undo the last map action"
+            className="flex items-center gap-1.5 text-xs uppercase tracking-[0.1em] text-ash transition-colors hover:text-bone disabled:pointer-events-none disabled:opacity-35"
+          >
+            <Undo2 size={16} />
+            Undo
           </button>
           <TurnSelector phase={currentTurn} onChange={setCurrentTurn} />
         </div>
