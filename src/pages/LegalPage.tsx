@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 
-// Dedicated data-requests address — create it, then replace the placeholder.
-const CONTACT_EMAIL = 'REPLACE_ME@example.com'
+// Dedicated data-requests address (forwards to the operator's inbox).
+const CONTACT_EMAIL = 'tacticusstrategium@gmail.com'
 
 const EFFECTIVE_DATE = '10 June 2026'
 
