@@ -7,6 +7,8 @@ import { BoardPage } from './pages/BoardPage'
 import { SignInPage } from './pages/SignInPage'
 import { PlansPage } from './pages/PlansPage'
 import { TeamsPage } from './pages/TeamsPage'
+import { AccountPage } from './pages/AccountPage'
+import { LegalPage } from './pages/LegalPage'
 import { SharedPlanPage } from './pages/SharedPlanPage'
 import { initAuth } from './services/firebase/auth'
 
@@ -35,6 +37,8 @@ export function App() {
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/plans" element={<PlansPage />} />
             <Route path="/teams" element={<TeamsPage />} />
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/legal" element={<LegalPage />} />
           </Route>
           {/* Full-bleed planning board — outside the app shell. */}
           <Route path="/plan/board" element={<BoardPage />} />

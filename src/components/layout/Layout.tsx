@@ -35,6 +35,9 @@ export function Layout() {
           <p className="font-mono text-[0.65rem] text-ash/70">
             Fan-made · map data via TacticusDB · not affiliated with Snowprint Studios
           </p>
+          <Link to="/legal" className="font-mono text-[0.65rem] text-ash/70 underline-offset-2 transition-colors hover:text-teal-bright hover:underline">
+            Privacy &amp; Terms
+          </Link>
         </div>
       </footer>
     </div>

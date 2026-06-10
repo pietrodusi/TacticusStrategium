@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { KeyRound, LogIn, Mail } from 'lucide-react'
 import {
   authErrorMessage,
@@ -181,6 +181,14 @@ export function SignInPage() {
             </button>
           )}
         </div>
+
+        <p className="border-t border-iron/50 pt-3 text-center font-mono text-[0.62rem] leading-relaxed text-ash/70">
+          By signing in or creating an account you accept the{' '}
+          <Link to="/legal" className="text-ash underline underline-offset-2 transition-colors hover:text-teal-bright">
+            Privacy Policy &amp; Terms
+          </Link>
+          .
+        </p>
       </div>
     </div>
   )

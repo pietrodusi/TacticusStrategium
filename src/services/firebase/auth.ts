@@ -82,6 +82,8 @@ export function authErrorMessage(err: unknown): string {
       return 'Too many attempts — wait a moment and retry.'
     case 'auth/network-request-failed':
       return 'Network error — check your connection and retry.'
+    case 'auth/requires-recent-login':
+      return 'For security this needs a fresh session — sign out, sign back in, then retry.'
     case 'auth/invalid-api-key':
       return 'Firebase is not configured yet (see src/services/firebase/app.ts).'
     default:
