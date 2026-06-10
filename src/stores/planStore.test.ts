@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { paintAtTurn, posAtTurn, usePlanStore } from './planStore'
+import { paintAtTurn, posAtTurn, roundsLeftAt, usePlanStore } from './planStore'
+
+describe('roundsLeftAt', () => {
+  it('counts down per turn, not per phase', () => {
+    // S, 1, 1E, 2, 2E, 3, 3E, 4, 4E, 5, 5E, 6 (phases 0..11)
+    const expected = [6, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1]
+    expect(expected.map((_, phase) => roundsLeftAt(phase))).toEqual(expected)
+  })
+})
 
 describe('posAtTurn', () => {
   it('returns the most recent entry at or before the turn (carry-forward)', () => {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ArrowLeftRight, Brush, Cog, LogOut, Mountain, Plus, RotateCw, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
-import { usePlanStore, posAtTurn, paintAtTurn } from '../stores/planStore'
+import { usePlanStore, posAtTurn, paintAtTurn, roundsLeftAt } from '../stores/planStore'
 import { useBosses, usePrimes, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
 import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
@@ -281,9 +281,11 @@ export function BoardPage() {
             <DataError what={`map ${boardId}`} onRetry={() => void board.refetch()} />
           </div>
         )}
+        {/* Remaining rounds — deployment (S) isn't a round, so it starts at 1 */}
+        {currentTurn > 0 && board.data && <RoundsCounter left={roundsLeftAt(currentTurn)} />}
         {/* Secondary data (palettes / unit identities) — board stays usable */}
         {!board.isError && (spawns.isError || rosterError) && (
-          <div className="absolute left-1/2 top-2 z-20 -translate-x-1/2">
+          <div className="absolute left-1/2 top-10 z-20 -translate-x-1/2">
             <DataError
               compact
               what="unit data"
@@ -447,6 +449,21 @@ export function BoardPage() {
           <TurnSelector phase={currentTurn} onChange={setCurrentTurn} />
         </div>
       </div>
+    </div>
+  )
+}
+
+/** Rounds still to play, pinned top-centre of the map. The final round turns
+ *  into a blood-red "Last round" warning. */
+function RoundsCounter({ left }: { left: number }) {
+  const last = left <= 1
+  return (
+    <div
+      className={`pointer-events-none absolute left-1/2 top-2 z-10 -translate-x-1/2 rounded-md border bg-abyss/80 px-2.5 py-1 font-mono text-[0.7rem] uppercase tracking-[0.15em] backdrop-blur ${
+        last ? 'border-blood text-blood-bright' : 'border-iron text-bone'
+      }`}
+    >
+      {last ? 'Last round' : `${left} rounds left`}
     </div>
   )
 }

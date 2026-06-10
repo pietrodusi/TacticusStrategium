@@ -15,6 +15,11 @@ const HISTORY_MAX = 30
  *  enemy phase — so S,1,1E,2,2E,…,5,5E,6 → 0..11. */
 export const TURN_COUNT = 6
 export const MAX_PHASE = TURN_COUNT * 2 - 1 // 11 (last turn has no enemy phase)
+
+/** Rounds still to play at `phase` (1..MAX_PHASE): turn 1/1E → 6 … turn 6 → 1.
+ *  Phase 0 (deployment) isn't a round — returns the full TURN_COUNT. */
+export const roundsLeftAt = (phase: number): number =>
+  TURN_COUNT - Math.ceil(phase / 2) + (phase === 0 ? 0 : 1)
 const emptyTeam = (): (string | null)[] => Array(TEAM_SIZE).fill(null)
 
 /**
