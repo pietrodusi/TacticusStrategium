@@ -7,6 +7,7 @@ import { mapImageUrl } from '../services/paths'
 import { bossDisplayName } from '../utils/format'
 import type { BossIndexEntry, PrimeIndexEntry, Unit } from '../types/units'
 import { UnitPickerModal } from '../components/plan/UnitPickerModal'
+import { SavedTeams } from '../components/plan/SavedTeams'
 import { UnitImage } from '../components/UnitImage'
 import { DataError } from '../components/DataError'
 
@@ -168,6 +169,7 @@ export function SetupPage() {
             onClear={() => setMachineOfWar(null)}
           />
         </div>
+        <SavedTeams unitById={unitById} />
       </Step>
 
       {/* Sticky engage bar */}

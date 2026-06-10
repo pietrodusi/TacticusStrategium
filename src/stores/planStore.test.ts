@@ -254,6 +254,24 @@ describe('plan actions', () => {
     })
   })
 
+  describe('applyTeam', () => {
+    it('replaces squad + MoW, normalised to 5 slots, without touching the plan', () => {
+      store().placeToken('tok', { q: 1, r: 1 })
+      store().setCloudRef({ id: 'doc1', name: 'Alpha' })
+      store().applyTeam(['a', 'b', 'c'], 'mowX')
+      expect(store().team).toEqual(['a', 'b', 'c', null, null])
+      expect(store().machineOfWar).toBe('mowX')
+      expect(store().positions['tok']).toBeDefined()
+      expect(store().cloudRef).toEqual({ id: 'doc1', name: 'Alpha' })
+    })
+
+    it('truncates oversized member lists and clears the MoW when null', () => {
+      store().applyTeam(['a', 'b', 'c', 'd', 'e', 'f', 'g'], null)
+      expect(store().team).toEqual(['a', 'b', 'c', 'd', 'e'])
+      expect(store().machineOfWar).toBeNull()
+    })
+  })
+
   describe('cloud plan load / linkage', () => {
     const cloudData = {
       bossUnitId: 'bossX',

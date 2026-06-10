@@ -141,6 +141,8 @@ interface PlanState {
   selectBoard: (boardId: string) => void
   setTeamSlot: (index: number, characterId: string | null) => void
   setMachineOfWar: (id: string | null) => void
+  /** Fill the whole squad + MoW from a saved raid team (keeps the plan). */
+  applyTeam: (members: (string | null)[], machineOfWar: string | null) => void
   reset: () => void
 
   // ── Planning actions ──
@@ -224,6 +226,12 @@ export const usePlanStore = create<PlanState>()(
         }),
 
       setMachineOfWar: (id) => set({ machineOfWar: id }),
+
+      applyTeam: (members, machineOfWar) =>
+        set({
+          team: Array.from({ length: TEAM_SIZE }, (_, i) => members[i] ?? null),
+          machineOfWar,
+        }),
 
       reset: () =>
         set({

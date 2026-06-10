@@ -1,12 +1,6 @@
-import type { DocumentData, Firestore } from 'firebase/firestore'
-import { firebaseApp } from './app'
+import type { DocumentData } from 'firebase/firestore'
+import { getDb, loadFs } from './db'
 import { PLAN_SCHEMA_VERSION } from '../plans/serialize'
-
-// firebase/firestore is dynamic-imported into its own chunk — visitors who
-// never touch cloud plans (signed-out planning) don't download it at all.
-const loadFs = () => import('firebase/firestore')
-let dbPromise: Promise<Firestore> | null = null
-const getDb = () => (dbPromise ??= loadFs().then((m) => m.getFirestore(firebaseApp)))
 
 /** Per-user soft cap (rules can't count docs on the free plan). */
 export const MAX_PLANS = 100
