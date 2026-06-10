@@ -8,6 +8,6 @@ compatibility_date = "2026-06-01"
 
 [vars]
 # Discord application Client ID (public) — discord.com/developers → OAuth2.
-DISCORD_CLIENT_ID = "REPLACE_ME"
+DISCORD_CLIENT_ID = "1514240082381635736"
 # Origins allowed to receive the minted token (CSV). Path is up to the origin owner.
 APP_URLS = "https://pietrodusi.github.io,http://localhost:5173,http://localhost:4173"

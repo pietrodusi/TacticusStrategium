@@ -5,7 +5,7 @@ import { getAuthInstance, loadAuthModule } from './auth'
 import { useAuthStore } from '../../stores/authStore'
 
 // The deployed worker (npx wrangler deploy prints it).
-const WORKER_URL = 'https://tacticus-discord-auth.REPLACE_ME.workers.dev'
+const WORKER_URL = 'https://tacticus-discord-auth.dusi-pietro.workers.dev'
 
 /** False until the deployed worker URL is pasted above — UI hides the button. */
 export const discordConfigured = !WORKER_URL.includes('REPLACE_ME')

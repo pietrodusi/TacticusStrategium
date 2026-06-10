@@ -121,8 +121,18 @@ export default {
       if (!meRes.ok) return fail('profile')
       const me = await meRes.json()
 
-      const sa = JSON.parse(env.FIREBASE_SA_KEY)
-      const dt = await mintCustomToken(sa.client_email, sa.private_key, `discord:${me.id}`)
+      let dt
+      try {
+        // trim() also strips a UTF-8 BOM — Windows pipes love to prepend one.
+        const sa = JSON.parse(env.FIREBASE_SA_KEY.trim())
+        dt = await mintCustomToken(sa.client_email, sa.private_key, `discord:${me.id}`)
+      } catch (err) {
+        // Typical cause: FIREBASE_SA_KEY isn't the full service-account JSON
+        // (the interactive `wrangler secret put` prompt truncates multi-line
+        // pastes — pipe the file in instead). Details show in `wrangler tail`.
+        console.error('mint failed:', err instanceof Error ? err.message : String(err))
+        return fail('mint')
+      }
 
       const back = new URL(ret)
       const params = new URLSearchParams({
