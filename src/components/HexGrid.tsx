@@ -6,6 +6,7 @@ import { getBossOccupiedHexes, hexKey } from '../services/hex/hexUtils'
 import type { HexCoord, Point } from '../types/strategium'
 import type { TokenPos } from '../stores/planStore'
 import { RING_COLOR, type TokenKind } from './tokenColors'
+import { EFFECT_FILL, EFFECT_ICON, isHazard } from './hazards'
 
 export interface BoardToken {
   id: string
@@ -61,12 +62,6 @@ const ELEV_FILL = [
   'rgba(146,64,14,0.7)', // 4 — brown
 ]
 
-/** Tile-hazard fills (fire also overlays the bundled flame icon). */
-const EFFECT_FILL: Record<TileEffectKind, string> = {
-  fire: 'rgba(232,92,30,0.40)',
-  ice: 'rgba(120,200,232,0.34)',
-  contaminated: 'rgba(120,200,60,0.32)',
-}
 
 interface DragState {
   id: string | null // token being dragged, or null for a background gesture
@@ -253,12 +248,12 @@ export function HexGrid({
           ) : null,
         )}
 
-      {/* Painted hexes (the "fire" sentinel paints a flame instead of a colour) */}
+      {/* Painted hexes (hazard sentinels stamp the hazard tint + icon) */}
       {paint &&
         Object.entries(paint).map(([key, color]) => {
           const c = cellByAxial.get(key)
           if (!c) return null
-          if (color === 'fire') return <EffectHex key={`p-${key}`} cell={c} kind="fire" tileSize={board.tileSize} />
+          if (isHazard(color)) return <EffectHex key={`p-${key}`} cell={c} kind={color} tileSize={board.tileSize} />
           return <polygon key={`p-${key}`} points={pointsOf(c)} fill={color} stroke={color} strokeWidth={1.5} />
         })}
 
@@ -319,22 +314,20 @@ function pointsOf(c: ParsedCell): string {
   return cornersToPoints(c.corners)
 }
 
-/** A tile hazard on one hex: tinted fill, plus the flame icon for fire. */
+/** A tile hazard on one hex: tinted fill plus the hazard's keyword icon. */
 function EffectHex({ cell, kind, tileSize }: { cell: ParsedCell; kind: TileEffectKind; tileSize: number }) {
   const s = tileSize * 0.72
   return (
     <g pointerEvents="none">
       <polygon points={pointsOf(cell)} fill={EFFECT_FILL[kind]} stroke="none" />
-      {kind === 'fire' && (
-        <image
-          href={keywordIconUrl('tile_effect_fire')}
-          x={cell.center.x - s / 2}
-          y={cell.center.y - s / 2}
-          width={s}
-          height={s}
-          preserveAspectRatio="xMidYMid meet"
-        />
-      )}
+      <image
+        href={keywordIconUrl(EFFECT_ICON[kind])}
+        x={cell.center.x - s / 2}
+        y={cell.center.y - s / 2}
+        width={s}
+        height={s}
+        preserveAspectRatio="xMidYMid meet"
+      />
     </g>
   )
 }

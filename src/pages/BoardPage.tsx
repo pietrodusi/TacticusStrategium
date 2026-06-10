@@ -5,6 +5,8 @@ import { usePlanStore, posAtTurn, paintAtTurn, roundsLeftAt } from '../stores/pl
 import { useBosses, usePrimes, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
 import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
+import { EFFECT_FILL, EFFECT_ICON } from '../components/hazards'
+import type { TileEffectKind } from '../services/boards/boardService'
 import { RING_COLOR, type TokenKind } from '../components/tokenColors'
 import { keywordIconUrl } from '../services/paths'
 import { UnitImage } from '../components/UnitImage'
@@ -37,7 +39,13 @@ const PAINT_COLORS = [
   { name: 'Teal', value: 'rgba(44,208,216,0.45)' },
   { name: 'Gold', value: 'rgba(212,175,55,0.5)' },
   { name: 'Green', value: 'rgba(74,222,128,0.45)' },
-  { name: 'Fire', value: 'fire' }, // sentinel: HexGrid paints the flame icon
+]
+
+// Sentinel values: HexGrid stamps the hazard tint + keyword icon.
+const PAINT_HAZARDS: { name: string; value: TileEffectKind }[] = [
+  { name: 'Fire', value: 'fire' },
+  { name: 'Ice', value: 'ice' },
+  { name: 'Contaminated', value: 'contaminated' },
 ]
 
 export function BoardPage() {
@@ -516,10 +524,22 @@ function PaintPanel({
             key={c.value}
             onClick={() => onPick(c.value)}
             title={c.name}
-            className={`grid h-7 w-7 place-items-center overflow-hidden rounded-full border-2 transition-transform hover:scale-110 ${color === c.value ? 'border-bone' : 'border-iron'}`}
-            style={{ background: c.value === 'fire' ? 'rgba(232,92,30,0.22)' : c.value }}
+            className={`grid h-7 w-7 place-items-center rounded-full border-2 transition-transform hover:scale-110 ${color === c.value ? 'border-bone' : 'border-iron'}`}
+            style={{ background: c.value }}
+          />
+        ))}
+      </div>
+      <span className="h-px w-7 bg-iron" />
+      <div className="flex flex-col gap-2">
+        {PAINT_HAZARDS.map((h) => (
+          <button
+            key={h.value}
+            onClick={() => onPick(h.value)}
+            title={h.name}
+            className={`grid h-7 w-7 place-items-center overflow-hidden rounded-full border-2 transition-transform hover:scale-110 ${color === h.value ? 'border-bone' : 'border-iron'}`}
+            style={{ background: EFFECT_FILL[h.value] }}
           >
-            {c.value === 'fire' && <img src={keywordIconUrl('tile_effect_fire')} alt="" className="h-5 w-5" />}
+            <img src={keywordIconUrl(EFFECT_ICON[h.value])} alt="" className="h-5 w-5" />
           </button>
         ))}
       </div>
