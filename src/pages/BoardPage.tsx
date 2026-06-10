@@ -453,17 +453,12 @@ export function BoardPage() {
   )
 }
 
-/** Rounds still to play, pinned top-centre of the map. The final round turns
- *  into a blood-red "Last round" warning. */
+/** Rounds still to play — a notch hanging from the top bar, centred over the
+ *  map (same family as the Paint/Remove edge notches). */
 function RoundsCounter({ left }: { left: number }) {
-  const last = left <= 1
   return (
-    <div
-      className={`pointer-events-none absolute left-1/2 top-2 z-10 -translate-x-1/2 rounded-md border bg-abyss/80 px-2.5 py-1 font-mono text-[0.7rem] uppercase tracking-[0.15em] backdrop-blur ${
-        last ? 'border-blood text-blood-bright' : 'border-iron text-bone'
-      }`}
-    >
-      {last ? 'Last round' : `${left} rounds left`}
+    <div className="pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-b-xl border border-t-0 border-iron bg-abyss/90 px-3 pb-1.5 pt-1 font-mono text-[0.7rem] uppercase tracking-[0.15em] text-bone backdrop-blur">
+      {left <= 1 ? 'Last round' : `${left} rounds left`}
     </div>
   )
 }
