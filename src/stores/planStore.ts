@@ -35,27 +35,55 @@ export function posAtTurn(
   return null
 }
 
+// ── Hazard paint values ──
+// A painted hazard is stored as `kind@life` (e.g. "fire@2"): its kind plus the
+// rounds it had left when written. A round is a 2-phase period (player + enemy,
+// in either order) starting at the phase it was painted on.
+export const HAZARD_KINDS = ['fire', 'ice', 'contaminated'] as const
+export type HazardKind = (typeof HAZARD_KINDS)[number]
+/** Default hazard life span, in rounds. */
+export const HAZARD_LIFE = 2
+
+export const hazardValue = (kind: HazardKind, life: number): string => `${kind}@${life}`
+
+/** Parse a paint value as a hazard (`kind` or `kind@life`); null for colours. */
+export function parseHazard(value: string): { kind: HazardKind; life: number } | null {
+  const [kind, life] = value.split('@')
+  if (!(HAZARD_KINDS as readonly string[]).includes(kind)) return null
+  return { kind: kind as HazardKind, life: life ? Number(life) : HAZARD_LIFE }
+}
+
 /**
- * Visible paint at `phase`. Paint lives for the phase it was made on plus the
- * single following phase, then auto-clears — i.e. it persists through the other
- * side's turn and is gone by the next turn of the same type (paint on turn 1
- * shows on 1 and 1E, clears on turn 2). A `null` entry is a manual erase that
- * masks a hex inherited from the previous phase.
+ * Visible paint at `phase`: per hex, the latest entry at or before it wins,
+ * judged by its own lifetime. Colours live for the phase they were made on
+ * plus the single following phase (a mark on turn 1 shows through 1E, gone by
+ * turn 2). Hazards live `life` rounds (2 phases each) with the remaining
+ * rounds re-encoded into the result (`fire@1`). A `null` entry is a manual
+ * erase masking anything older.
  */
 export function paintAtTurn(
   byPhase: Record<number, Record<string, string | null>> | undefined,
   phase: number,
 ): Record<string, string> {
-  const result: Record<string, string> = {}
-  if (!byPhase) return result
-  const prev = byPhase[phase - 1]
-  if (prev) for (const [hex, color] of Object.entries(prev)) if (color !== null) result[hex] = color
-  const cur = byPhase[phase]
-  if (cur)
-    for (const [hex, color] of Object.entries(cur)) {
-      if (color === null) delete result[hex]
-      else result[hex] = color
+  const latest: Record<string, { at: number; value: string | null }> = {}
+  for (const [key, marks] of Object.entries(byPhase ?? {})) {
+    const at = Number(key)
+    if (at > phase) continue
+    for (const [hex, value] of Object.entries(marks)) {
+      if (!latest[hex] || at >= latest[hex].at) latest[hex] = { at, value }
     }
+  }
+  const result: Record<string, string> = {}
+  for (const [hex, { at, value }] of Object.entries(latest)) {
+    if (value === null) continue
+    const hazard = parseHazard(value)
+    if (hazard) {
+      const left = hazard.life - Math.floor((phase - at) / 2)
+      if (left > 0) result[hex] = hazardValue(hazard.kind, left)
+    } else if (phase - at <= 1) {
+      result[hex] = value
+    }
+  }
   return result
 }
 
@@ -129,6 +157,9 @@ interface PlanState {
   setPrimesDefeated: (defeated: number) => void
   /** Set a hex colour at the current turn, or erase it when color is null. */
   setPaint: (hexKey: string, color: string | null) => void
+  /** Hazard brush: stamp `kind` at full life on an empty/other hex; on the same
+   *  hazard, reduce its remaining life by 1 (erasing it at 0). */
+  paintHazard: (hexKey: string, kind: HazardKind) => void
   /** Snapshot the map state before a user gesture mutates it (enables undo). */
   checkpoint: () => void
   /** Restore the latest snapshot (also jumps back to that gesture's phase). */
@@ -254,13 +285,32 @@ export const usePlanStore = create<PlanState>()(
           const P = s.currentTurn
           const turnPaint = { ...(s.paint[P] ?? {}) }
           if (color === null) {
-            // Erasing a hex inherited from the previous phase needs a null mask;
-            // a hex painted on this phase is just dropped.
-            const prev = s.paint[P - 1]
-            if (prev && prev[hexKey] != null) turnPaint[hexKey] = null
-            else delete turnPaint[hexKey]
+            // Drop this phase's entry; if an earlier phase still shows through
+            // (colours 1 phase back, hazards up to their life), mask it.
+            delete turnPaint[hexKey]
+            if (paintAtTurn({ ...s.paint, [P]: turnPaint }, P)[hexKey]) turnPaint[hexKey] = null
           } else {
             turnPaint[hexKey] = color
+          }
+          return { paint: { ...s.paint, [P]: turnPaint } }
+        }),
+
+      paintHazard: (hexKey, kind) =>
+        set((s) => {
+          const P = s.currentTurn
+          const turnPaint = { ...(s.paint[P] ?? {}) }
+          const visible = paintAtTurn(s.paint, P)[hexKey]
+          const cur = visible ? parseHazard(visible) : null
+          if (cur && cur.kind === kind) {
+            const left = cur.life - 1
+            if (left > 0) {
+              turnPaint[hexKey] = hazardValue(kind, left)
+            } else {
+              delete turnPaint[hexKey]
+              if (paintAtTurn({ ...s.paint, [P]: turnPaint }, P)[hexKey]) turnPaint[hexKey] = null
+            }
+          } else {
+            turnPaint[hexKey] = hazardValue(kind, HAZARD_LIFE)
           }
           return { paint: { ...s.paint, [P]: turnPaint } }
         }),

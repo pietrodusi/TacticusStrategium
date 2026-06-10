@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ArrowLeftRight, Brush, Cog, LogOut, Mountain, Plus, RotateCw, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
-import { usePlanStore, posAtTurn, paintAtTurn, roundsLeftAt } from '../stores/planStore'
+import { usePlanStore, posAtTurn, paintAtTurn, parseHazard, roundsLeftAt } from '../stores/planStore'
 import { useBosses, usePrimes, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
 import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
@@ -52,7 +52,7 @@ export function BoardPage() {
   const navigate = useNavigate()
   const { bossUnitId, targetKind, boardId, team, machineOfWar, currentTurn, positions, paint, instances } = usePlanStore()
   const { seededBoard, primesDefeated, history } = usePlanStore()
-  const { setCurrentTurn, placeToken, removeFromTurn, addInstance, setPaint, resetPlan } = usePlanStore()
+  const { setCurrentTurn, placeToken, removeFromTurn, addInstance, setPaint, paintHazard, resetPlan } = usePlanStore()
   const { seedDeployment, setPrimesDefeated, checkpoint, undo } = usePlanStore()
 
   const bosses = useBosses()
@@ -310,6 +310,7 @@ export function BoardPage() {
             tokens={boardTokens}
             movements={movements}
             paint={visiblePaint}
+            phase={currentTurn}
             showStartHexes={currentTurn === 0}
             showElevation={showElevation}
             vAlign={dockOpen ? 'top' : 'center'}
@@ -326,7 +327,11 @@ export function BoardPage() {
                 strokeNeedsCheckpoint.current = false
                 checkpoint()
               }
-              setPaint(key, erase ? null : paintColor)
+              // Hazard brush ignores erase-strokes: repainting the same hazard
+              // decrements its life (0 = gone), so it is its own eraser.
+              const hazard = parseHazard(paintColor)
+              if (hazard) paintHazard(key, hazard.kind)
+              else setPaint(key, erase ? null : paintColor)
             }}
           />
         )}

@@ -65,6 +65,8 @@ export interface ParsedCell {
   spawnIndex?: number
   /** Starting tile hazard, if any (from TileEffectSpawnPoints). */
   effect?: TileEffectKind
+  /** The hazard's life span in rounds (its `Turns` is in game turns, 2/round). */
+  effectRounds?: number
 }
 
 export type TileEffectKind = 'fire' | 'ice' | 'contaminated'
@@ -248,7 +250,10 @@ export function parseBoard(board: BoardData, spawnPointsSet = 0): ParsedBoard {
   for (const fx of spawnSet?.TileEffectSpawnPoints ?? []) {
     const kind = TILE_EFFECTS[fx.EffectType]
     const cell = byOffset.get(`${fx.Column},${fx.Row}`)
-    if (kind && cell) cell.effect = kind
+    if (kind && cell) {
+      cell.effect = kind
+      cell.effectRounds = Math.ceil(fx.Turns / 2)
+    }
   }
 
   return {

@@ -13,5 +13,3 @@ export const EFFECT_ICON: Record<TileEffectKind, string> = {
   ice: 'uniteffect_ice',
   contaminated: 'tile_effect_contaminated',
 }
-
-export const isHazard = (color: string): color is TileEffectKind => color in EFFECT_FILL

@@ -4,9 +4,9 @@ import { keywordIconUrl, mapImageUrl, unitPortraitUrl } from '../services/paths'
 import { footprintPath } from '../services/boards/footprint'
 import { getBossOccupiedHexes, hexKey } from '../services/hex/hexUtils'
 import type { HexCoord, Point } from '../types/strategium'
-import type { TokenPos } from '../stores/planStore'
+import { parseHazard, type TokenPos } from '../stores/planStore'
 import { RING_COLOR, type TokenKind } from './tokenColors'
-import { EFFECT_FILL, EFFECT_ICON, isHazard } from './hazards'
+import { EFFECT_FILL, EFFECT_ICON } from './hazards'
 
 export interface BoardToken {
   id: string
@@ -30,8 +30,11 @@ interface Props {
   showGrid?: boolean
   tokens?: BoardToken[]
   movements?: BoardMovement[]
-  /** hexKey → color, for the current turn. The sentinel "fire" renders a flame. */
+  /** hexKey → color, for the current turn. Hazard values (`fire@2`) render the
+   *  hazard tint + icon with their remaining-rounds badge. */
   paint?: Record<string, string>
+  /** Current battle phase — drives the initial hazards' round countdown. */
+  phase?: number
   /** Tint the player (teal) and boss (purple) starting hexes. */
   showStartHexes?: boolean
   /** Tint every playable hex by its elevation (0–4 heatmap). */
@@ -78,6 +81,7 @@ export function HexGrid({
   tokens = [],
   movements = [],
   paint,
+  phase = 0,
   showStartHexes = false,
   showElevation = false,
   vAlign = 'top',
@@ -228,10 +232,21 @@ export function HexGrid({
           ) : null,
         )}
 
-      {/* Starting tile hazards (fire / ice / contaminated) */}
-      {board.cells.map((c) =>
-        c.effect ? <EffectHex key={`fx-${c.col}-${c.row}`} cell={c} kind={c.effect} tileSize={board.tileSize} /> : null,
-      )}
+      {/* Starting tile hazards — decay from turn 1, one round per 2 phases */}
+      {board.cells.map((c) => {
+        if (!c.effect) return null
+        const left = (c.effectRounds ?? Infinity) - Math.floor(Math.max(0, phase - 1) / 2)
+        if (left <= 0) return null
+        return (
+          <EffectHex
+            key={`fx-${c.col}-${c.row}`}
+            cell={c}
+            kind={c.effect}
+            count={Number.isFinite(left) ? left : undefined}
+            tileSize={board.tileSize}
+          />
+        )
+      })}
 
       {/* Starting hexes: player deployment (teal) + boss platform(s) (purple) */}
       {showStartHexes &&
@@ -248,12 +263,14 @@ export function HexGrid({
           ) : null,
         )}
 
-      {/* Painted hexes (hazard sentinels stamp the hazard tint + icon) */}
+      {/* Painted hexes (hazard values stamp the tint + icon + rounds badge) */}
       {paint &&
         Object.entries(paint).map(([key, color]) => {
           const c = cellByAxial.get(key)
           if (!c) return null
-          if (isHazard(color)) return <EffectHex key={`p-${key}`} cell={c} kind={color} tileSize={board.tileSize} />
+          const hazard = parseHazard(color)
+          if (hazard)
+            return <EffectHex key={`p-${key}`} cell={c} kind={hazard.kind} count={hazard.life} tileSize={board.tileSize} />
           return <polygon key={`p-${key}`} points={pointsOf(c)} fill={color} stroke={color} strokeWidth={1.5} />
         })}
 
@@ -314,9 +331,22 @@ function pointsOf(c: ParsedCell): string {
   return cornersToPoints(c.corners)
 }
 
-/** A tile hazard on one hex: tinted fill plus the hazard's keyword icon. */
-function EffectHex({ cell, kind, tileSize }: { cell: ParsedCell; kind: TileEffectKind; tileSize: number }) {
+/** A tile hazard on one hex: tinted fill, the hazard's keyword icon, and —
+ *  when known — a badge with the rounds it has left. */
+function EffectHex({
+  cell,
+  kind,
+  count,
+  tileSize,
+}: {
+  cell: ParsedCell
+  kind: TileEffectKind
+  count?: number
+  tileSize: number
+}) {
   const s = tileSize * 0.72
+  const bx = cell.center.x + tileSize * 0.26
+  const by = cell.center.y + tileSize * 0.28
   return (
     <g pointerEvents="none">
       <polygon points={pointsOf(cell)} fill={EFFECT_FILL[kind]} stroke="none" />
@@ -328,6 +358,23 @@ function EffectHex({ cell, kind, tileSize }: { cell: ParsedCell; kind: TileEffec
         height={s}
         preserveAspectRatio="xMidYMid meet"
       />
+      {count !== undefined && (
+        <>
+          <circle cx={bx} cy={by} r={tileSize * 0.17} fill="#0b0d11" fillOpacity={0.9} />
+          <text
+            x={bx}
+            y={by}
+            fill="#e8e4d8"
+            fontSize={tileSize * 0.24}
+            fontWeight="bold"
+            fontFamily="'Share Tech Mono', monospace"
+            textAnchor="middle"
+            dominantBaseline="central"
+          >
+            {count}
+          </text>
+        </>
+      )}
     </g>
   )
 }
