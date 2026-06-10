@@ -19,6 +19,7 @@ export function Layout() {
           <nav className="flex shrink-0 items-center gap-0.5 sm:gap-1">
             <Tab to="/" label="Home" end />
             <Tab to="/plan" label="Plan" />
+            <Tab to="/guide" label="Guide" />
             <AccountMenu />
           </nav>
         </div>
