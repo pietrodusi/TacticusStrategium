@@ -55,6 +55,24 @@ export async function createTeam(
   return ref.id
 }
 
+/** Overwrite a team's name/composition. */
+export async function updateTeam(
+  id: string,
+  data: { name: string; members: (string | null)[]; machineOfWar: string | null },
+): Promise<void> {
+  const [fs, db] = [await loadFs(), await getDb()]
+  const five = [
+    ...data.members.slice(0, 5),
+    ...Array(Math.max(0, 5 - data.members.length)).fill(null),
+  ]
+  await fs.updateDoc(fs.doc(db, 'teams', id), {
+    name: data.name,
+    members: five,
+    machineOfWar: data.machineOfWar,
+    updatedAt: fs.serverTimestamp(),
+  })
+}
+
 export async function deleteTeam(id: string): Promise<void> {
   const [fs, db] = [await loadFs(), await getDb()]
   await fs.deleteDoc(fs.doc(db, 'teams', id))

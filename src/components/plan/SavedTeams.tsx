@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, LogIn, Save, Trash2, Users } from 'lucide-react'
+import { Check, LogIn, Save, Users } from 'lucide-react'
 import { useAuthStore } from '../../stores/authStore'
 import { usePlanStore } from '../../stores/planStore'
 import { useMyTeams, useTeamMutations } from '../../hooks/useTeams'
 import { MAX_TEAMS, type SavedTeam } from '../../services/firebase/teams'
-import { UnitImage } from '../UnitImage'
 import { DataError } from '../DataError'
+import { TeamRow } from './TeamRow'
+import { TeamEditorModal } from './TeamEditorModal'
 import type { Unit } from '../../types/units'
 
 /**
  * "My Raid Teams" section of Setup Step III: apply a saved squad+MoW with a
- * tap, save the current selection under a name, delete old ones.
+ * tap, save the current selection under a name, edit or delete old ones.
  */
 export function SavedTeams({ unitById }: { unitById: Map<string, Unit> }) {
   const { user, status } = useAuthStore()
@@ -23,6 +24,7 @@ export function SavedTeams({ unitById }: { unitById: Map<string, Unit> }) {
 
   const [name, setName] = useState('')
   const [savedFlash, setSavedFlash] = useState(false)
+  const [editing, setEditing] = useState<SavedTeam | null>(null)
 
   if (status === 'loading') return null
 
@@ -71,7 +73,9 @@ export function SavedTeams({ unitById }: { unitById: Map<string, Unit> }) {
             key={t.id}
             team={t}
             unitById={unitById}
-            onApply={() => applyTeam(t.members, t.machineOfWar)}
+            pressTitle={`Use "${t.name}"`}
+            onPress={() => applyTeam(t.members, t.machineOfWar)}
+            onEdit={() => setEditing(t)}
             onDelete={() => confirm(`Delete team "${t.name}"?`) && remove.mutate(t.id)}
           />
         ))}
@@ -103,51 +107,8 @@ export function SavedTeams({ unitById }: { unitById: Map<string, Unit> }) {
         {atCap && <p className="text-xs text-blood-bright">Team archive full ({MAX_TEAMS}) — delete one first.</p>}
         {create.isError && <p className="text-xs text-blood-bright">Save failed — check your connection and retry.</p>}
       </div>
-    </>
-  )
-}
 
-function TeamRow({
-  team,
-  unitById,
-  onApply,
-  onDelete,
-}: {
-  team: SavedTeam
-  unitById: Map<string, Unit>
-  onApply: () => void
-  onDelete: () => void
-}) {
-  return (
-    <div className="flex items-center gap-2 rounded-lg border border-iron bg-steel/30 px-2.5 py-2">
-      <button onClick={onApply} className="flex min-w-0 flex-1 items-center gap-2.5 text-left" title={`Use "${team.name}"`}>
-        <span className="flex shrink-0 -space-x-2">
-          {team.members.filter(Boolean).map((id, i) => {
-            const u = unitById.get(id!)
-            return (
-              <UnitImage
-                key={`${id}-${i}`}
-                stem={u?.stem ?? null}
-                alt={u?.name ?? ''}
-                className="h-7 w-7 rounded-full border border-abyss object-cover ring-1 ring-iron"
-              />
-            )
-          })}
-        </span>
-        <span className="min-w-0">
-          <span className="block truncate text-xs font-semibold text-bone">{team.name}</span>
-          <span className="block font-mono text-[0.6rem] uppercase tracking-[0.08em] text-ash">
-            {team.members.filter(Boolean).length}/5{team.machineOfWar ? ' +MoW' : ''}
-          </span>
-        </span>
-      </button>
-      <button
-        onClick={onDelete}
-        className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-iron text-ash transition-colors hover:border-blood hover:text-blood-bright"
-        aria-label={`Delete team ${team.name}`}
-      >
-        <Trash2 size={13} />
-      </button>
-    </div>
+      {editing && <TeamEditorModal team={editing} onClose={() => setEditing(null)} />}
+    </>
   )
 }

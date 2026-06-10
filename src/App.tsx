@@ -6,6 +6,7 @@ import { SetupPage } from './pages/SetupPage'
 import { BoardPage } from './pages/BoardPage'
 import { SignInPage } from './pages/SignInPage'
 import { PlansPage } from './pages/PlansPage'
+import { TeamsPage } from './pages/TeamsPage'
 import { SharedPlanPage } from './pages/SharedPlanPage'
 import { initAuth } from './services/firebase/auth'
 
@@ -33,6 +34,7 @@ export function App() {
             <Route path="/plan" element={<SetupPage />} />
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/plans" element={<PlansPage />} />
+            <Route path="/teams" element={<TeamsPage />} />
           </Route>
           {/* Full-bleed planning board — outside the app shell. */}
           <Route path="/plan/board" element={<BoardPage />} />

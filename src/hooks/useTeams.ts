@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '../stores/authStore'
-import { createTeam, deleteTeam, listTeams } from '../services/firebase/teams'
+import { createTeam, deleteTeam, listTeams, updateTeam } from '../services/firebase/teams'
 
 /** The signed-in user's saved raid teams (disabled while signed out). */
 export function useMyTeams() {
@@ -32,10 +32,22 @@ export function useTeamMutations() {
     }) => createTeam(uid, name, members, machineOfWar),
     onSuccess: invalidate,
   })
+  const update = useMutation({
+    mutationFn: ({
+      id,
+      ...data
+    }: {
+      id: string
+      name: string
+      members: (string | null)[]
+      machineOfWar: string | null
+    }) => updateTeam(id, data),
+    onSuccess: invalidate,
+  })
   const remove = useMutation({
     mutationFn: (id: string) => deleteTeam(id),
     onSuccess: invalidate,
   })
 
-  return { create, remove }
+  return { create, update, remove }
 }

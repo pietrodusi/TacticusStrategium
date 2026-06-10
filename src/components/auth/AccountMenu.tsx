@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { CircleUserRound, FolderOpen, LogOut } from 'lucide-react'
+import { CircleUserRound, FolderOpen, LogOut, Users } from 'lucide-react'
 import { useAuthStore } from '../../stores/authStore'
 import { signOutUser } from '../../services/firebase/auth'
 
@@ -62,6 +62,14 @@ export function AccountMenu() {
             onClick={() => {
               setOpen(false)
               navigate('/plans')
+            }}
+          />
+          <MenuItem
+            icon={<Users size={15} />}
+            label="My Teams"
+            onClick={() => {
+              setOpen(false)
+              navigate('/teams')
             }}
           />
           <MenuItem
