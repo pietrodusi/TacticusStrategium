@@ -4,10 +4,12 @@ import { initializeApp } from 'firebase/app'
 // These values are public identifiers, safe to commit — all security lives in
 // Firebase Auth + the Firestore rules (see firestore.rules at the repo root).
 const firebaseConfig = {
-  apiKey: 'REPLACE_ME',
-  authDomain: 'REPLACE_ME.firebaseapp.com',
-  projectId: 'REPLACE_ME',
-  appId: 'REPLACE_ME',
+  apiKey: 'AIzaSyC3y8_iDvQ9eJXo4x9-intyOT0yXj2NdSo',
+  authDomain: 'tacticus-strategium.firebaseapp.com',
+  projectId: 'tacticus-strategium',
+  storageBucket: 'tacticus-strategium.firebasestorage.app',
+  messagingSenderId: '257758199298',
+  appId: '1:257758199298:web:9f97316f4433928f60711b',
 }
 
 /** False until the real console config is pasted above — UI shows a hint. */
