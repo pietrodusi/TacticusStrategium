@@ -335,49 +335,46 @@ export function BoardPage() {
               </button>
             </div>
 
-            {/* Tray — min-height reserves room for the horizontal scrollbar so the
-                row is the same height whether or not a tab overflows. */}
-            <div className="flex min-h-[5.75rem] gap-2 overflow-x-auto">
-              {tab === 'allies' ? (
-                <>
-                  {teamDefs.map((d) => (
-                    <TrayChip key={d.id} def={d} placed={!!posAtTurn(positions[d.id], currentTurn)} selected={d.id === selectedId} onClick={() => selectToken(d.id)} />
-                  ))}
-                  {allyPalette.length > 0 && <Divider />}
-                  {allyPalette.map((p) => (
-                    <PaletteChip key={`a-${p.unitId}`} type={p} count={instCount(p)} selected={pending?.unitId === p.unitId && pending.side === 'ally'} onClick={() => selectPalette(p)} />
-                  ))}
-                  {teamDefs.length === 0 && allyPalette.length === 0 && <Empty text="No allied units" />}
-                </>
-              ) : tab === 'enemies' ? (
-                <>
-                  {bossDef && (
-                    <TrayChip def={bossDef} placed selected={bossDef.id === selectedId} onClick={() => selectToken(bossDef.id)} />
-                  )}
-                  {enemyPalette.length > 0 && <Divider />}
-                  {enemyPalette.map((p) => (
-                    <PaletteChip key={`e-${p.unitId}`} type={p} count={instCount(p)} selected={pending?.unitId === p.unitId && pending.side === 'enemy'} onClick={() => selectPalette(p)} />
-                  ))}
-                  {enemyPalette.length === 0 && <Empty text="No known spawns" />}
-                </>
-              ) : (
-                <div className="flex w-full flex-col gap-2">
-                  <ViewToggle
-                    active={showElevation}
-                    onClick={() => setShowElevation((v) => !v)}
-                    icon={<Mountain size={16} />}
-                    label="Show elevation"
-                    desc="Tint every hex by its height (0–4)"
+            {/* Tray — all three tab panels stay mounted, stacked in one grid
+                cell (inactive ones invisible), so every tab gets the height of
+                the tallest panel and switching tabs never resizes the dock. */}
+            <div className="grid">
+              <TrayRow visible={tab === 'allies'}>
+                {teamDefs.map((d) => (
+                  <TrayChip key={d.id} def={d} placed={!!posAtTurn(positions[d.id], currentTurn)} selected={d.id === selectedId} onClick={() => selectToken(d.id)} />
+                ))}
+                {allyPalette.length > 0 && <Divider />}
+                {allyPalette.map((p) => (
+                  <PaletteChip key={`a-${p.unitId}`} type={p} count={instCount(p)} selected={pending?.unitId === p.unitId && pending.side === 'ally'} onClick={() => selectPalette(p)} />
+                ))}
+                {teamDefs.length === 0 && allyPalette.length === 0 && <Empty text="No allied units" />}
+              </TrayRow>
+              <TrayRow visible={tab === 'enemies'}>
+                {bossDef && (
+                  <TrayChip def={bossDef} placed selected={bossDef.id === selectedId} onClick={() => selectToken(bossDef.id)} />
+                )}
+                {enemyPalette.length > 0 && <Divider />}
+                {enemyPalette.map((p) => (
+                  <PaletteChip key={`e-${p.unitId}`} type={p} count={instCount(p)} selected={pending?.unitId === p.unitId && pending.side === 'enemy'} onClick={() => selectPalette(p)} />
+                ))}
+                {enemyPalette.length === 0 && <Empty text="No known spawns" />}
+              </TrayRow>
+              <div className={`col-start-1 row-start-1 flex w-full flex-col gap-2 ${tab === 'view' ? '' : 'invisible'}`}>
+                <ViewToggle
+                  active={showElevation}
+                  onClick={() => setShowElevation((v) => !v)}
+                  icon={<Mountain size={16} />}
+                  label="Show elevation"
+                  desc="Tint every hex by its height (0–4)"
+                />
+                {nPrimes > 0 && currentTurn === 0 && (
+                  <PrimeStepper
+                    count={nPrimes}
+                    value={Math.min(primesDefeated, nPrimes)}
+                    onChange={setPrimesDefeated}
                   />
-                  {nPrimes > 0 && currentTurn === 0 && (
-                    <PrimeStepper
-                      count={nPrimes}
-                      value={Math.min(primesDefeated, nPrimes)}
-                      onChange={setPrimesDefeated}
-                    />
-                  )}
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Selected-unit actions (Remove lives on a floating board button) */}
@@ -554,6 +551,19 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
     <button onClick={onClick} className={`rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] transition-colors ${active ? 'bg-steel-2 text-teal-bright' : 'text-ash hover:text-bone'}`}>
       {children}
     </button>
+  )
+}
+
+/** A scrollable chip row stacked in the shared tray grid cell. Hidden tabs stay
+ *  mounted (invisible) so the cell — and thus the dock — keeps the height of
+ *  the tallest panel. min-height reserves room for the horizontal scrollbar. */
+function TrayRow({ visible, children }: { visible: boolean; children: React.ReactNode }) {
+  return (
+    <div
+      className={`col-start-1 row-start-1 flex min-h-[5.75rem] items-center gap-2 overflow-x-auto ${visible ? '' : 'invisible'}`}
+    >
+      {children}
+    </div>
   )
 }
 
