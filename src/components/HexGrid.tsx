@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { ParsedBoard, ParsedCell, TileEffectKind } from '../services/boards/boardService'
 import { keywordIconUrl, mapImageUrl, unitPortraitUrl } from '../services/paths'
+import { footprintPath } from '../services/boards/footprint'
 import { getBossOccupiedHexes, hexKey } from '../services/hex/hexUtils'
 import type { HexCoord, Point } from '../types/strategium'
 import type { TokenPos } from '../stores/planStore'
@@ -257,8 +258,8 @@ export function HexGrid({
           return <polygon key={`p-${key}`} points={pointsOf(c)} fill={color} stroke={color} strokeWidth={1.5} />
         })}
 
-      {/* Boss footprints — merged into one shape (outline only on outer edges).
-          Follows the pointer while dragging. */}
+      {/* Boss footprints — merged into one uniform shape (single closed path,
+          junction gaps bridged). Follows the pointer while dragging. */}
       {tokens
         .filter((t) => t.size > 1)
         .map((t) => {
@@ -270,14 +271,16 @@ export function HexGrid({
           if (cells.length === 0) return null
           const color = RING_COLOR[t.type]
           return (
-            <g key={`bf-${t.id}`}>
-              {cells.map((c) => (
-                <polygon key={`${c.q},${c.r}`} points={cornersToPoints(c.cornersFull)} fill={color} fillOpacity={0.3} stroke="none" />
-              ))}
-              {footprintEdges(cells).map((s, i) => (
-                <line key={i} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={color} strokeOpacity={0.9} strokeWidth={2.5} strokeLinecap="round" />
-              ))}
-            </g>
+            <path
+              key={`bf-${t.id}`}
+              d={footprintPath(cells)}
+              fill={color}
+              fillOpacity={0.3}
+              stroke={color}
+              strokeOpacity={0.9}
+              strokeWidth={2.5}
+              strokeLinejoin="round"
+            />
           )
         })}
 
@@ -334,50 +337,6 @@ function EffectHex({ cell, kind, tileSize }: { cell: ParsedCell; kind: TileEffec
 
 function cornersToPoints(corners: Point[]): string {
   return corners.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')
-}
-
-const HEX_DIRS: HexCoord[] = [
-  { q: 1, r: 0 },
-  { q: 1, r: -1 },
-  { q: 0, r: -1 },
-  { q: -1, r: 0 },
-  { q: -1, r: 1 },
-  { q: 0, r: 1 },
-]
-
-/** Boundary edges of a set of cells: every edge not shared with another cell in the set. */
-function footprintEdges(cells: ParsedCell[]): { x1: number; y1: number; x2: number; y2: number }[] {
-  const byKey = new Map(cells.map((c) => [hexKey({ q: c.q, r: c.r }), c]))
-  const segs: { x1: number; y1: number; x2: number; y2: number }[] = []
-  for (const c of cells) {
-    const internal = new Set<number>()
-    for (const d of HEX_DIRS) {
-      const n = byKey.get(hexKey({ q: c.q + d.q, r: c.r + d.r }))
-      if (!n) continue
-      // The shared edge is the one whose midpoint is nearest the two centres' midpoint.
-      const tx = (c.center.x + n.center.x) / 2
-      const ty = (c.center.y + n.center.y) / 2
-      let bi = -1
-      let bd = Infinity
-      for (let i = 0; i < 6; i++) {
-        const a = c.cornersFull[i]
-        const b = c.cornersFull[(i + 1) % 6]
-        const dd = ((a.x + b.x) / 2 - tx) ** 2 + ((a.y + b.y) / 2 - ty) ** 2
-        if (dd < bd) {
-          bd = dd
-          bi = i
-        }
-      }
-      if (bi >= 0) internal.add(bi)
-    }
-    for (let i = 0; i < 6; i++) {
-      if (internal.has(i)) continue
-      const a = c.cornersFull[i]
-      const b = c.cornersFull[(i + 1) % 6]
-      segs.push({ x1: a.x, y1: a.y, x2: b.x, y2: b.y })
-    }
-  }
-  return segs
 }
 
 function Arrow({ from, to, color, shorten }: { from: Point; to: Point; color: string; shorten: number }) {
