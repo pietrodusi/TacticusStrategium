@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeftRight, Brush, Cog, LogOut, Mountain, Plus, RotateCw, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
-import { usePlanStore, posAtTurn, paintAtTurn, parseHazard, roundsLeftAt } from '../stores/planStore'
+import { ArrowLeftRight, Brush, Cog, Eraser, LogOut, Mountain, Plus, RotateCw, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
+import { usePlanStore, posAtTurn, paintAtTurn, parseHazard, hazardValue, HAZARD_LIFE, roundsLeftAt } from '../stores/planStore'
 import { useBosses, usePrimes, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
 import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
@@ -48,11 +48,14 @@ const PAINT_HAZARDS: { name: string; value: TileEffectKind }[] = [
   { name: 'Contaminated', value: 'contaminated' },
 ]
 
+/** Rubber brush sentinel — directly erases any painted tile. */
+const ERASER = 'eraser'
+
 export function BoardPage() {
   const navigate = useNavigate()
   const { bossUnitId, targetKind, boardId, team, machineOfWar, currentTurn, positions, paint, instances } = usePlanStore()
   const { seededBoard, primesDefeated, history } = usePlanStore()
-  const { setCurrentTurn, placeToken, removeFromTurn, addInstance, setPaint, paintHazard, resetPlan } = usePlanStore()
+  const { setCurrentTurn, placeToken, removeFromTurn, addInstance, setPaint, resetPlan } = usePlanStore()
   const { seedDeployment, setPrimesDefeated, checkpoint, undo } = usePlanStore()
 
   const bosses = useBosses()
@@ -327,10 +330,11 @@ export function BoardPage() {
                 strokeNeedsCheckpoint.current = false
                 checkpoint()
               }
-              // Hazard brush ignores erase-strokes: repainting the same hazard
-              // decrements its life (0 = gone), so it is its own eraser.
+              // Rubber erases anything. The hazard brush ignores erase-strokes:
+              // reapplying a hazard counts as a fresh tile at full lifespan.
               const hazard = parseHazard(paintColor)
-              if (hazard) paintHazard(key, hazard.kind)
+              if (paintColor === ERASER) setPaint(key, null)
+              else if (hazard) setPaint(key, hazardValue(hazard.kind, HAZARD_LIFE))
               else setPaint(key, erase ? null : paintColor)
             }}
           />
@@ -551,6 +555,14 @@ function PaintPanel({
           </button>
         ))}
       </div>
+      <span className="h-px w-7 bg-iron" />
+      <button
+        onClick={() => onPick(ERASER)}
+        title="Rubber — erase any tile"
+        className={`grid h-7 w-7 place-items-center rounded-full border-2 bg-steel transition-transform hover:scale-110 ${color === ERASER ? 'border-bone text-bone' : 'border-iron text-ash'}`}
+      >
+        <Eraser size={15} />
+      </button>
       <span className="h-px w-7 bg-iron" />
       <button
         onClick={onFlip}

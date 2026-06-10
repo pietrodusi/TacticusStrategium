@@ -231,45 +231,26 @@ describe('plan actions', () => {
     })
   })
 
-  describe('paintHazard', () => {
-    const visible = () => paintAtTurn(usePlanStore.getState().paint, usePlanStore.getState().currentTurn)
-
-    it('stamps a hazard at full life on an empty hex', () => {
-      store().paintHazard('0,0', 'fire')
-      expect(visible()).toEqual({ '0,0': 'fire@2' })
-    })
-
-    it('repainting the same hazard reduces its life, then erases at 0', () => {
-      store().paintHazard('0,0', 'fire')
-      store().paintHazard('0,0', 'fire')
-      expect(visible()).toEqual({ '0,0': 'fire@1' })
-      store().paintHazard('0,0', 'fire')
-      expect(visible()).toEqual({})
-    })
-
-    it('a different hazard kind replaces at full life', () => {
-      store().paintHazard('0,0', 'fire')
-      store().paintHazard('0,0', 'ice')
-      expect(visible()).toEqual({ '0,0': 'ice@2' })
-    })
-
-    it('decrementing an inherited hazard to 0 masks it without rewriting history', () => {
+  describe('hazard re-stamping', () => {
+    it('reapplying a hazard refreshes its full lifespan from the new phase', () => {
       store().setCurrentTurn(1)
-      store().paintHazard('0,0', 'fire')
-      store().setCurrentTurn(3) // fire@1 left here
-      store().paintHazard('0,0', 'fire')
-      expect(visible()).toEqual({})
-      expect(paintAtTurn(usePlanStore.getState().paint, 1)).toEqual({ '0,0': 'fire@2' })
+      store().setPaint('0,0', 'fire@2')
+      store().setCurrentTurn(3) // showing fire@1 here…
+      store().setPaint('0,0', 'fire@2') // …reapplied: a fresh tile, 2 rounds again
+      const paint = usePlanStore.getState().paint
+      expect(paintAtTurn(paint, 3)).toEqual({ '0,0': 'fire@2' })
+      expect(paintAtTurn(paint, 5)).toEqual({ '0,0': 'fire@1' })
+      expect(paintAtTurn(paint, 7)).toEqual({})
     })
 
-    it('decrementing an inherited hazard re-anchors its remaining life', () => {
+    it('the rubber (setPaint null) erases a live hazard from this phase on', () => {
       store().setCurrentTurn(1)
-      store().paintHazard('0,0', 'fire') // fire@2 from phase 1
+      store().setPaint('0,0', 'fire@2')
       store().setCurrentTurn(2)
-      store().paintHazard('0,0', 'fire') // showing 2 → drops to 1, anchored at phase 2
-      expect(visible()).toEqual({ '0,0': 'fire@1' })
-      expect(paintAtTurn(usePlanStore.getState().paint, 3)).toEqual({ '0,0': 'fire@1' })
-      expect(paintAtTurn(usePlanStore.getState().paint, 4)).toEqual({})
+      store().setPaint('0,0', null)
+      const paint = usePlanStore.getState().paint
+      expect(paintAtTurn(paint, 2)).toEqual({})
+      expect(paintAtTurn(paint, 1)).toEqual({ '0,0': 'fire@2' })
     })
   })
 

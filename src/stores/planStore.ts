@@ -155,11 +155,9 @@ interface PlanState {
   ) => void
   /** Set how many of the boss's primes are defeated (hides the matching adds). */
   setPrimesDefeated: (defeated: number) => void
-  /** Set a hex colour at the current turn, or erase it when color is null. */
+  /** Set a hex value at the current turn (colour or `kind@life` hazard), or
+   *  erase it when null. Re-stamping a hazard refreshes its full lifespan. */
   setPaint: (hexKey: string, color: string | null) => void
-  /** Hazard brush: stamp `kind` at full life on an empty/other hex; on the same
-   *  hazard, reduce its remaining life by 1 (erasing it at 0). */
-  paintHazard: (hexKey: string, kind: HazardKind) => void
   /** Snapshot the map state before a user gesture mutates it (enables undo). */
   checkpoint: () => void
   /** Restore the latest snapshot (also jumps back to that gesture's phase). */
@@ -291,26 +289,6 @@ export const usePlanStore = create<PlanState>()(
             if (paintAtTurn({ ...s.paint, [P]: turnPaint }, P)[hexKey]) turnPaint[hexKey] = null
           } else {
             turnPaint[hexKey] = color
-          }
-          return { paint: { ...s.paint, [P]: turnPaint } }
-        }),
-
-      paintHazard: (hexKey, kind) =>
-        set((s) => {
-          const P = s.currentTurn
-          const turnPaint = { ...(s.paint[P] ?? {}) }
-          const visible = paintAtTurn(s.paint, P)[hexKey]
-          const cur = visible ? parseHazard(visible) : null
-          if (cur && cur.kind === kind) {
-            const left = cur.life - 1
-            if (left > 0) {
-              turnPaint[hexKey] = hazardValue(kind, left)
-            } else {
-              delete turnPaint[hexKey]
-              if (paintAtTurn({ ...s.paint, [P]: turnPaint }, P)[hexKey]) turnPaint[hexKey] = null
-            }
-          } else {
-            turnPaint[hexKey] = hazardValue(kind, HAZARD_LIFE)
           }
           return { paint: { ...s.paint, [P]: turnPaint } }
         }),
