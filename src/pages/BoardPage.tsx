@@ -340,23 +340,43 @@ export function BoardPage() {
           onFlip={() => setPaintSide((s) => (s === 'left' ? 'right' : 'left'))}
         />
 
-        {/* Remove — sits just under the Paint notch (same edge), shown only when a
-            removable unit is selected */}
-        {selectedDef && selectedDef.type !== 'boss' && !paintOpen && (
-          <button
-            onClick={() => {
-              checkpoint()
-              removeFromTurn(selectedDef.id)
-              setSelectedId(null)
-            }}
-            title={`Remove ${selectedDef.name}`}
-            className={`absolute top-28 z-20 ${paintSide === 'left' ? 'left-0 rounded-r-xl' : 'right-0 rounded-l-xl'} flex flex-col items-center gap-1.5 border border-blood bg-abyss/90 px-1.5 py-3 text-blood-bright backdrop-blur transition-colors hover:bg-blood/30`}
-          >
-            <Trash2 size={16} />
-            <span className="rotate-180 text-[0.6rem] font-semibold uppercase tracking-[0.15em]" style={{ writingMode: 'vertical-rl' }}>
-              Remove
-            </span>
-          </button>
+        {/* Selected-unit actions — stacked under the Paint notch (same edge):
+            Remove (non-boss), then Rotate (size-3 footprints, incl. the boss) */}
+        {selectedDef && !paintOpen && (
+          <div className={`absolute top-28 z-20 ${paintSide === 'left' ? 'left-0' : 'right-0'} flex flex-col gap-2`}>
+            {selectedDef.type !== 'boss' && (
+              <SideAction
+                side={paintSide}
+                danger
+                label="Remove"
+                icon={<Trash2 size={16} />}
+                title={`Remove ${selectedDef.name}`}
+                onClick={() => {
+                  checkpoint()
+                  removeFromTurn(selectedDef.id)
+                  setSelectedId(null)
+                }}
+              />
+            )}
+            {selectedDef.size === 3 && (
+              <SideAction
+                side={paintSide}
+                label="Rotate"
+                icon={<RotateCw size={16} />}
+                title={`Rotate ${selectedDef.name}`}
+                onClick={() => {
+                  const cur =
+                    posAtTurn(positions[selectedDef.id], currentTurn) ??
+                    (selectedDef.type === 'boss' && board.data
+                      ? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation }
+                      : null)
+                  if (!cur) return
+                  checkpoint()
+                  placeToken(selectedDef.id, { q: cur.q, r: cur.r, rot: (cur.rot ?? 0) % 180 === 0 ? 90 : 0 })
+                }}
+              />
+            )}
+          </div>
         )}
       </div>
 
@@ -414,25 +434,6 @@ export function BoardPage() {
               </div>
             </div>
 
-            {/* Selected-unit actions (Remove lives on a floating board button) */}
-            {selectedDef && selectedDef.size === 3 && !paintOpen && (
-              <div className="flex items-center justify-end">
-                <ToolButton
-                  onClick={() => {
-                    const cur =
-                      posAtTurn(positions[selectedDef.id], currentTurn) ??
-                      (selectedDef.type === 'boss' && board.data
-                        ? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation }
-                        : null)
-                    if (!cur) return
-                    checkpoint()
-                    placeToken(selectedDef.id, { q: cur.q, r: cur.r, rot: (cur.rot ?? 0) % 180 === 0 ? 90 : 0 })
-                  }}
-                  icon={<RotateCw size={15} />}
-                  label="Rotate"
-                />
-              </div>
-            )}
           </div>
         )}
 
@@ -672,16 +673,35 @@ function PaletteChip({ type, count, selected, onClick }: { type: PaletteType; co
   )
 }
 
-function ToolButton({ active, onClick, icon, label, danger }: { active?: boolean; onClick: () => void; icon: React.ReactNode; label: string; danger?: boolean }) {
-  const cls = active
-    ? 'border-teal bg-teal/10 text-teal-bright'
-    : danger
-      ? 'border-iron text-ash hover:border-blood hover:text-blood-bright'
-      : 'border-iron text-ash hover:border-brass-dim hover:text-bone'
+/** A board-edge action notch (vertical label), same family as the Paint notch. */
+function SideAction({
+  side,
+  label,
+  icon,
+  title,
+  danger,
+  onClick,
+}: {
+  side: Side
+  label: string
+  icon: React.ReactNode
+  title: string
+  danger?: boolean
+  onClick: () => void
+}) {
+  const cls = danger
+    ? 'border-blood text-blood-bright hover:bg-blood/30'
+    : 'border-iron text-ash hover:border-teal hover:text-teal-bright'
   return (
-    <button onClick={onClick} className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs uppercase tracking-[0.08em] transition-colors ${cls}`}>
+    <button
+      onClick={onClick}
+      title={title}
+      className={`${side === 'left' ? 'rounded-r-xl' : 'rounded-l-xl'} flex flex-col items-center gap-1.5 border bg-abyss/90 px-1.5 py-3 backdrop-blur transition-colors ${cls}`}
+    >
       {icon}
-      {label}
+      <span className="rotate-180 text-[0.6rem] font-semibold uppercase tracking-[0.15em]" style={{ writingMode: 'vertical-rl' }}>
+        {label}
+      </span>
     </button>
   )
 }
