@@ -1,7 +1,11 @@
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { AccountMenu } from '../auth/AccountMenu'
+import { asset } from '../../services/paths'
 
 export function Layout() {
+  // The footer only shows on Home — inner pages (e.g. Plan's sticky Engage bar)
+  // would overlap/crop it. Privacy & Terms stays linked from Sign in / Account / Guide.
+  const isHome = useLocation().pathname === '/'
   return (
     <div className="flex min-h-full flex-col">
       {/* top accent line */}
@@ -9,10 +13,19 @@ export function Layout() {
 
       <header className="sticky top-0 z-20 border-b border-iron/80 bg-abyss/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-2 px-3 sm:px-4">
-          <Link to="/" className="group flex min-w-0 flex-col leading-none">
-            <span className="eyebrow hidden sm:block">Cogitator Tactica</span>
-            <span className="display truncate text-lg font-bold tracking-[0.14em] text-bone transition-colors group-hover:text-teal-bright sm:text-xl">
-              STRATEGIUM
+          <Link to="/" className="group flex min-w-0 items-center gap-2.5 leading-none" aria-label="Strategium home">
+            {/* Mobile: icon only (the wordmark gets cropped on narrow screens). */}
+            <img
+              src={asset('icon-512-noglow.png')}
+              alt=""
+              className="h-9 w-9 shrink-0 sm:hidden"
+              draggable={false}
+            />
+            <span className="hidden flex-col sm:flex">
+              <span className="eyebrow">Cogitator Tactica</span>
+              <span className="display text-xl font-bold tracking-[0.14em] text-bone transition-colors group-hover:text-teal-bright">
+                STRATEGIUM
+              </span>
             </span>
           </Link>
 
@@ -29,18 +42,20 @@ export function Layout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-iron/60 bg-abyss/60">
-        <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-1 px-4 py-5 text-center">
-          <hr className="rule mb-2 w-28" />
-          <p className="eyebrow text-brass-dim">++ For the Emperor ++</p>
-          <p className="font-mono text-[0.65rem] text-ash/70">
-            Fan-made · map data via TacticusDB · not affiliated with Snowprint Studios
-          </p>
-          <Link to="/legal" className="font-mono text-[0.65rem] text-ash/70 underline-offset-2 transition-colors hover:text-teal-bright hover:underline">
-            Privacy &amp; Terms
-          </Link>
-        </div>
-      </footer>
+      {isHome && (
+        <footer className="border-t border-iron/60 bg-abyss/60">
+          <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-1 px-4 py-5 text-center">
+            <hr className="rule mb-2 w-28" />
+            <p className="eyebrow text-brass-dim">++ For the Emperor ++</p>
+            <p className="font-mono text-[0.65rem] text-ash/70">
+              Fan-made · map data via TacticusDB · not affiliated with Snowprint Studios
+            </p>
+            <Link to="/legal" className="font-mono text-[0.65rem] text-ash/70 underline-offset-2 transition-colors hover:text-teal-bright hover:underline">
+              Privacy &amp; Terms
+            </Link>
+          </div>
+        </footer>
+      )}
     </div>
   )
 }
