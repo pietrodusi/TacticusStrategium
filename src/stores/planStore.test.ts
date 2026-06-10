@@ -254,6 +254,53 @@ describe('plan actions', () => {
     })
   })
 
+  describe('cloud plan load / linkage', () => {
+    const cloudData = {
+      bossUnitId: 'bossX',
+      targetKind: 'prime' as const,
+      boardId: 'GB_07',
+      team: ['charA', null, null, null, null],
+      machineOfWar: null,
+      currentTurn: 4,
+      positions: { charA: { 0: { q: 1, r: 1 } } },
+      paint: { 1: { '0,0': 'teal' } },
+      instances: { 'inst-1': { unitId: 'orkBoy', side: 'enemy' as const } },
+      instanceSeq: 1,
+      seededBoard: 'GB_07',
+      primesDefeated: 0,
+    }
+
+    it('loadPlan replaces the whole plan, clears history and links the doc', () => {
+      store().placeToken('old', { q: 9, r: 9 })
+      store().checkpoint()
+      store().loadPlan(cloudData, { id: 'doc1', name: 'Alpha' })
+      expect(store().bossUnitId).toBe('bossX')
+      expect(store().targetKind).toBe('prime')
+      expect(store().boardId).toBe('GB_07')
+      expect(store().positions).toEqual(cloudData.positions)
+      expect(store().history).toHaveLength(0)
+      expect(store().cloudRef).toEqual({ id: 'doc1', name: 'Alpha' })
+      // seededBoard came with the payload — deployment must not re-seed.
+      expect(store().seededBoard).toBe('GB_07')
+    })
+
+    it('changing the target or map unlinks the cloud doc', () => {
+      store().loadPlan(cloudData, { id: 'doc1', name: 'Alpha' })
+      store().selectBoard('GB_99')
+      expect(store().cloudRef).toBeNull()
+
+      store().setCloudRef({ id: 'doc2', name: 'Beta' })
+      store().selectBoss('someBoss')
+      expect(store().cloudRef).toBeNull()
+    })
+
+    it('resetPlan (board exit) unlinks the cloud doc', () => {
+      store().loadPlan(cloudData, { id: 'doc1', name: 'Alpha' })
+      store().resetPlan()
+      expect(store().cloudRef).toBeNull()
+    })
+  })
+
   describe('setPaint erase semantics', () => {
     it('drops a hex painted on the current phase', () => {
       store().setCurrentTurn(2)

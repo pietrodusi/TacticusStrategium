@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import type { PlanData } from '../services/plans/serialize'
 
 /** A token position at one turn (rot = boss rotation in degrees). */
 export interface TokenPos {
@@ -129,6 +130,9 @@ interface PlanState {
   seededBoard: string | null
   /** How many of the boss's primes are defeated — hides adds with removeAtPrime ≤ it. */
   primesDefeated: number
+  /** The cloud doc this local plan came from (enables "Overwrite"). Cleared
+   *  whenever the plan is cleared (new target/map, reset, exit). */
+  cloudRef: { id: string; name: string } | null
 
   // ── Setup actions ──
   selectBoss: (unitId: string) => void
@@ -163,6 +167,12 @@ interface PlanState {
   /** Restore the latest snapshot (also jumps back to that gesture's phase). */
   undo: () => void
   resetPlan: () => void
+
+  // ── Cloud actions ──
+  /** Replace the whole local plan (setup + map) with a cloud payload. */
+  loadPlan: (data: PlanData, cloudRef: { id: string; name: string } | null) => void
+  /** Link/unlink the current local plan to a cloud doc (after save / rename). */
+  setCloudRef: (ref: { id: string; name: string } | null) => void
 }
 
 const EMPTY_PLAN = {
@@ -176,6 +186,7 @@ const EMPTY_PLAN = {
   // Default to all primes defeated (the usual plan-the-boss-after-primes case);
   // bosses have at most 2 primes, and the stepper/filter clamp to nPrimes.
   primesDefeated: 2,
+  cloudRef: null as { id: string; name: string } | null,
 }
 
 export const usePlanStore = create<PlanState>()(
@@ -314,17 +325,24 @@ export const usePlanStore = create<PlanState>()(
         }),
 
       resetPlan: () => set({ ...EMPTY_PLAN }),
+
+      loadPlan: (data, cloudRef) =>
+        set({ ...data, history: [], cloudRef }),
+
+      setCloudRef: (cloudRef) => set({ cloudRef }),
     }),
     {
       name: 'tacticus-strategium-plan',
-      version: 1,
+      version: 2,
       // Undo history is session-only — persist it emptied.
       partialize: (s) => ({ ...s, history: [] }),
-      // v0 (pre-versioning) has the same shape as v1, so carry it over. Any other
-      // mismatch discards the saved plan — plans are cheap to rebuild, while
-      // hydrating an incompatible shape can break the board page.
+      // v0/v1 → v2 adds cloudRef (v0, pre-versioning, has the v1 shape). Any
+      // other mismatch discards the saved plan — plans are cheap to rebuild,
+      // while hydrating an incompatible shape can break the board page.
       migrate: (persisted, version) =>
-        (version === 0 ? persisted : undefined) as PlanState,
+        (version <= 1
+          ? { ...(persisted as PlanState), cloudRef: null }
+          : undefined) as PlanState,
     },
   ),
 )

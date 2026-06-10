@@ -1,32 +1,32 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeftRight, Brush, Cog, Eraser, LogOut, Mountain, Plus, RotateCw, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
+import { ArrowLeftRight, Brush, CloudUpload, Cog, Eraser, LogOut, Mountain, Plus, RotateCw, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
 import { usePlanStore, posAtTurn, paintAtTurn, parseHazard, hazardValue, HAZARD_LIFE, roundsLeftAt } from '../stores/planStore'
 import { useBosses, usePrimes, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
 import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
 import { EFFECT_FILL, EFFECT_ICON } from '../components/hazards'
 import type { TileEffectKind } from '../services/boards/boardService'
-import { RING_COLOR, type TokenKind } from '../components/tokenColors'
+import { RING_COLOR } from '../components/tokenColors'
 import { keywordIconUrl } from '../services/paths'
 import { UnitImage } from '../components/UnitImage'
 import { DataError } from '../components/DataError'
 import { TurnSelector } from '../components/plan/TurnSelector'
-import { bossDisplayName } from '../utils/format'
+import { SavePlanSheet } from '../components/plan/SavePlanSheet'
+import { RoundsCounter } from '../components/plan/RoundsCounter'
+import {
+  deriveBoardView,
+  instanceTokenDefs,
+  targetDef,
+  uniqueTokenDefs,
+  visibleTokenDefs,
+  type TokenDef as TrayDef,
+} from '../components/plan/planView'
 import type { HexCoord } from '../types/strategium'
 import type { Unit } from '../types/units'
 
 type Tab = 'allies' | 'enemies' | 'view'
 type Side = 'left' | 'right'
-
-interface TrayDef {
-  id: string
-  type: TokenKind
-  stem: string | null
-  name: string
-  size: number
-  removeAtPrime?: number | null // primes needed to remove this initial add (null = never)
-}
 interface PaletteType {
   unitId: string
   name: string
@@ -71,6 +71,7 @@ export function BoardPage() {
   const [paintColor, setPaintColor] = useState(PAINT_COLORS[0].value)
   const [dockOpen, setDockOpen] = useState(true)
   const [tab, setTab] = useState<Tab>('allies')
+  const [saveOpen, setSaveOpen] = useState(false)
   const [showElevation, setShowElevation] = useState(false)
   // One undo step per paint stroke: snapshot lazily on the stroke's first hex.
   const strokeNeedsCheckpoint = useRef(false)
@@ -88,17 +89,10 @@ export function BoardPage() {
   }, [])
 
   // The fight's primary unit (raid boss or prime), normalised to a token def.
-  const target = useMemo(() => {
-    if (!bossUnitId) return null
-    if (targetKind === 'prime') {
-      const p = primes.data?.primes.find((x) => x.unitId === bossUnitId)
-      return p ? { unitId: p.unitId, name: p.name, stem: p.imageStem, size: p.size ?? 1 } : null
-    }
-    const b = bosses.data?.bosses.find((x) => x.unitId === bossUnitId)
-    return b
-      ? { unitId: b.unitId, name: bossDisplayName(b.bossType, b.name), stem: b.imageStem, size: b.bossSize }
-      : null
-  }, [bossUnitId, targetKind, primes.data, bosses.data])
+  const target = useMemo(
+    () => targetDef(bossUnitId, targetKind, bosses.data, primes.data),
+    [bossUnitId, targetKind, primes.data, bosses.data],
+  )
 
   // The initial enemy deployment for this fight: boss board-keyed, or a prime
   // keyed primeUnitId → boardId.
@@ -132,16 +126,10 @@ export function BoardPage() {
   // Unique deployable tokens: boss + squad. The Machine of War is NOT deployed
   // directly — it's a loadout pick whose ability-summoned unit (if any) appears
   // in the Allies palette like a summon.
-  const uniqueDefs = useMemo<TrayDef[]>(() => {
-    const list: TrayDef[] = []
-    if (target) list.push({ id: target.unitId, type: 'boss', stem: target.stem, name: target.name, size: target.size })
-    for (const id of team) {
-      if (!id) continue
-      const u = unitById.get(id)
-      if (u) list.push({ id: u.id, type: 'character', stem: u.stem, name: u.name, size: 1 })
-    }
-    return list
-  }, [target, team, unitById])
+  const uniqueDefs = useMemo<TrayDef[]>(
+    () => uniqueTokenDefs(target, team, unitById),
+    [target, team, unitById],
+  )
 
   // Spawn palettes (types you can add instances of).
   const allyPalette = useMemo<PaletteType[]>(() => {
@@ -163,13 +151,10 @@ export function BoardPage() {
   }, [spawns.data, bossUnitId, deployment])
 
   // Spawn instances on the board.
-  const instanceDefs = useMemo<TrayDef[]>(() => {
-    const data = spawns.data
-    return Object.entries(instances).map(([id, inst]) => {
-      const u = data?.units[inst.unitId]
-      return { id, type: (inst.side === 'ally' ? 'summon' : 'npc') as TokenKind, stem: u?.stem ?? null, name: u?.name ?? inst.unitId, size: u?.size ?? 1, removeAtPrime: inst.removeAtPrime }
-    })
-  }, [instances, spawns.data])
+  const instanceDefs = useMemo<TrayDef[]>(
+    () => instanceTokenDefs(instances, spawns.data),
+    [instances, spawns.data],
+  )
 
   const allDefs = useMemo(() => [...uniqueDefs, ...instanceDefs], [uniqueDefs, instanceDefs])
   // Only boss fights have primes (and thus the Primes-defeated stepper).
@@ -180,24 +165,10 @@ export function BoardPage() {
 
   // Effective tokens + movement arrows. An initial add is hidden once enough of
   // the boss's primes are defeated (removeAtPrime ≤ primesDefeated).
-  const visibleDefs = allDefs.filter(
-    (d) => d.removeAtPrime == null || d.removeAtPrime > primesDefeated,
-  )
-  const boardTokens: BoardToken[] = []
-  const movements: BoardMovement[] = []
-  if (board.data) {
-    for (const d of visibleDefs) {
-      const fallback = d.type === 'boss' ? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation } : null
-      const pos = posAtTurn(positions[d.id], currentTurn) ?? fallback
-      if (pos) boardTokens.push({ ...d, pos, removable: d.removeAtPrime != null })
-      if (currentTurn > 0) {
-        const prev = posAtTurn(positions[d.id], currentTurn - 1) ?? fallback
-        if (pos && prev && (pos.q !== prev.q || pos.r !== prev.r)) {
-          movements.push({ from: { q: prev.q, r: prev.r }, to: { q: pos.q, r: pos.r }, color: RING_COLOR[d.type] })
-        }
-      }
-    }
-  }
+  const visibleDefs = visibleTokenDefs(allDefs, primesDefeated)
+  const { tokens: boardTokens, movements } = board.data
+    ? deriveBoardView(visibleDefs, positions, currentTurn, board.data)
+    : { tokens: [] as BoardToken[], movements: [] as BoardMovement[] }
 
   const selectedDef = allDefs.find((d) => d.id === selectedId) ?? null
 
@@ -280,7 +251,15 @@ export function BoardPage() {
           <LogOut size={16} className="rotate-180" />
           <span className="uppercase tracking-[0.1em]">Exit</span>
         </button>
-        <span className="data truncate text-xs">{target?.name ?? ''} // {boardId}</span>
+        <span className="data min-w-0 truncate text-xs">{target?.name ?? ''} // {boardId}</span>
+        <button
+          onClick={() => setSaveOpen(true)}
+          title="Save to archive"
+          className="flex shrink-0 items-center gap-1.5 text-sm text-ash transition-colors hover:text-teal-bright"
+        >
+          <CloudUpload size={16} />
+          <span className="hidden uppercase tracking-[0.1em] sm:inline">Save</span>
+        </button>
       </div>
 
       {/* Board — top-aligned so its unused vertical space pools at the bottom,
@@ -470,16 +449,13 @@ export function BoardPage() {
           <TurnSelector phase={currentTurn} onChange={setCurrentTurn} />
         </div>
       </div>
-    </div>
-  )
-}
 
-/** Rounds still to play — a notch hanging from the top bar, centred over the
- *  map (same family as the Paint/Remove edge notches). */
-function RoundsCounter({ left }: { left: number }) {
-  return (
-    <div className="pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 rounded-b-xl border border-t-0 border-iron bg-abyss/90 px-3 pb-1.5 pt-1 font-mono text-[0.7rem] uppercase tracking-[0.15em] text-bone backdrop-blur">
-      {left <= 1 ? 'Last round' : `${left} rounds left`}
+      {saveOpen && (
+        <SavePlanSheet
+          defaultName={`${target?.name ?? 'Battle-plan'} · ${boardId}`}
+          onClose={() => setSaveOpen(false)}
+        />
+      )}
     </div>
   )
 }

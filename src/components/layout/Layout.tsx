@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
+import { AccountMenu } from '../auth/AccountMenu'
 
 export function Layout() {
   return (
@@ -7,17 +8,18 @@ export function Layout() {
       <div className="h-px w-full bg-gradient-to-r from-transparent via-teal/60 to-transparent" />
 
       <header className="sticky top-0 z-20 border-b border-iron/80 bg-abyss/80 backdrop-blur-md">
-        <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-4">
-          <Link to="/" className="group flex flex-col leading-none">
+        <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-2 px-3 sm:px-4">
+          <Link to="/" className="group flex min-w-0 flex-col leading-none">
             <span className="eyebrow hidden sm:block">Cogitator Tactica</span>
-            <span className="display text-xl font-bold tracking-[0.14em] text-bone transition-colors group-hover:text-teal-bright">
+            <span className="display truncate text-lg font-bold tracking-[0.14em] text-bone transition-colors group-hover:text-teal-bright sm:text-xl">
               STRATEGIUM
             </span>
           </Link>
 
-          <nav className="flex items-center gap-1">
+          <nav className="flex shrink-0 items-center gap-0.5 sm:gap-1">
             <Tab to="/" label="Home" end />
             <Tab to="/plan" label="Plan" />
+            <AccountMenu />
           </nav>
         </div>
       </header>
@@ -41,7 +43,7 @@ export function Layout() {
 
 function Tab({ to, label, end }: { to: string; label: string; end?: boolean }) {
   return (
-    <NavLink to={to} end={end} className="group relative px-3 py-2 sm:px-4">
+    <NavLink to={to} end={end} className="group relative px-2 py-2 sm:px-4">
       {({ isActive }) => (
         <>
           <span

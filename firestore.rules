@@ -1,0 +1,40 @@
+rules_version = '2';
+
+// Firestore security rules for TacticusStrategium cloud plans.
+// Deploy: Firebase console → Firestore → Rules → paste → Publish.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /plans/{planId} {
+      function isOwner() {
+        return request.auth != null && request.auth.uid == resource.data.ownerUid;
+      }
+      function validPlan(d) {
+        return d.keys().hasOnly(['schemaVersion', 'ownerUid', 'name', 'shared',
+                 'bossUnitId', 'targetKind', 'boardId', 'data', 'createdAt', 'updatedAt'])
+          && d.keys().hasAll(['schemaVersion', 'ownerUid', 'name', 'shared',
+                 'bossUnitId', 'targetKind', 'boardId', 'data', 'createdAt', 'updatedAt'])
+          && d.schemaVersion is int && d.schemaVersion >= 1
+          && d.name is string && d.name.size() >= 1 && d.name.size() <= 60
+          && d.shared is bool
+          && d.bossUnitId is string && d.bossUnitId.size() <= 100
+          && d.targetKind in ['boss', 'prime']
+          && d.boardId is string && d.boardId.size() <= 100
+          && d.data is string && d.data.size() <= 50000;
+      }
+      // Single-doc read: the owner, or anyone if shared (the unguessable doc id
+      // in the share link is the capability).
+      allow get: if isOwner() || resource.data.shared == true;
+      // Listing is owner-only — the client queries where('ownerUid','==',uid),
+      // which provably satisfies this rule. Shared plans can't be enumerated.
+      allow list: if request.auth != null
+        && request.auth.uid == resource.data.ownerUid;
+      allow create: if request.auth != null
+        && request.resource.data.ownerUid == request.auth.uid
+        && validPlan(request.resource.data);
+      allow update: if isOwner()
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && validPlan(request.resource.data);
+      allow delete: if isOwner();
+    }
+  }
+}
