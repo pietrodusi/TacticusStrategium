@@ -41,14 +41,14 @@ export function UnitPickerModal({
         style={{ maxHeight: '88dvh', marginTop: 'max(0.5rem, env(safe-area-inset-top))' }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between gap-3 px-4 py-3">
+        <div className="flex shrink-0 items-center justify-between gap-3 px-4 py-3">
           <h3 className="display text-base font-bold uppercase tracking-[0.1em] text-bone">{title}</h3>
           <button onClick={onClose} className="text-ash transition-colors hover:text-teal-bright">
             <X size={20} />
           </button>
         </div>
 
-        <div className="px-4">
+        <div className="shrink-0 px-4">
           <div className="relative">
             <Search size={15} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-brass" />
             <input
@@ -61,7 +61,8 @@ export function UnitPickerModal({
           </div>
         </div>
 
-        <div className="flex gap-1.5 overflow-x-auto px-4 py-2.5">
+        {/* shrink-0: a full (All) roster grid below must not crush this row */}
+        <div className="flex shrink-0 gap-1.5 overflow-x-auto px-4 py-2.5">
           <Chip active={!faction} onClick={() => setFaction(null)}>
             All
           </Chip>
