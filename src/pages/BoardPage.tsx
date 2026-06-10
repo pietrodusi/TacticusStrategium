@@ -331,20 +331,22 @@ export function BoardPage() {
           />
         )}
 
-        <PaintPanel
-          open={paintOpen}
-          side={paintSide}
-          color={paintColor}
-          onToggle={togglePaint}
-          onPick={setPaintColor}
-          onFlip={() => setPaintSide((s) => (s === 'left' ? 'right' : 'left'))}
-        />
+        {/* Edge rail: Paint (persistent tool) on top, then — clearly separated
+            by the larger gap — the contextual actions for the selected unit:
+            Remove (non-boss) and Rotate (size-3 footprints, incl. the boss). */}
+        <div className={`absolute top-3 z-20 ${paintSide === 'left' ? 'left-0' : 'right-0'} flex flex-col gap-5`}>
+          <PaintPanel
+            open={paintOpen}
+            side={paintSide}
+            color={paintColor}
+            onToggle={togglePaint}
+            onPick={setPaintColor}
+            onFlip={() => setPaintSide((s) => (s === 'left' ? 'right' : 'left'))}
+          />
 
-        {/* Selected-unit actions — stacked under the Paint notch (same edge):
-            Remove (non-boss), then Rotate (size-3 footprints, incl. the boss) */}
-        {selectedDef && !paintOpen && (
-          <div className={`absolute top-28 z-20 ${paintSide === 'left' ? 'left-0' : 'right-0'} flex flex-col gap-2`}>
-            {selectedDef.type !== 'boss' && (
+          {selectedDef && !paintOpen && (
+            <div className="flex flex-col gap-2.5">
+              {selectedDef.type !== 'boss' && (
               <SideAction
                 side={paintSide}
                 danger
@@ -375,9 +377,10 @@ export function BoardPage() {
                   placeToken(selectedDef.id, { q: cur.q, r: cur.r, rot: (cur.rot ?? 0) % 180 === 0 ? 90 : 0 })
                 }}
               />
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Bottom control dock. The expandable section is in-flow, so it occupies
@@ -492,7 +495,6 @@ function PaintPanel({
   onPick: (c: string) => void
   onFlip: () => void
 }) {
-  const edge = side === 'left' ? 'left-0' : 'right-0'
   const round = side === 'left' ? 'rounded-r-xl' : 'rounded-l-xl'
 
   if (!open) {
@@ -500,7 +502,7 @@ function PaintPanel({
       <button
         onClick={onToggle}
         title="Paint"
-        className={`absolute top-3 z-20 ${edge} ${round} flex flex-col items-center gap-1.5 border border-iron bg-abyss/90 px-1.5 py-3 text-ash backdrop-blur transition-colors hover:border-teal hover:text-teal-bright`}
+        className={`${round} flex flex-col items-center gap-1.5 border border-iron bg-abyss/90 px-1.5 py-3 text-ash backdrop-blur transition-colors hover:border-teal hover:text-teal-bright`}
       >
         <Brush size={16} />
         <span className="rotate-180 text-[0.6rem] font-semibold uppercase tracking-[0.15em]" style={{ writingMode: 'vertical-rl' }}>
@@ -512,7 +514,7 @@ function PaintPanel({
 
   return (
     <div
-      className={`absolute top-3 z-20 ${edge} ${round} flex flex-col items-center gap-2.5 border border-teal/60 bg-abyss/95 px-2 py-3 backdrop-blur`}
+      className={`${round} flex flex-col items-center gap-2.5 border border-teal/60 bg-abyss/95 px-2 py-3 backdrop-blur`}
     >
       <button onClick={onToggle} title="Close paint" className="flex flex-col items-center gap-1 text-teal-bright">
         <Brush size={16} />
