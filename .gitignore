@@ -9,6 +9,10 @@ dist-ssr/
 .env
 .env.*
 !.env.example
+# Firebase service-account keys (worker secret material — never commit)
+*firebase-adminsdk*.json
+workers/**/.dev.vars
+workers/**/.wrangler/
 
 # editor / OS
 .DS_Store

@@ -9,6 +9,10 @@ const loadAuth = () => import('firebase/auth')
 let authPromise: Promise<Auth> | null = null
 const getAuth = () => (authPromise ??= loadAuth().then((m) => m.getAuth(firebaseApp)))
 
+/** Lazy accessors shared with services/firebase/discord.ts. */
+export const loadAuthModule = loadAuth
+export const getAuthInstance = getAuth
+
 let started = false
 
 /** Start the single auth-state subscription feeding authStore (idempotent). */

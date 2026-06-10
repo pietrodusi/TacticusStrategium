@@ -1,0 +1,13 @@
+# Discord → Firebase auth bridge (Cloudflare Workers free tier).
+# Deploy:  npx wrangler deploy        (from this directory; `npx wrangler login` once first)
+# Secrets: npx wrangler secret put DISCORD_CLIENT_SECRET   (Discord app OAuth2 client secret)
+#          npx wrangler secret put FIREBASE_SA_KEY         (full Firebase service-account JSON)
+name = "tacticus-discord-auth"
+main = "src/index.mjs"
+compatibility_date = "2026-06-01"
+
+[vars]
+# Discord application Client ID (public) — discord.com/developers → OAuth2.
+DISCORD_CLIENT_ID = "REPLACE_ME"
+# Origins allowed to receive the minted token (CSV). Path is up to the origin owner.
+APP_URLS = "https://pietrodusi.github.io,http://localhost:5173,http://localhost:4173"
