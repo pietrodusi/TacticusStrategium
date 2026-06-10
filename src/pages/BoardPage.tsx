@@ -236,6 +236,22 @@ export function BoardPage() {
   const teamDefs = uniqueDefs.filter((d) => d.type !== 'boss')
   const bossDef = uniqueDefs.find((d) => d.type === 'boss')
 
+  // Tray order: deployment (turn S) leads with the main units you're placing;
+  // later turns lead with the spawn palette, the common pick mid-fight.
+  const spawnsFirst = currentTurn > 0
+  const teamChips = teamDefs.map((d) => (
+    <TrayChip key={d.id} def={d} placed={!!posAtTurn(positions[d.id], currentTurn)} selected={d.id === selectedId} onClick={() => selectToken(d.id)} />
+  ))
+  const allySpawnChips = allyPalette.map((p) => (
+    <PaletteChip key={`a-${p.unitId}`} type={p} count={instCount(p)} selected={pending?.unitId === p.unitId && pending.side === 'ally'} onClick={() => selectPalette(p)} />
+  ))
+  const bossChips = bossDef
+    ? [<TrayChip key={bossDef.id} def={bossDef} placed selected={bossDef.id === selectedId} onClick={() => selectToken(bossDef.id)} />]
+    : []
+  const enemySpawnChips = enemyPalette.map((p) => (
+    <PaletteChip key={`e-${p.unitId}`} type={p} count={instCount(p)} selected={pending?.unitId === p.unitId && pending.side === 'enemy'} onClick={() => selectPalette(p)} />
+  ))
+
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden bg-abyss" style={{ height: '100dvh' }}>
       {/* Top bar */}
@@ -340,24 +356,16 @@ export function BoardPage() {
                 the tallest panel and switching tabs never resizes the dock. */}
             <div className="grid">
               <TrayRow visible={tab === 'allies'}>
-                {teamDefs.map((d) => (
-                  <TrayChip key={d.id} def={d} placed={!!posAtTurn(positions[d.id], currentTurn)} selected={d.id === selectedId} onClick={() => selectToken(d.id)} />
-                ))}
-                {allyPalette.length > 0 && <Divider />}
-                {allyPalette.map((p) => (
-                  <PaletteChip key={`a-${p.unitId}`} type={p} count={instCount(p)} selected={pending?.unitId === p.unitId && pending.side === 'ally'} onClick={() => selectPalette(p)} />
-                ))}
-                {teamDefs.length === 0 && allyPalette.length === 0 && <Empty text="No allied units" />}
+                {spawnsFirst ? allySpawnChips : teamChips}
+                {teamChips.length > 0 && allySpawnChips.length > 0 && <Divider />}
+                {spawnsFirst ? teamChips : allySpawnChips}
+                {teamChips.length === 0 && allySpawnChips.length === 0 && <Empty text="No allied units" />}
               </TrayRow>
               <TrayRow visible={tab === 'enemies'}>
-                {bossDef && (
-                  <TrayChip def={bossDef} placed selected={bossDef.id === selectedId} onClick={() => selectToken(bossDef.id)} />
-                )}
-                {enemyPalette.length > 0 && <Divider />}
-                {enemyPalette.map((p) => (
-                  <PaletteChip key={`e-${p.unitId}`} type={p} count={instCount(p)} selected={pending?.unitId === p.unitId && pending.side === 'enemy'} onClick={() => selectPalette(p)} />
-                ))}
-                {enemyPalette.length === 0 && <Empty text="No known spawns" />}
+                {spawnsFirst ? enemySpawnChips : bossChips}
+                {bossChips.length > 0 && enemySpawnChips.length > 0 && <Divider />}
+                {spawnsFirst ? bossChips : enemySpawnChips}
+                {enemySpawnChips.length === 0 && <Empty text="No known spawns" />}
               </TrayRow>
               <div className={`col-start-1 row-start-1 flex w-full flex-col gap-2 ${tab === 'view' ? '' : 'invisible'}`}>
                 <ViewToggle
