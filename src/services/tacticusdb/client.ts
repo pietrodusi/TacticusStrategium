@@ -13,21 +13,6 @@ export interface TacticusCharacter {
 }
 export type CharactersResponse = Record<string, TacticusCharacter>
 
-export interface GuildBossStat {
-  Health: number
-  Damage: number
-  FixedArmor: number
-  Rank: number
-  StarLevel: number
-  BaseRarity: string
-}
-export interface GuildBossUnit {
-  FactionId: string
-  Movement: number
-  stats: GuildBossStat[]
-}
-export type GuildBossUnitsResponse = Record<string, GuildBossUnit>
-
 async function getJson<T>(url: string): Promise<T> {
   const res = await fetch(url)
   if (!res.ok) throw new Error(`TacticusDB ${res.status} for ${url}`)
@@ -36,4 +21,3 @@ async function getJson<T>(url: string): Promise<T> {
 }
 
 export const fetchCharacters = () => getJson<CharactersResponse>(`${API}/characters`)
-export const fetchGuildBossUnits = () => getJson<GuildBossUnitsResponse>(`${API}/guildBossUnits`)

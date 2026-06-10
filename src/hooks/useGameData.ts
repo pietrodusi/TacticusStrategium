@@ -82,5 +82,9 @@ export function useRoster() {
     machinesOfWar,
     isLoading: chars.isLoading || stems.isLoading,
     isError: chars.isError || stems.isError,
+    refetch: () => {
+      if (chars.isError) void chars.refetch()
+      if (stems.isError) void stems.refetch()
+    },
   }
 }

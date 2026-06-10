@@ -8,6 +8,7 @@ import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexG
 import { RING_COLOR, type TokenKind } from '../components/tokenColors'
 import { keywordIconUrl } from '../services/paths'
 import { UnitImage } from '../components/UnitImage'
+import { DataError } from '../components/DataError'
 import { TurnSelector } from '../components/plan/TurnSelector'
 import { bossDisplayName } from '../utils/format'
 import type { HexCoord } from '../types/strategium'
@@ -48,7 +49,7 @@ export function BoardPage() {
 
   const bosses = useBosses()
   const primes = usePrimes()
-  const { roster, machinesOfWar } = useRoster()
+  const { roster, machinesOfWar, isError: rosterError, refetch: refetchRoster } = useRoster()
   const spawns = useSpawns()
   const board = useBoard(boardId)
 
@@ -250,6 +251,24 @@ export function BoardPage() {
           where the tools dock overlays it instead of covering the map. */}
       <div className="relative flex min-h-0 flex-1 items-start justify-center overflow-hidden">
         {board.isLoading && <p className="font-mono text-sm text-ash">Acquiring auspex feed…</p>}
+        {board.isError && (
+          <div className="mt-8 max-w-xs">
+            <DataError what={`map ${boardId}`} onRetry={() => void board.refetch()} />
+          </div>
+        )}
+        {/* Secondary data (palettes / unit identities) — board stays usable */}
+        {!board.isError && (spawns.isError || rosterError) && (
+          <div className="absolute left-1/2 top-2 z-20 -translate-x-1/2">
+            <DataError
+              compact
+              what="unit data"
+              onRetry={() => {
+                if (spawns.isError) void spawns.refetch()
+                refetchRoster()
+              }}
+            />
+          </div>
+        )}
         {board.data && (
           <HexGrid
             board={board.data}

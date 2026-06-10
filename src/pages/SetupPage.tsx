@@ -8,6 +8,7 @@ import { bossDisplayName } from '../utils/format'
 import type { BossIndexEntry, PrimeIndexEntry, Unit } from '../types/units'
 import { UnitPickerModal } from '../components/plan/UnitPickerModal'
 import { UnitImage } from '../components/UnitImage'
+import { DataError } from '../components/DataError'
 
 type StepKey = 'boss' | 'map' | 'team'
 type PickerTarget = { kind: 'team'; index: number } | { kind: 'mow' }
@@ -16,7 +17,7 @@ export function SetupPage() {
   const navigate = useNavigate()
   const bosses = useBosses()
   const primes = usePrimes()
-  const { roster, machinesOfWar } = useRoster()
+  const { roster, machinesOfWar, isError: rosterError, refetch: refetchRoster } = useRoster()
   const { bossUnitId, targetKind, boardId, team, machineOfWar, selectBoss, selectPrime, selectBoard, setTeamSlot, setMachineOfWar } =
     usePlanStore()
 
@@ -85,6 +86,17 @@ export function SetupPage() {
         summary={selectedTarget && <TargetSummary stem={selectedTarget.imageStem} name={targetName} prime={targetKind === 'prime'} />}
       >
         {bosses.isLoading && <p className="text-sm text-ash">Loading bosses…</p>}
+        {(bosses.isError || primes.isError) && (
+          <div className="mb-3">
+            <DataError
+              what="the boss catalog"
+              onRetry={() => {
+                if (bosses.isError) void bosses.refetch()
+                if (primes.isError) void primes.refetch()
+              }}
+            />
+          </div>
+        )}
         <p className="mb-3 text-xs uppercase tracking-[0.12em] text-ash/60">
           Pick the raid boss, or a prime on either side
         </p>
@@ -129,6 +141,11 @@ export function SetupPage() {
         onToggle={() => toggle('team')}
         summary={<TeamSummary count={teamCount} hasMoW={!!machineOfWar} />}
       >
+        {rosterError && (
+          <div className="mb-3">
+            <DataError what="the character roster" onRetry={refetchRoster} />
+          </div>
+        )}
         <p className="mb-3 text-xs uppercase tracking-[0.12em] text-ash/60">Squad — up to 5</p>
         <div className="grid grid-cols-5 gap-2.5 sm:max-w-md">
           {team.map((id, i) => (

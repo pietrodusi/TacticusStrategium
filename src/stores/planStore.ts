@@ -243,6 +243,14 @@ export const usePlanStore = create<PlanState>()(
 
       resetPlan: () => set({ ...EMPTY_PLAN }),
     }),
-    { name: 'tacticus-strategium-plan' },
+    {
+      name: 'tacticus-strategium-plan',
+      version: 1,
+      // v0 (pre-versioning) has the same shape as v1, so carry it over. Any other
+      // mismatch discards the saved plan — plans are cheap to rebuild, while
+      // hydrating an incompatible shape can break the board page.
+      migrate: (persisted, version) =>
+        (version === 0 ? persisted : undefined) as PlanState,
+    },
   ),
 )
