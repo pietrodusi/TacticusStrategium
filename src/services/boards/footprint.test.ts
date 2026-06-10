@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseBoard, type ParsedCell } from './boardService'
-import { footprintPath } from './footprint'
-import { getBossOccupiedHexes, hexKey } from '../hex/hexUtils'
+import { elevationSeams, footprintPath } from './footprint'
+import { getBossOccupiedHexes, hexKey, hexNeighbors } from '../hex/hexUtils'
 import type { BoardData } from '../../types/boardData'
 
 const loadBoard = (id: string): BoardData =>
@@ -56,6 +56,54 @@ describe('footprintPath', () => {
       // Every step along the outline is a genuine hex edge (~half a tile or
       // more) — tiny steps would mean an unbridged junction gap survived.
       expect(dist).toBeGreaterThan(20)
+    }
+  })
+
+  it('flags no elevation seams on a flat footprint', () => {
+    const board = parseBoard(loadBoard('GB_01'))
+    const byAxial = new Map(board.cells.map((c) => [hexKey({ q: c.q, r: c.r }), c]))
+    const flat = board.cells
+      .map((c) =>
+        getBossOccupiedHexes({ q: c.q, r: c.r }, 3, 0)
+          .map((h) => byAxial.get(hexKey(h)))
+          .filter((x): x is ParsedCell => !!x),
+      )
+      .find((cells) => cells.length === 3 && new Set(cells.map((x) => x.elevation)).size === 1)
+    expect(flat).toBeDefined()
+    expect(elevationSeams(flat as ParsedCell[])).toEqual([])
+  })
+
+  it('flags each differing-elevation adjacency exactly once', () => {
+    const board = parseBoard(loadBoard('GB_01'))
+    const byAxial = new Map(board.cells.map((c) => [hexKey({ q: c.q, r: c.r }), c]))
+    const uneven = board.cells
+      .map((c) =>
+        getBossOccupiedHexes({ q: c.q, r: c.r }, 7, 0)
+          .map((h) => byAxial.get(hexKey(h)))
+          .filter((x): x is ParsedCell => !!x),
+      )
+      .find((cells) => cells.length === 7 && new Set(cells.map((x) => x.elevation)).size >= 2)
+    expect(uneven).toBeDefined()
+    const cells = uneven as ParsedCell[]
+
+    // Count differing-elevation adjacent pairs independently via hex adjacency.
+    const byKey = new Map(cells.map((c) => [hexKey({ q: c.q, r: c.r }), c]))
+    let pairs = 0
+    for (const c of cells)
+      for (const n of hexNeighbors({ q: c.q, r: c.r })) {
+        const nc = byKey.get(hexKey(n))
+        if (nc && nc.elevation !== c.elevation) pairs++
+      }
+    pairs /= 2 // each pair seen from both sides
+
+    const seams = elevationSeams(cells)
+    expect(seams.length).toBe(pairs)
+    expect(seams.length).toBeGreaterThan(0)
+    // Seams are real edges, roughly one hex-edge long.
+    for (const s of seams) {
+      const len = Math.hypot(s.b.x - s.a.x, s.b.y - s.a.y)
+      expect(len).toBeGreaterThan(20)
+      expect(len).toBeLessThan(60)
     }
   })
 

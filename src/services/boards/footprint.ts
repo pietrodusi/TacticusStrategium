@@ -2,7 +2,7 @@ import type { HexCoord, Point } from '../../types/strategium'
 import { hexKey } from '../hex/hexUtils'
 import type { ParsedCell } from './boardService'
 
-interface Segment {
+export interface Segment {
   a: Point
   b: Point
 }
@@ -16,6 +16,25 @@ const HEX_DIRS: HexCoord[] = [
   { q: 0, r: 1 },
 ]
 
+/** Index of `c`'s edge facing neighbour `n` — the edge whose midpoint is
+ *  nearest the midpoint of the two centres. */
+function facingEdge(c: ParsedCell, n: ParsedCell): number {
+  const tx = (c.center.x + n.center.x) / 2
+  const ty = (c.center.y + n.center.y) / 2
+  let bi = -1
+  let bd = Infinity
+  for (let i = 0; i < 6; i++) {
+    const a = c.cornersFull[i]
+    const b = c.cornersFull[(i + 1) % 6]
+    const dd = ((a.x + b.x) / 2 - tx) ** 2 + ((a.y + b.y) / 2 - ty) ** 2
+    if (dd < bd) {
+      bd = dd
+      bi = i
+    }
+  }
+  return bi
+}
+
 /** Boundary edges of a set of cells: every edge not shared with another cell in the set. */
 function footprintEdges(cells: ParsedCell[]): Segment[] {
   const byKey = new Map(cells.map((c) => [hexKey({ q: c.q, r: c.r }), c]))
@@ -24,28 +43,47 @@ function footprintEdges(cells: ParsedCell[]): Segment[] {
     const internal = new Set<number>()
     for (const d of HEX_DIRS) {
       const n = byKey.get(hexKey({ q: c.q + d.q, r: c.r + d.r }))
-      if (!n) continue
-      // The shared edge is the one whose midpoint is nearest the two centres' midpoint.
-      const tx = (c.center.x + n.center.x) / 2
-      const ty = (c.center.y + n.center.y) / 2
-      let bi = -1
-      let bd = Infinity
-      for (let i = 0; i < 6; i++) {
-        const a = c.cornersFull[i]
-        const b = c.cornersFull[(i + 1) % 6]
-        const dd = ((a.x + b.x) / 2 - tx) ** 2 + ((a.y + b.y) / 2 - ty) ** 2
-        if (dd < bd) {
-          bd = dd
-          bi = i
-        }
-      }
-      if (bi >= 0) internal.add(bi)
+      if (n) internal.add(facingEdge(c, n))
     }
     for (let i = 0; i < 6; i++) {
       if (internal.has(i)) continue
       const a = c.cornersFull[i]
       const b = c.cornersFull[(i + 1) % 6]
       segs.push({ a: { x: a.x, y: a.y }, b: { x: b.x, y: b.y } })
+    }
+  }
+  return segs
+}
+
+/**
+ * Internal edges between adjacent footprint cells of DIFFERENT elevation — in
+ * game a multi-hex unit cannot straddle elevations, so these seams get a
+ * warning treatment. The two cells' facing edges don't share exact corners
+ * (tiling gap + elevation shift), so each seam averages them, endpoint-matched
+ * by proximity.
+ */
+export function elevationSeams(cells: ParsedCell[]): Segment[] {
+  const byKey = new Map(cells.map((c) => [hexKey({ q: c.q, r: c.r }), c]))
+  const segs: Segment[] = []
+  for (const c of cells) {
+    for (const d of HEX_DIRS) {
+      const n = byKey.get(hexKey({ q: c.q + d.q, r: c.r + d.r }))
+      if (!n || n.elevation === c.elevation) continue
+      if (hexKey({ q: c.q, r: c.r }) > hexKey({ q: n.q, r: n.r })) continue // each pair once
+      const ci = facingEdge(c, n)
+      const ni = facingEdge(n, c)
+      const ca = c.cornersFull[ci]
+      const cb = c.cornersFull[(ci + 1) % 6]
+      const na = n.cornersFull[ni]
+      const nb = n.cornersFull[(ni + 1) % 6]
+      // The neighbour traverses its edge in the opposite direction — match ends.
+      const flip = d2(ca, na) > d2(ca, nb)
+      const pa = flip ? nb : na
+      const pb = flip ? na : nb
+      segs.push({
+        a: { x: (ca.x + pa.x) / 2, y: (ca.y + pa.y) / 2 },
+        b: { x: (cb.x + pb.x) / 2, y: (cb.y + pb.y) / 2 },
+      })
     }
   }
   return segs

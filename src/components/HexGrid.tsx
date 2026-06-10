@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { ParsedBoard, ParsedCell, TileEffectKind } from '../services/boards/boardService'
 import { keywordIconUrl, mapImageUrl, unitPortraitUrl } from '../services/paths'
-import { footprintPath } from '../services/boards/footprint'
+import { elevationSeams, footprintPath } from '../services/boards/footprint'
 import { getBossOccupiedHexes, hexKey } from '../services/hex/hexUtils'
 import type { HexCoord, Point } from '../types/strategium'
 import { parseHazard, type TokenPos } from '../stores/planStore'
@@ -287,16 +287,32 @@ export function HexGrid({
           if (cells.length === 0) return null
           const color = RING_COLOR[t.type]
           return (
-            <path
-              key={`bf-${t.id}`}
-              d={footprintPath(cells)}
-              fill={color}
-              fillOpacity={0.3}
-              stroke={color}
-              strokeOpacity={0.9}
-              strokeWidth={2.5}
-              strokeLinejoin="round"
-            />
+            <g key={`bf-${t.id}`}>
+              <path
+                d={footprintPath(cells)}
+                fill={color}
+                fillOpacity={0.3}
+                stroke={color}
+                strokeOpacity={0.9}
+                strokeWidth={2.5}
+                strokeLinejoin="round"
+              />
+              {/* In game a multi-hex unit can't straddle elevations — flag the
+                  offending internal edges with a dashed red seam. */}
+              {elevationSeams(cells).map((s, i) => (
+                <line
+                  key={`es-${i}`}
+                  x1={s.a.x}
+                  y1={s.a.y}
+                  x2={s.b.x}
+                  y2={s.b.y}
+                  stroke="#ef4444"
+                  strokeWidth={3}
+                  strokeDasharray="7 6"
+                  strokeLinecap="round"
+                />
+              ))}
+            </g>
           )
         })}
 
