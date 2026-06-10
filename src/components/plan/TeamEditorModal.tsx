@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Save, X } from 'lucide-react'
 import { useRoster } from '../../hooks/useGameData'
 import { useTeamMutations } from '../../hooks/useTeams'
+import { useAuthStore } from '../../stores/authStore'
 import type { SavedTeam } from '../../services/firebase/teams'
 import type { Unit } from '../../types/units'
 import { UnitSlot } from './UnitSlot'
@@ -9,16 +10,17 @@ import { UnitPickerModal } from './UnitPickerModal'
 
 type PickerTarget = { kind: 'member'; index: number } | { kind: 'mow' }
 
-/** Edit a saved raid team: name, the 5 squad slots and the Machine of War. */
-export function TeamEditorModal({ team, onClose }: { team: SavedTeam; onClose: () => void }) {
+/** Create (team = null) or edit a saved raid team: name, 5 squad slots, MoW. */
+export function TeamEditorModal({ team, onClose }: { team: SavedTeam | null; onClose: () => void }) {
   const { roster, machinesOfWar } = useRoster()
-  const { update } = useTeamMutations()
+  const { create, update } = useTeamMutations()
+  const uid = useAuthStore((s) => s.user?.uid)
 
-  const [name, setName] = useState(team.name)
+  const [name, setName] = useState(team?.name ?? '')
   const [members, setMembers] = useState<(string | null)[]>(() =>
-    Array.from({ length: 5 }, (_, i) => team.members[i] ?? null),
+    Array.from({ length: 5 }, (_, i) => team?.members[i] ?? null),
   )
-  const [machineOfWar, setMachineOfWar] = useState(team.machineOfWar)
+  const [machineOfWar, setMachineOfWar] = useState(team?.machineOfWar ?? null)
   const [picker, setPicker] = useState<PickerTarget | null>(null)
   const [error, setError] = useState(false)
 
@@ -35,12 +37,16 @@ export function TeamEditorModal({ team, onClose }: { team: SavedTeam; onClose: (
       return next
     })
 
+  const firstName = members.map((id) => (id ? unitById.get(id)?.name : null)).find(Boolean)
+  const hasMembers = members.some(Boolean)
+  const busy = create.isPending || update.isPending
+
   const save = () => {
     setError(false)
-    update.mutate(
-      { id: team.id, name: name.trim().slice(0, 40) || team.name, members, machineOfWar },
-      { onSuccess: onClose, onError: () => setError(true) },
-    )
+    const trimmed = name.trim().slice(0, 40) || team?.name || `${firstName ?? 'New'} team`
+    const opts = { onSuccess: onClose, onError: () => setError(true) }
+    if (team) update.mutate({ id: team.id, name: trimmed, members, machineOfWar }, opts)
+    else if (uid) create.mutate({ uid, name: trimmed, members, machineOfWar }, opts)
   }
 
   return (
@@ -51,7 +57,9 @@ export function TeamEditorModal({ team, onClose }: { team: SavedTeam; onClose: (
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between gap-3">
-          <h3 className="display text-base font-bold uppercase tracking-[0.1em] text-bone">Edit Team</h3>
+          <h3 className="display text-base font-bold uppercase tracking-[0.1em] text-bone">
+            {team ? 'Edit Team' : 'New Team'}
+          </h3>
           <button onClick={onClose} className="text-ash transition-colors hover:text-teal-bright" aria-label="Close">
             <X size={20} />
           </button>
@@ -59,7 +67,13 @@ export function TeamEditorModal({ team, onClose }: { team: SavedTeam; onClose: (
 
         <label className="block">
           <span className="eyebrow mb-1 block">Name</span>
-          <input value={name} maxLength={40} onChange={(e) => setName(e.target.value)} className="input w-full" />
+          <input
+            value={name}
+            maxLength={40}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={firstName ? `${firstName} team` : 'e.g. Szarekh crew'}
+            className="input w-full"
+          />
         </label>
 
         <div>
@@ -94,9 +108,9 @@ export function TeamEditorModal({ team, onClose }: { team: SavedTeam; onClose: (
 
         <div className="flex justify-end gap-2 border-t border-iron/50 pt-3">
           <button onClick={onClose} className="btn px-3 py-1.5 text-xs">Cancel</button>
-          <button onClick={save} disabled={update.isPending} className="btn btn-primary px-3 py-1.5 text-xs">
+          <button onClick={save} disabled={busy || !hasMembers} className="btn btn-primary px-3 py-1.5 text-xs">
             <Save size={14} />
-            Save changes
+            {team ? 'Save changes' : 'Create team'}
           </button>
         </div>
 

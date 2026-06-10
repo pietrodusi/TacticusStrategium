@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { LogIn, Users } from 'lucide-react'
+import { LogIn, Plus, Users } from 'lucide-react'
 import { useAuthStore } from '../stores/authStore'
 import { useMyTeams, useTeamMutations } from '../hooks/useTeams'
 import { useRoster } from '../hooks/useGameData'
@@ -16,7 +16,7 @@ export function TeamsPage() {
   const teams = useMyTeams()
   const { remove } = useTeamMutations()
   const { roster, machinesOfWar } = useRoster()
-  const [editing, setEditing] = useState<SavedTeam | null>(null)
+  const [editing, setEditing] = useState<SavedTeam | 'new' | null>(null)
 
   const unitById = useMemo(() => {
     const m = new Map<string, Unit>()
@@ -60,8 +60,8 @@ export function TeamsPage() {
         <div className="panel p-5 text-center">
           <Users size={22} className="mx-auto mb-2 text-ash" />
           <p className="text-sm text-ash">
-            No saved teams yet — muster a squad in the{' '}
-            <Link to="/plan" className="text-teal-bright">Battle-Plan</Link> wizard and save it there.
+            No saved teams yet — create one below, or save your squad from the{' '}
+            <Link to="/plan" className="text-teal-bright">Battle-Plan</Link> wizard.
           </p>
         </div>
       )}
@@ -78,7 +78,23 @@ export function TeamsPage() {
         />
       ))}
 
-      {editing && <TeamEditorModal team={editing} onClose={() => setEditing(null)} />}
+      {teams.data && (
+        <button
+          onClick={() => setEditing('new')}
+          disabled={teams.data.length >= MAX_TEAMS}
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-iron px-2.5 py-3 text-xs font-semibold uppercase tracking-[0.1em] text-ash transition-colors hover:border-teal hover:text-teal-bright disabled:pointer-events-none disabled:opacity-40"
+        >
+          <Plus size={15} />
+          New team
+        </button>
+      )}
+      {teams.data && teams.data.length >= MAX_TEAMS && (
+        <p className="text-xs text-blood-bright">Team archive full ({MAX_TEAMS}) — delete one first.</p>
+      )}
+
+      {editing && (
+        <TeamEditorModal team={editing === 'new' ? null : editing} onClose={() => setEditing(null)} />
+      )}
     </div>
   )
 }
