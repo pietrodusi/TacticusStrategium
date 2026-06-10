@@ -233,7 +233,7 @@ function Step({
         onClick={onToggle}
         className="flex w-full items-center gap-3 px-4 py-3.5 text-left disabled:cursor-not-allowed"
       >
-        <span className={`data text-sm ${locked ? 'text-iron' : 'text-brass'}`}>{numeral}</span>
+        <span className={`data w-6 shrink-0 text-center text-sm ${locked ? 'text-iron' : 'text-brass'}`}>{numeral}</span>
         <span
           className={`display text-sm font-bold uppercase tracking-[0.13em] ${
             locked ? 'text-ash/40' : 'text-bone'
