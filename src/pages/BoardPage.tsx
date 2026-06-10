@@ -321,7 +321,7 @@ export function BoardPage() {
               setSelectedId(null)
             }}
             title={`Remove ${selectedDef.name}`}
-            className={`absolute top-28 z-20 ${paintSide === 'left' ? 'left-0 rounded-r-xl' : 'right-0 rounded-l-xl'} flex flex-col items-center gap-1.5 border border-blood bg-blood/20 px-1.5 py-3 text-blood-bright backdrop-blur transition-colors hover:bg-blood/35`}
+            className={`absolute top-28 z-20 ${paintSide === 'left' ? 'left-0 rounded-r-xl' : 'right-0 rounded-l-xl'} flex flex-col items-center gap-1.5 border border-blood bg-abyss/90 px-1.5 py-3 text-blood-bright backdrop-blur transition-colors hover:bg-blood/30`}
           >
             <Trash2 size={16} />
             <span className="rotate-180 text-[0.6rem] font-semibold uppercase tracking-[0.15em]" style={{ writingMode: 'vertical-rl' }}>

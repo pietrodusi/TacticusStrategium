@@ -1,7 +1,7 @@
 ﻿// Check tray ordering: turn S leads with main units (solid chips), later turns
 // lead with the spawn palette (dashed chips), in both Allies and Enemies tabs.
 // Run `npx vite preview` first. Usage: node scripts/verify-tray-order.mjs
-/* global document, localStorage -- page.evaluate callbacks run in the browser */
+/* global document -- page.evaluate callbacks run in the browser */
 import puppeteer from 'puppeteer-core'
 
 const BASE = 'http://localhost:4173/TacticusStrategium/#'
