@@ -50,29 +50,59 @@ export async function mintCustomToken(saEmail, privateKeyPem, uid, nowSeconds) {
   return `${unsigned}.${b64url(sig)}`
 }
 
-/** The return URL, iff its origin is allowlisted (blocks token exfiltration). */
+// Cap on the opaque params we round-trip — legit values are tiny (a UUID and a
+// short URL); anything larger is junk and just wastes CPU/memory.
+const MAX_PARAM = 512
+
+/**
+ * The return URL, iff BOTH its origin is allowlisted AND its path is the app's
+ * base. Origin alone is not enough: *.github.io is a shared origin hosting all
+ * of an account's repos, so a token redirect must be pinned to this app's path.
+ */
 function allowedReturn(env, ret) {
+  if (typeof ret !== 'string' || ret.length > MAX_PARAM) return null
   try {
     const url = new URL(ret)
-    const ok = (env.APP_URLS ?? '')
+    const originOk = (env.APP_URLS ?? '')
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean)
       .includes(url.origin)
-    return ok ? url : null
+    // App is served from /TacticusStrategium/ (prod and local preview); reject
+    // any other path so the token can't be steered elsewhere on the origin.
+    const pathOk = url.pathname === '/' || url.pathname.startsWith('/TacticusStrategium/')
+    // Only the origin+path are trusted; drop any attacker-supplied query/hash.
+    return originOk && pathOk ? new URL(url.origin + url.pathname) : null
   } catch {
     return null
   }
+}
+
+// 302 with headers appropriate for a URL that may carry a token in its hash:
+// no referrer leakage, no caching by intermediaries.
+function redirect(href) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: href,
+      'Referrer-Policy': 'no-referrer',
+      'Cache-Control': 'no-store',
+      'X-Content-Type-Options': 'nosniff',
+    },
+  })
 }
 
 export default {
   async fetch(req, env) {
     const url = new URL(req.url)
 
+    // This is a top-level redirect flow — only GET is ever legitimate.
+    if (req.method !== 'GET') return new Response('Method not allowed', { status: 405 })
+
     if (url.pathname === '/login') {
       const state = url.searchParams.get('state') ?? ''
       const ret = allowedReturn(env, url.searchParams.get('return') ?? '')
-      if (!state || !ret) return new Response('Bad request', { status: 400 })
+      if (!state || state.length > MAX_PARAM || !ret) return new Response('Bad request', { status: 400 })
       const authz = new URL('https://discord.com/oauth2/authorize')
       authz.searchParams.set('client_id', env.DISCORD_CLIENT_ID)
       authz.searchParams.set('redirect_uri', `${url.origin}/callback`)
@@ -80,13 +110,15 @@ export default {
       authz.searchParams.set('scope', 'identify')
       // Round-trip the app's CSRF state + validated return URL through Discord.
       authz.searchParams.set('state', b64url(JSON.stringify({ s: state, r: ret.href })))
-      return Response.redirect(authz.href, 302)
+      return redirect(authz.href)
     }
 
     if (url.pathname === '/callback') {
+      const rawState = url.searchParams.get('state') ?? ''
+      if (rawState.length > MAX_PARAM) return new Response('Bad state', { status: 400 })
       let packed
       try {
-        packed = JSON.parse(b64urlDecode(url.searchParams.get('state') ?? ''))
+        packed = JSON.parse(b64urlDecode(rawState))
       } catch {
         return new Response('Bad state', { status: 400 })
       }
@@ -95,7 +127,7 @@ export default {
       const fail = (code) => {
         const back = new URL(ret)
         back.hash = `/signin?derr=${code}`
-        return Response.redirect(back.href, 302)
+        return redirect(back.href)
       }
 
       const code = url.searchParams.get('code')
@@ -126,23 +158,24 @@ export default {
         // trim() also strips a UTF-8 BOM — Windows pipes love to prepend one.
         const sa = JSON.parse(env.FIREBASE_SA_KEY.trim())
         dt = await mintCustomToken(sa.client_email, sa.private_key, `discord:${me.id}`)
-      } catch (err) {
-        // Typical cause: FIREBASE_SA_KEY isn't the full service-account JSON
-        // (the interactive `wrangler secret put` prompt truncates multi-line
-        // pastes — pipe the file in instead). Details show in `wrangler tail`.
-        console.error('mint failed:', err instanceof Error ? err.message : String(err))
+      } catch {
+        // Static message only — never echo the error, which can contain a
+        // fragment of the malformed FIREBASE_SA_KEY secret. Typical cause: the
+        // secret isn't the full service-account JSON (pipe the file in, don't
+        // paste at the prompt). Inspect the SA key in the dashboard if it recurs.
+        console.error('mint failed (check FIREBASE_SA_KEY)')
         return fail('mint')
       }
 
       const back = new URL(ret)
       const params = new URLSearchParams({
         dt,
-        state: packed.s,
+        state: typeof packed.s === 'string' ? packed.s : '',
         dn: me.global_name || me.username || 'Discord user',
         av: me.avatar ? `https://cdn.discordapp.com/avatars/${me.id}/${me.avatar}.png` : '',
       })
       back.hash = `/signin?${params}`
-      return Response.redirect(back.href, 302)
+      return redirect(back.href)
     }
 
     return new Response('Not found', { status: 404 })
