@@ -44,14 +44,9 @@ export function TeamsPage() {
 
   return (
     <div className="space-y-3 pb-10">
-      <header className="mb-1 flex items-end justify-between">
-        <div>
-          <p className="eyebrow">++ Muster Rolls ++</p>
-          <h1 className="display text-2xl font-bold uppercase tracking-[0.1em] text-bone sm:text-3xl">My Teams</h1>
-        </div>
-        {teams.data && (
-          <span className="data text-xs text-ash">{teams.data.length}/{MAX_TEAMS}</span>
-        )}
+      <header className="mb-1">
+        <p className="eyebrow">++ Muster Rolls ++</p>
+        <h1 className="display text-2xl font-bold uppercase tracking-[0.1em] text-bone sm:text-3xl">My Teams</h1>
       </header>
 
       {teams.isLoading && <p className="font-mono text-sm text-ash">Consulting the muster rolls…</p>}
