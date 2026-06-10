@@ -1,17 +1,30 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronRight, Hexagon, Move3d, Radar } from 'lucide-react'
 import { asset } from '../services/paths'
 
 export function HomePage() {
+  // The glow is a drop-shadow filter that follows the sigil's alpha shape — but
+  // only once the PNG is decoded. Applied before decode (mobile first load), the
+  // browser shadows the square element box instead. Gate it on decode so the
+  // glow always traces the hexagon, never a square.
+  const [sigilReady, setSigilReady] = useState(false)
+  const onSigilLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget
+    void (img.decode ? img.decode().catch(() => {}) : Promise.resolve()).then(() => setSigilReady(true))
+  }
+
   return (
     <div className="flex flex-col items-center">
       {/* Hero */}
       <section className="relative flex flex-col items-center pt-6 text-center sm:pt-12">
         <img
-          // src={asset('icon-512.png')}
           src={asset('icon-512-noglow.png')}
           alt="Tacticus Strategium sigil"
-          className="rise glow-teal h-36 w-36 animate-sigil sm:h-44 sm:w-44"
+          // ref handles the cached case where onLoad may fire before React attaches.
+          ref={(el) => { if (el?.complete && el.naturalWidth) setSigilReady(true) }}
+          onLoad={onSigilLoad}
+          className={`rise h-36 w-36 sm:h-44 sm:w-44 ${sigilReady ? 'glow-teal animate-sigil' : ''}`}
           style={{ animationDelay: '0ms' }}
           draggable={false}
         />
