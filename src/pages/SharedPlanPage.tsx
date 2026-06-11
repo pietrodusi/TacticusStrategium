@@ -70,14 +70,14 @@ export function SharedPlanPage() {
     <div className="fixed inset-0 flex flex-col overflow-hidden bg-abyss" style={{ height: '100dvh' }}>
       {/* Top bar */}
       <div
-        className="z-10 flex items-center justify-between gap-3 border-b border-iron bg-abyss/85 px-3 py-2 backdrop-blur"
-        style={{ paddingTop: 'max(0.5rem, env(safe-area-inset-top))' }}
+        className="z-10 flex items-center justify-between gap-3 border-b border-iron bg-abyss/85 px-3 py-3 backdrop-blur"
+        style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
       >
-        <Link to="/" className="flex shrink-0 items-center gap-1.5 text-sm text-ash transition-colors hover:text-teal-bright">
-          <ArrowLeft size={16} />
+        <Link to="/" className="flex shrink-0 items-center gap-1.5 text-base text-ash transition-colors hover:text-teal-bright">
+          <ArrowLeft size={18} />
           <span className="uppercase tracking-[0.1em]">Strategium</span>
         </Link>
-        <span className="data min-w-0 truncate text-xs">
+        <span className="data min-w-0 truncate text-sm">
           {plan ? `${plan.name} // shared plan` : 'shared plan'}
         </span>
         {plan && data && (
@@ -85,9 +85,9 @@ export function SharedPlanPage() {
             onClick={copyToMyPlans}
             disabled={create.isPending}
             title="Copy to my plans"
-            className="flex shrink-0 items-center gap-1.5 text-sm text-ash transition-colors hover:text-teal-bright disabled:opacity-50"
+            className="flex shrink-0 items-center gap-1.5 text-base text-teal-bright transition-opacity hover:opacity-80 disabled:opacity-50"
           >
-            <CopyPlus size={16} />
+            <CopyPlus size={18} />
             <span className="hidden uppercase tracking-[0.1em] sm:inline">Copy</span>
           </button>
         )}
