@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CloudUpload, LogIn, X } from 'lucide-react'
+import { LogIn, Save, X } from 'lucide-react'
 import { usePlanStore } from '../../stores/planStore'
 import { useAuthStore } from '../../stores/authStore'
 import { useMyPlans, usePlanMutations } from '../../hooks/usePlans'
@@ -109,7 +109,7 @@ export function SavePlanSheet({ defaultName, onClose }: { defaultName: string; o
             <div className="flex flex-col gap-2">
               {cloudRef && (
                 <button onClick={saveOverwrite} disabled={busy} className="btn btn-primary justify-center">
-                  <CloudUpload size={16} />
+                  <Save size={16} />
                   Overwrite “{cloudRef.name}”
                 </button>
               )}
@@ -118,7 +118,7 @@ export function SavePlanSheet({ defaultName, onClose }: { defaultName: string; o
                 disabled={busy || !name.trim() || atCap}
                 className={`btn justify-center ${cloudRef ? '' : 'btn-primary'}`}
               >
-                <CloudUpload size={16} />
+                <Save size={16} />
                 {cloudRef ? 'Save as new' : 'Save to archive'}
               </button>
             </div>
