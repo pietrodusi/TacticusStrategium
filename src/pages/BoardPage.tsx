@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeftRight, Brush, CloudUpload, Cog, Eraser, LogOut, Mountain, Plus, RotateCw, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
+import { ArrowLeftRight, Brush, Cog, Eraser, LogOut, Mountain, Plus, RotateCw, Save, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
 import { usePlanStore, posAtTurn, paintAtTurn, parseHazard, hazardValue, HAZARD_LIFE, roundsLeftAt } from '../stores/planStore'
 import { useBosses, usePrimes, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
@@ -255,9 +255,9 @@ export function BoardPage() {
         <button
           onClick={() => setSaveOpen(true)}
           title="Save to archive"
-          className="flex shrink-0 items-center gap-1.5 text-sm text-ash transition-colors hover:text-teal-bright"
+          className="flex shrink-0 items-center gap-1.5 text-sm text-teal-bright transition-opacity hover:opacity-80"
         >
-          <CloudUpload size={16} />
+          <Save size={16} />
           <span className="hidden uppercase tracking-[0.1em] sm:inline">Save</span>
         </button>
       </div>
