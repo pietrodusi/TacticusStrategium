@@ -66,8 +66,7 @@ export function GuidePage() {
         <P>
           A fight is six turns, and each turn has a <B>player</B> phase and an <B>enemy</B> phase. The
           selector shows <B>S</B> (deployment, green), then each turn as <B>1…6</B> (blue = player,
-          red = enemy). Arrows step through the sequence; tapping the active number toggles
-          player ↔ enemy.
+          red = enemy). The arrows step through the sequence, one phase at a time.
         </P>
         <P>
           Positions carry forward until you change them, and a faint arrow shows each token&apos;s move from
