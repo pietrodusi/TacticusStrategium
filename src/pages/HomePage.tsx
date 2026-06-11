@@ -11,7 +11,7 @@ export function HomePage() {
   const [sigilReady, setSigilReady] = useState(false)
   const onSigilLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget
-    void (img.decode ? img.decode().catch(() => {}) : Promise.resolve()).then(() => setSigilReady(true))
+    void (img.decode ? img.decode().catch(() => { }) : Promise.resolve()).then(() => setSigilReady(true))
   }
 
   return (
@@ -46,8 +46,8 @@ export function HomePage() {
           className="rise mt-5 max-w-md text-balance text-lg text-ash"
           style={{ animationDelay: '240ms' }}
         >
-          A cogitator for the war council. Chart every warrior&apos;s advance across the six turns of
-          a Guild Raid — boss, summons and squad, hex by hex.
+          Plan your Guild Raids.<br />
+          Chart every warrior&apos;s advance across the six turns &mdash; boss, summons and squad, hex by hex.
         </p>
 
         <div className="rise mt-8" style={{ animationDelay: '320ms' }}>
@@ -55,18 +55,6 @@ export function HomePage() {
             Engage Battle-Plan
             <ChevronRight size={18} />
           </Link>
-        </div>
-
-        {/* readout strip */}
-        <div
-          className="rise mt-9 flex items-center gap-3 font-mono text-sm text-ash"
-          style={{ animationDelay: '400ms' }}
-        >
-          <Stat value="108" label="Maps" />
-          <span className="text-iron">/</span>
-          <Stat value="5" label="Seasons" />
-          <span className="text-iron">/</span>
-          <Stat value="6" label="Turns" />
         </div>
       </section>
 
@@ -78,19 +66,19 @@ export function HomePage() {
           delay={520}
           icon={<Radar size={22} />}
           title="Auspex Maps"
-          body="Every Guild Raid board, pulled straight from the game data and framed to the in-game view."
+          body="Every Guild Raid board, framed to simulate the real in-game experience."
         />
         <Feature
           delay={600}
           icon={<Move3d size={22} />}
           title="Deploy & Maneuver"
-          body="Place your squad, summons and the boss on the true hex grid — terrain, elevation and spawns intact."
+          body="Place your squad, summons and the boss on the hex grid and plan their movements."
         />
         <Feature
           delay={680}
           icon={<Hexagon size={22} />}
-          title="Six-Turn Doctrine"
-          body="Plot movements turn by turn so the whole guild advances as one cohesive battle line."
+          title="Six-Turn Simulation"
+          body="Save your 6-turn plans, retrieve them anytime and share them with your guild."
         />
       </section>
 
@@ -112,15 +100,6 @@ export function HomePage() {
         </div>
       </section>
     </div>
-  )
-}
-
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <span className="flex items-baseline gap-1.5">
-      <span className="data text-lg">{value}</span>
-      <span className="text-xs uppercase tracking-[0.18em] text-ash/70">{label}</span>
-    </span>
   )
 }
 

@@ -48,7 +48,7 @@ export function Layout() {
             <hr className="rule mb-2 w-28" />
             <p className="eyebrow text-brass-dim">++ For the Emperor ++</p>
             <p className="font-mono text-[0.65rem] text-ash/70">
-              Fan-made · map data via TacticusDB · not affiliated with Snowprint Studios
+              Fan-made · game data from TacticusDB.com · not affiliated with Snowprint Studios
             </p>
             <Link to="/legal" className="font-mono text-[0.65rem] text-ash/70 underline-offset-2 transition-colors hover:text-teal-bright hover:underline">
               Privacy &amp; Terms
@@ -66,9 +66,8 @@ function Tab({ to, label, end }: { to: string; label: string; end?: boolean }) {
       {({ isActive }) => (
         <>
           <span
-            className={`font-sans text-[0.8rem] font-semibold uppercase tracking-[0.12em] transition-colors ${
-              isActive ? 'text-teal-bright text-glow-teal' : 'text-ash group-hover:text-bone'
-            }`}
+            className={`font-sans text-[0.8rem] font-semibold uppercase tracking-[0.12em] transition-colors ${isActive ? 'text-teal-bright text-glow-teal' : 'text-ash group-hover:text-bone'
+              }`}
           >
             {label}
           </span>
