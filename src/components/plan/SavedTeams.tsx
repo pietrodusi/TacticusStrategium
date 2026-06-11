@@ -37,8 +37,9 @@ export function SavedTeams({ unitById }: { unitById: Map<string, Unit> }) {
       <>
         {heading}
         <p className="text-xs text-ash">
-          <Link to="/signin" state={{ next: '/plan' }} className="inline-flex items-center gap-1 text-teal-bright">
-            <LogIn size={12} /> Sign in
+          <Link to="/signin" state={{ next: '/plan' }} className="text-teal-bright">
+            <LogIn size={12} className="mr-1 inline align-[-2px]" />
+            Sign in
           </Link>{' '}
           to save squads and refill them with one tap.
         </p>
