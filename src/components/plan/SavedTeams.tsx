@@ -6,6 +6,7 @@ import { usePlanStore } from '../../stores/planStore'
 import { useMyTeams, useTeamMutations } from '../../hooks/useTeams'
 import { MAX_TEAMS, type SavedTeam } from '../../services/firebase/teams'
 import { DataError } from '../DataError'
+import { useConfirm } from '../../hooks/useConfirm'
 import { TeamRow } from './TeamRow'
 import { TeamEditorModal } from './TeamEditorModal'
 import type { Unit } from '../../types/units'
@@ -25,6 +26,7 @@ export function SavedTeams({ unitById }: { unitById: Map<string, Unit> }) {
   const [name, setName] = useState('')
   const [savedFlash, setSavedFlash] = useState(false)
   const [editing, setEditing] = useState<SavedTeam | null>(null)
+  const { askConfirm, confirmDialog } = useConfirm()
 
   if (status === 'loading') return null
 
@@ -76,7 +78,15 @@ export function SavedTeams({ unitById }: { unitById: Map<string, Unit> }) {
             pressTitle={`Use "${t.name}"`}
             onPress={() => applyTeam(t.members, t.machineOfWar)}
             onEdit={() => setEditing(t)}
-            onDelete={() => confirm(`Delete team "${t.name}"?`) && remove.mutate(t.id)}
+            onDelete={() =>
+              askConfirm({
+                title: 'Delete team',
+                body: `Delete team "${t.name}"?`,
+                confirmLabel: 'Delete',
+                danger: true,
+                onConfirm: () => remove.mutate(t.id),
+              })
+            }
           />
         ))}
         {teams.data?.length === 0 && (
@@ -109,6 +119,7 @@ export function SavedTeams({ unitById }: { unitById: Map<string, Unit> }) {
       </div>
 
       {editing && <TeamEditorModal team={editing} onClose={() => setEditing(null)} />}
+      {confirmDialog}
     </>
   )
 }

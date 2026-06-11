@@ -8,6 +8,7 @@ import { MAX_TEAMS, type SavedTeam } from '../services/firebase/teams'
 import { TeamRow } from '../components/plan/TeamRow'
 import { TeamEditorModal } from '../components/plan/TeamEditorModal'
 import { DataError } from '../components/DataError'
+import { useConfirm } from '../hooks/useConfirm'
 import type { Unit } from '../types/units'
 
 /** Manage saved raid teams: edit composition/name, delete. */
@@ -17,6 +18,7 @@ export function TeamsPage() {
   const { remove } = useTeamMutations()
   const { roster, machinesOfWar } = useRoster()
   const [editing, setEditing] = useState<SavedTeam | 'new' | null>(null)
+  const { askConfirm, confirmDialog } = useConfirm()
 
   const unitById = useMemo(() => {
     const m = new Map<string, Unit>()
@@ -69,7 +71,15 @@ export function TeamsPage() {
           pressTitle={`Edit "${t.name}"`}
           onPress={() => setEditing(t)}
           onEdit={() => setEditing(t)}
-          onDelete={() => confirm(`Delete team "${t.name}"?`) && remove.mutate(t.id)}
+          onDelete={() =>
+            askConfirm({
+              title: 'Delete team',
+              body: `Delete team "${t.name}"?`,
+              confirmLabel: 'Delete',
+              danger: true,
+              onConfirm: () => remove.mutate(t.id),
+            })
+          }
         />
       ))}
 
@@ -90,6 +100,8 @@ export function TeamsPage() {
       {editing && (
         <TeamEditorModal team={editing === 'new' ? null : editing} onClose={() => setEditing(null)} />
       )}
+
+      {confirmDialog}
     </div>
   )
 }

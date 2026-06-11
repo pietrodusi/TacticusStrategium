@@ -6,6 +6,7 @@ import { useAuthStore } from '../stores/authStore'
 import { usePlanStore } from '../stores/planStore'
 import { deserializePlan } from '../services/plans/serialize'
 import { PlanBoardView } from '../components/plan/PlanBoardView'
+import { useConfirm } from '../hooks/useConfirm'
 
 /** Read-only view of a shared plan (full-bleed, like the board). */
 export function SharedPlanPage() {
@@ -16,6 +17,7 @@ export function SharedPlanPage() {
   const loadPlan = usePlanStore((s) => s.loadPlan)
   const { create } = usePlanMutations()
   const [copyError, setCopyError] = useState(false)
+  const { askConfirm, confirmDialog } = useConfirm()
 
   // Lock the page (no scroll/bounce) while viewing, same as the board.
   useEffect(() => {
@@ -53,10 +55,15 @@ export function SharedPlanPage() {
       )
       return
     }
-    if (confirm('Copy this plan to your board? It replaces the battle-plan currently on this device.')) {
-      loadPlan(data, null)
-      navigate('/plan/board')
-    }
+    askConfirm({
+      title: 'Copy plan',
+      body: 'Copy this plan to your board? It replaces the battle-plan currently on this device.',
+      confirmLabel: 'Copy',
+      onConfirm: () => {
+        loadPlan(data, null)
+        navigate('/plan/board')
+      },
+    })
   }
 
   return (
@@ -99,6 +106,8 @@ export function SharedPlanPage() {
       ) : (
         <PlanBoardView plan={data} />
       )}
+
+      {confirmDialog}
     </div>
   )
 }

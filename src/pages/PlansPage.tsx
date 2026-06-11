@@ -11,6 +11,7 @@ import type { CloudPlan } from '../services/firebase/plans'
 import { bossDisplayName } from '../utils/format'
 import { UnitImage } from '../components/UnitImage'
 import { DataError } from '../components/DataError'
+import { useConfirm } from '../hooks/useConfirm'
 
 export function PlansPage() {
   const { user, status } = useAuthStore()
@@ -68,6 +69,7 @@ function PlanCard({ plan }: { plan: CloudPlan }) {
   const [name, setName] = useState(plan.name)
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { askConfirm, confirmDialog } = useConfirm()
 
   const target =
     plan.targetKind === 'prime'
@@ -85,9 +87,15 @@ function PlanCard({ plan }: { plan: CloudPlan }) {
       setError('This plan was saved by a newer version of the app — update (hard-reload) and retry.')
       return
     }
-    if (!confirm(`Load "${plan.name}"? This replaces the battle-plan currently on your board.`)) return
-    loadPlan(data, { id: plan.id, name: plan.name })
-    navigate('/plan/board')
+    askConfirm({
+      title: 'Load plan',
+      body: `Load "${plan.name}"? This replaces the battle-plan currently on your board.`,
+      confirmLabel: 'Load',
+      onConfirm: () => {
+        loadPlan(data, { id: plan.id, name: plan.name })
+        navigate('/plan/board')
+      },
+    })
   }
 
   const saveRename = () => {
@@ -168,11 +176,21 @@ function PlanCard({ plan }: { plan: CloudPlan }) {
         <IconBtn
           label="Delete"
           danger
-          onClick={() => confirm(`Delete "${plan.name}" from the archive? This cannot be undone.`) && remove.mutate(plan.id)}
+          onClick={() =>
+            askConfirm({
+              title: 'Delete plan',
+              body: `Delete "${plan.name}" from the archive? This cannot be undone.`,
+              confirmLabel: 'Delete',
+              danger: true,
+              onConfirm: () => remove.mutate(plan.id),
+            })
+          }
         >
           <Trash2 size={15} />
         </IconBtn>
       </div>
+
+      {confirmDialog}
     </div>
   )
 }
