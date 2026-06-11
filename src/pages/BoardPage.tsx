@@ -246,18 +246,18 @@ export function BoardPage() {
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden bg-abyss" style={{ height: '100dvh' }}>
       {/* Top bar */}
-      <div className="z-10 flex items-center justify-between gap-3 border-b border-iron bg-abyss/85 px-3 py-2 backdrop-blur" style={{ paddingTop: 'max(0.5rem, env(safe-area-inset-top))' }}>
-        <button onClick={() => { resetPlan(); navigate('/plan') }} className="flex items-center gap-1.5 text-sm text-ash transition-colors hover:text-teal-bright">
-          <LogOut size={16} className="rotate-180" />
+      <div className="z-10 flex items-center justify-between gap-3 border-b border-iron bg-abyss/85 px-3 py-3 backdrop-blur" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
+        <button onClick={() => { resetPlan(); navigate('/plan') }} className="flex items-center gap-1.5 text-base text-ash transition-colors hover:text-teal-bright">
+          <LogOut size={18} className="rotate-180" />
           <span className="uppercase tracking-[0.1em]">Exit</span>
         </button>
-        <span className="data min-w-0 truncate text-xs">{target?.name ?? ''} // {boardId}</span>
+        <span className="data min-w-0 truncate text-sm">{target?.name ?? ''} // {boardId}</span>
         <button
           onClick={() => setSaveOpen(true)}
           title="Save to archive"
-          className="flex shrink-0 items-center gap-1.5 text-sm text-teal-bright transition-opacity hover:opacity-80"
+          className="flex shrink-0 items-center gap-1.5 text-base text-teal-bright transition-opacity hover:opacity-80"
         >
-          <Save size={16} />
+          <Save size={18} />
           <span className="hidden uppercase tracking-[0.1em] sm:inline">Save</span>
         </button>
       </div>
