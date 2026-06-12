@@ -47,7 +47,7 @@ export function HomePage() {
           style={{ animationDelay: '240ms' }}
         >
           Plan your Guild Raids.<br />
-          Chart every warrior&apos;s advance across the six turns &mdash; boss, summons and squad, hex by hex.
+          Chart every warrior&apos;s advance across the six rounds &mdash; boss, summons and squad, hex by hex.
         </p>
 
         <div className="rise mt-8" style={{ animationDelay: '320ms' }}>
@@ -77,8 +77,8 @@ export function HomePage() {
         <Feature
           delay={680}
           icon={<Hexagon size={22} />}
-          title="Six-Turn Simulation"
-          body="Save your 6-turn plans, retrieve them anytime and share them with your guild."
+          title="Six-Round Simulation"
+          body="Save your 6-round plans, retrieve them anytime and share them with your guild."
         />
       </section>
 

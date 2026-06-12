@@ -61,16 +61,16 @@ export function GuidePage() {
         </P>
       </Section>
 
-      {/* 4 — Turns */}
-      <Section n="IV" title="Chart the six turns">
+      {/* 4 — Rounds & turns */}
+      <Section n="IV" title="Chart the six rounds">
         <P>
-          A fight is six turns, and each turn has a <B>player</B> phase and an <B>enemy</B> phase. The
-          selector shows <B>S</B> (deployment, green), then each turn as <B>1…6</B> (blue = player,
-          red = enemy). The arrows step through the sequence, one phase at a time.
+          A fight is six <B>rounds</B>, and each round is a <B>player turn</B> then an <B>enemy turn</B>. The
+          selector shows <B>S</B> (deployment, green), then each round as <B>1…6</B> (blue = player turn,
+          red = enemy turn). The arrows step through the sequence, one turn at a time.
         </P>
         <P>
           Positions carry forward until you change them, and a faint arrow shows each token&apos;s move from
-          the previous phase — so you can see the whole advance at a glance. The counter at the top of the
+          the previous turn — so you can see the whole advance at a glance. The counter at the top of the
           map shows rounds remaining.
         </P>
       </Section>
@@ -79,7 +79,7 @@ export function GuidePage() {
       <Section n="V" title="Paint zones & hazards">
         <P>
           The <B>Paint</B> panel on the board edge marks the map. Pick a colour to highlight zones (paint
-          lives for the phase you draw it on plus the next), or a hazard stamp — <B>fire</B>, <B>ice</B>,
+          lives for the turn you draw it on plus the next), or a hazard stamp — <B>fire</B>, <B>ice</B>,
           <B> contaminated</B> — which decay round by round with a remaining-rounds badge. The rubber erases
           any tile. Drag to paint a streak; drag from a painted hex to erase along the path.
         </P>

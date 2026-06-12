@@ -4,18 +4,19 @@ import { MAX_PHASE } from '../../stores/planStore'
 type Kind = 'deploy' | 'player' | 'enemy'
 
 /**
- * Phase timeline: S (deploy) → turn 1 (player) → turn 1 enemy → turn 2 → … → 6.
- * `phase` is the flat index 0..MAX_PHASE. Only the current phase is shown — `S`
- * (green), `k` for a player turn (blue) or `kE` for an enemy turn (red). The
- * arrows step through the sequence; the chip itself is a plain indicator
- * (a tap-to-toggle on it proved confusing).
+ * Battle timeline in game terms: a fight is 6 *rounds*, each round = a player
+ * *turn* then an enemy *turn*. S (deploy) → round 1 player → round 1 enemy →
+ * round 2 → … → 6. `phase` is the internal flat index 0..MAX_PHASE (one step per
+ * turn). Only the current step is shown — `S` (green), `k` for round k's player
+ * turn (blue) or `kE` for its enemy turn (red). The arrows step through the
+ * sequence; the chip itself is a plain indicator (tap-to-toggle proved confusing).
  */
 export function TurnSelector({ phase, onChange }: { phase: number; onChange: (p: number) => void }) {
-  const turn = phase === 0 ? 0 : Math.ceil(phase / 2)
+  const round = phase === 0 ? 0 : Math.ceil(phase / 2)
   const enemy = phase >= 2 && phase % 2 === 0
   const kind: Kind = phase === 0 ? 'deploy' : enemy ? 'enemy' : 'player'
-  const label = phase === 0 ? 'S' : `${turn}${enemy ? 'E' : ''}`
-  const title = phase === 0 ? 'Deployment' : `Turn ${turn} — ${enemy ? 'enemy' : 'player'}`
+  const label = phase === 0 ? 'S' : `${round}${enemy ? 'E' : ''}`
+  const title = phase === 0 ? 'Deployment' : `Round ${round} — ${enemy ? 'enemy' : 'player'} turn`
 
   return (
     <div className="flex items-center gap-1.5">
@@ -58,7 +59,7 @@ function Arrow({ dir, disabled, onClick }: { dir: 'prev' | 'next'; disabled: boo
     <button
       onClick={onClick}
       disabled={disabled}
-      aria-label={dir === 'prev' ? 'Previous phase' : 'Next phase'}
+      aria-label={dir === 'prev' ? 'Previous turn' : 'Next turn'}
       className="grid h-9 w-9 place-items-center rounded bg-steel-2 text-ash transition-colors hover:text-bone disabled:opacity-30"
     >
       {dir === 'prev' ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
