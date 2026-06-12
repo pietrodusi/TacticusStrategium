@@ -4,7 +4,9 @@
   "primes": [
     {
       "unitId": "GuildBoss10MiniBoss1AdmecMarshall",
-      "bossType": "BelisariusRW",
+      "bossTypes": [
+        "BelisariusRW"
+      ],
       "name": "Tan Gi'da",
       "faction": "AdeptusMechanicus",
       "imageStem": "admec_marshall",
@@ -17,7 +19,9 @@
     },
     {
       "unitId": "GuildBoss10MiniBoss2AdmecManipulus",
-      "bossType": "BelisariusRW",
+      "bossTypes": [
+        "BelisariusRW"
+      ],
       "name": "Actus",
       "faction": "AdeptusMechanicus",
       "imageStem": "admec_manipulus",
@@ -30,7 +34,9 @@
     },
     {
       "unitId": "GuildBoss11MiniBoss1TauMarksman",
-      "bossType": "Riptide",
+      "bossTypes": [
+        "Riptide"
+      ],
       "name": "Sho'syl",
       "faction": "Tau",
       "imageStem": "tauta_marksman",
@@ -42,7 +48,9 @@
     },
     {
       "unitId": "GuildBoss11MiniBoss2TauCrisis",
-      "bossType": "Riptide",
+      "bossTypes": [
+        "Riptide"
+      ],
       "name": "Re'vas",
       "faction": "Tau",
       "imageStem": "tauta_crisis",
@@ -54,7 +62,9 @@
     },
     {
       "unitId": "GuildBoss12MiniBoss1DarkaTerminator",
-      "bossType": "Lion",
+      "bossTypes": [
+        "Lion"
+      ],
       "name": "Baraqiel",
       "faction": "DarkAngels",
       "imageStem": "darka_terminator",
@@ -66,7 +76,9 @@
     },
     {
       "unitId": "GuildBoss12MiniBoss2DarkaCompanion",
-      "bossType": "Lion",
+      "bossTypes": [
+        "Lion"
+      ],
       "name": "Forcas",
       "faction": "DarkAngels",
       "imageStem": "darka_companion",
@@ -78,7 +90,10 @@
     },
     {
       "unitId": "GuildBoss1MiniBoss1TyranWarriorLeviathan",
-      "bossType": "TervigonLeviathan",
+      "bossTypes": [
+        "HiveTyrantLeviathan",
+        "TervigonLeviathan"
+      ],
       "name": "Tyranid Prime",
       "faction": "Tyranids",
       "imageStem": "tyran_warrior",
@@ -92,7 +107,10 @@
     },
     {
       "unitId": "GuildBoss1MiniBoss2TyranWarriorKronos",
-      "bossType": "TervigonKronos",
+      "bossTypes": [
+        "HiveTyrantKronos",
+        "TervigonKronos"
+      ],
       "name": "Tyranid Prime",
       "faction": "Tyranids",
       "imageStem": "tyran_warrior_02",
@@ -108,7 +126,10 @@
     },
     {
       "unitId": "GuildBoss1MiniBoss3TyranWarriorGorgon",
-      "bossType": "TervigonGorgon",
+      "bossTypes": [
+        "HiveTyrantGorgon",
+        "TervigonGorgon"
+      ],
       "name": "Tyranid Prime",
       "faction": "Tyranids",
       "imageStem": "tyran_warrior_03",
@@ -122,7 +143,9 @@
     },
     {
       "unitId": "GuildBoss3Minion3NecroMenhir",
-      "bossType": "SilentKing",
+      "bossTypes": [
+        "SilentKing"
+      ],
       "name": "Triarchal Menhir",
       "faction": "Necrons",
       "imageStem": "necro_menhir",
@@ -133,12 +156,16 @@
         "GB_SK_support_03",
         "GB_SK_support_04",
         "GB_SK_support_05",
-        "GB_SK_support_06"
+        "GB_SK_support_06",
+        "GB_SK_support_07",
+        "GB_SK_support_08"
       ]
     },
     {
       "unitId": "GuildBoss4MiniBoss1OrksBigMek",
-      "bossType": "Ghazghkull",
+      "bossTypes": [
+        "Ghazghkull"
+      ],
       "name": "Gibbascrapz",
       "faction": "Orks",
       "imageStem": "orkss_mek",
@@ -152,7 +179,9 @@
     },
     {
       "unitId": "GuildBoss4MiniBoss2OrksNob",
-      "bossType": "Ghazghkull",
+      "bossTypes": [
+        "Ghazghkull"
+      ],
       "name": "Tanksmasha",
       "faction": "Orks",
       "imageStem": "orkss_nob",
@@ -166,31 +195,41 @@
     },
     {
       "unitId": "GuildBoss5MiniBoss1DeathRotbone",
-      "bossType": "Mortarion",
+      "bossTypes": [
+        "Mortarion"
+      ],
       "name": "Nauseous Rotbone",
       "faction": "DeathGuard",
       "imageStem": "death_rotbone",
       "size": 1,
       "boardIds": [
         "GB_Mortarion_support_01",
-        "GB_Mortarion_support_03"
+        "GB_Mortarion_support_03",
+        "GB_Mortarion_support_05",
+        "GB_Mortarion_support_05_1"
       ]
     },
     {
       "unitId": "GuildBoss5MiniBoss2DeathBlightbringer",
-      "bossType": "Mortarion",
+      "bossTypes": [
+        "Mortarion"
+      ],
       "name": "Corrodius",
       "faction": "DeathGuard",
       "imageStem": "death_blightbringer",
       "size": 1,
       "boardIds": [
         "GB_Mortarion_support_02",
-        "GB_Mortarion_support_04"
+        "GB_Mortarion_support_04",
+        "GB_Mortarion_support_04_1",
+        "GB_Mortarion_support_06"
       ]
     },
     {
       "unitId": "GuildBoss6MiniBoss1TyranNeurothrope",
-      "bossType": "ScreamerKiller",
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
       "name": "Neurothrope",
       "faction": "Tyranids",
       "imageStem": "tyran_neurothrope",
@@ -204,7 +243,9 @@
     },
     {
       "unitId": "GuildBoss6MiniBoss2TyranWingedPrime",
-      "bossType": "ScreamerKiller",
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
       "name": "Winged Prime",
       "faction": "Tyranids",
       "imageStem": "tyran_wingedprime",
@@ -218,7 +259,9 @@
     },
     {
       "unitId": "GuildBoss7MiniBoss1AstraPrimarisPsy",
-      "bossType": "RogalDorn",
+      "bossTypes": [
+        "RogalDorn"
+      ],
       "name": "Sibyll Devine",
       "faction": "AstraMilitarum",
       "imageStem": "astra_psyker",
@@ -231,7 +274,9 @@
     },
     {
       "unitId": "GuildBoss7MiniBoss2AstraOrdnance",
-      "bossType": "RogalDorn",
+      "bossTypes": [
+        "RogalDorn"
+      ],
       "name": "Thaddeus Noble",
       "faction": "AstraMilitarum",
       "imageStem": "astra_ordnance",
@@ -244,7 +289,9 @@
     },
     {
       "unitId": "GuildBoss8MiniBoss1EldarAutarch",
-      "bossType": "AvatarOfKhaine",
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
       "name": "Aethana",
       "faction": "Aeldari",
       "imageStem": "aelda_autarch",
@@ -257,7 +304,9 @@
     },
     {
       "unitId": "GuildBoss8MiniBoss2EldarFarseer",
-      "bossType": "AvatarOfKhaine",
+      "bossTypes": [
+        "AvatarOfKhaine"
+      ],
       "name": "Eldryon",
       "faction": "Aeldari",
       "imageStem": "aelda_farseer",
@@ -270,7 +319,9 @@
     },
     {
       "unitId": "GuildBoss9MiniBoss1ThousSorcerer",
-      "bossType": "Magnus",
+      "bossTypes": [
+        "Magnus"
+      ],
       "name": "Thaumachus",
       "faction": "ThousandSons",
       "imageStem": "thous_sorcerer",
@@ -282,7 +333,9 @@
     },
     {
       "unitId": "GuildBoss9MiniBoss2ThousInfernalMaster",
-      "bossType": "Magnus",
+      "bossTypes": [
+        "Magnus"
+      ],
       "name": "Abraxas",
       "faction": "ThousandSons",
       "imageStem": "thous_infernal",

@@ -117,6 +117,12 @@ export function BoardPage() {
   // from the previous phase (paint persists one phase, then auto-clears).
   const visiblePaint = useMemo(() => paintAtTurn(paint, currentTurn), [paint, currentTurn])
 
+  // Leaving deployment (S → turn 1) collapses the dock to free up the board.
+  const changeTurn = (next: number) => {
+    if (currentTurn === 0 && next > 0) setDockOpen(false)
+    setCurrentTurn(next)
+  }
+
   const unitById = useMemo(() => {
     const m = new Map<string, Unit>()
     for (const u of [...roster, ...machinesOfWar]) m.set(u.id, u)
@@ -446,7 +452,7 @@ export function BoardPage() {
             <Undo2 size={16} />
             Undo
           </button>
-          <TurnSelector phase={currentTurn} onChange={setCurrentTurn} />
+          <TurnSelector phase={currentTurn} onChange={changeTurn} />
         </div>
       </div>
 

@@ -500,8 +500,13 @@ async function buildPrimeIndex(seasonConfig, stems, locale) {
         for (const e of set.encounters ?? []) {
           if (e.guildBossEncounterType !== 'Crystal' || !e.unitId) continue;
           const unitId = e.unitId.split(':')[0];
+          // A mini-boss can be shared across parent bosses (e.g. the Tyranid
+          // Warriors serve both the Tervigon and Hive Tyrant seasons, on
+          // different support maps). Collect ALL parents + the union of boards
+          // so the picker shows the prime under every boss it belongs to.
           if (!byUnit.has(unitId))
-            byUnit.set(unitId, { unitId, bossType: e.bossType ?? null, boardIds: new Set() });
+            byUnit.set(unitId, { unitId, bossTypes: new Set(), boardIds: new Set() });
+          if (e.bossType) byUnit.get(unitId).bossTypes.add(e.bossType);
           if (e.boardId) byUnit.get(unitId).boardIds.add(e.boardId);
         }
 
@@ -532,7 +537,7 @@ async function buildPrimeIndex(seasonConfig, stems, locale) {
     const vid = units[p.unitId]?.visualId;
     primes.push({
       unitId: p.unitId,
-      bossType: p.bossType,
+      bossTypes: [...p.bossTypes].sort(),
       name:
         locale?.[p.unitId]?.shortname ??
         locale?.[p.unitId]?.name ??

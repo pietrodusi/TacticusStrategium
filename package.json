@@ -12,7 +12,8 @@
     "test": "vitest",
     "test:run": "vitest run",
     "type-check": "tsc -b",
-    "dump:data": "node scripts/dump-tacticusdb.mjs",
+    "dump:data": "node scripts/dump-tacticusdb.mjs && node scripts/patch-missing-boards.mjs",
+    "dump:patch": "node scripts/patch-missing-boards.mjs",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },

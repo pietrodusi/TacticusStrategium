@@ -38,7 +38,8 @@
       "bossSize": 3,
       "boardIds": [
         "GB_Lion_01",
-        "GB_Lion_02"
+        "GB_Lion_02",
+        "GB_Lion_03"
       ]
     },
     {
@@ -124,7 +125,8 @@
       "boardIds": [
         "GB_SK_01",
         "GB_SK_02",
-        "GB_SK_03"
+        "GB_SK_03",
+        "GB_SK_04"
       ]
     },
     {
@@ -151,8 +153,12 @@
       "imageStem": "guild_mortarion",
       "bossSize": 7,
       "boardIds": [
+        "GB_Mortarion_01",
         "GB_Mortarion_02",
-        "GB_Mortarion_03"
+        "GB_Mortarion_02_1",
+        "GB_Mortarion_03",
+        "GB_Mortarion_04",
+        "GB_Mortarion_05"
       ]
     },
     {
@@ -164,6 +170,7 @@
       "bossSize": 3,
       "boardIds": [
         "GB_Screamer_01",
+        "GB_Screamer_02",
         "GB_Screamer_03",
         "GB_Screamer_04"
       ]
@@ -208,7 +215,9 @@
       "bossSize": 7,
       "boardIds": [
         "GB_Magnus_01",
-        "GB_Magnus_03"
+        "GB_Magnus_02",
+        "GB_Magnus_03",
+        "GB_Magnus_04"
       ]
     }
   ]

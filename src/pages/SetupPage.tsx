@@ -31,7 +31,7 @@ export function SetupPage() {
     const ps = primes.data?.primes ?? []
     return (bosses.data?.bosses ?? []).map((boss) => ({
       boss,
-      primes: ps.filter((p) => p.bossType === boss.bossType),
+      primes: ps.filter((p) => boss.bossType && p.bossTypes.includes(boss.bossType)),
     }))
   }, [bosses.data, primes.data])
 
@@ -41,9 +41,9 @@ export function SetupPage() {
       ? primes.data?.primes.find((p) => p.unitId === bossUnitId)
       : bosses.data?.bosses.find((b) => b.unitId === bossUnitId)) ?? null
   const targetName = selectedTarget
-    ? targetKind === 'prime'
-      ? selectedTarget.name
-      : bossDisplayName(selectedTarget.bossType, selectedTarget.name)
+    ? 'bossType' in selectedTarget
+      ? bossDisplayName(selectedTarget.bossType, selectedTarget.name)
+      : selectedTarget.name
     : ''
 
   const teamCount = team.filter(Boolean).length
@@ -286,18 +286,22 @@ function BossGroupRow({
   onBoss: () => void
   onPrime: (id: string) => void
 }) {
+  // A boss with a single prime shows it on both flanks (display only) so the row
+  // stays symmetrical; both tiles select the same target.
+  const left = primes[0]
+  const right = primes[1] ?? primes[0]
   return (
     <div className="grid grid-cols-[1fr_1.5fr_1fr] items-center gap-2 rounded-lg border border-iron/60 bg-steel/30 p-2">
       <PrimeTile
-        prime={primes[0]}
-        active={targetKind === 'prime' && primes[0]?.unitId === activeUnitId}
-        onClick={() => primes[0] && onPrime(primes[0].unitId)}
+        prime={left}
+        active={targetKind === 'prime' && left?.unitId === activeUnitId}
+        onClick={() => left && onPrime(left.unitId)}
       />
       <BossTile boss={boss} active={targetKind === 'boss' && boss.unitId === activeUnitId} onClick={onBoss} />
       <PrimeTile
-        prime={primes[1]}
-        active={targetKind === 'prime' && primes[1]?.unitId === activeUnitId}
-        onClick={() => primes[1] && onPrime(primes[1].unitId)}
+        prime={right}
+        active={targetKind === 'prime' && right?.unitId === activeUnitId}
+        onClick={() => right && onPrime(right.unitId)}
       />
     </div>
   )

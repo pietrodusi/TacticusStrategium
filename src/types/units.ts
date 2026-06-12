@@ -20,7 +20,7 @@ export interface BossIndex {
 /** One entry in public/data/primes.json (a boss's mini-boss / "prime"). */
 export interface PrimeIndexEntry {
   unitId: string
-  bossType: string | null // parent boss, for grouping
+  bossTypes: string[] // parent boss(es) — a mini-boss can be shared across seasons
   name: string
   faction: string | null
   size: number | null // 1 | 3

@@ -1,7 +1,7 @@
 {
   "generatedFrom": "https://tacticusdb.com/api/data/guildBossSeasonConfigsConverted",
   "seasonCount": 5,
-  "boardCount": 108,
+  "boardCount": 123,
   "boards": [
     {
       "boardId": "GB_01",
@@ -527,6 +527,18 @@
       ]
     },
     {
+      "boardId": "GB_Lion_03",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 0,
+      "bossTypes": [
+        "Lion"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
       "boardId": "GB_Lion_support_01",
       "width": 7,
       "height": 10,
@@ -587,10 +599,34 @@
       ]
     },
     {
+      "boardId": "GB_Magnus_02",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 0,
+      "bossTypes": [
+        "Magnus"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
       "boardId": "GB_Magnus_03",
       "width": 7,
       "height": 10,
       "encounterCount": 1,
+      "bossTypes": [
+        "Magnus"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Magnus_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 0,
       "bossTypes": [
         "Magnus"
       ],
@@ -647,6 +683,18 @@
       ]
     },
     {
+      "boardId": "GB_Mortarion_01",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 0,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
       "boardId": "GB_Mortarion_02",
       "width": 7,
       "height": 10,
@@ -659,10 +707,46 @@
       ]
     },
     {
+      "boardId": "GB_Mortarion_02_1",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 0,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
       "boardId": "GB_Mortarion_03",
       "width": 7,
       "height": 10,
       "encounterCount": 1,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 0,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_05",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 0,
       "bossTypes": [
         "Mortarion"
       ],
@@ -711,6 +795,54 @@
       "width": 7,
       "height": 9,
       "encounterCount": 1,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_support_04_1",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 0,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_support_05",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 0,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_support_05_1",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 0,
+      "bossTypes": [
+        "Mortarion"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_Mortarion_support_06",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 0,
       "bossTypes": [
         "Mortarion"
       ],
@@ -959,6 +1091,18 @@
       ]
     },
     {
+      "boardId": "GB_Screamer_02",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 0,
+      "bossTypes": [
+        "ScreamerKiller"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
       "boardId": "GB_Screamer_03",
       "width": 7,
       "height": 10,
@@ -1115,6 +1259,18 @@
       ]
     },
     {
+      "boardId": "GB_SK_04",
+      "width": 7,
+      "height": 10,
+      "encounterCount": 0,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Boss"
+      ]
+    },
+    {
       "boardId": "GB_SK_support_01",
       "width": 7,
       "height": 9,
@@ -1179,6 +1335,30 @@
       "width": 7,
       "height": 9,
       "encounterCount": 1,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_SK_support_07",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 0,
+      "bossTypes": [
+        "SilentKing"
+      ],
+      "types": [
+        "Crystal"
+      ]
+    },
+    {
+      "boardId": "GB_SK_support_08",
+      "width": 7,
+      "height": 9,
+      "encounterCount": 0,
       "bossTypes": [
         "SilentKing"
       ],
