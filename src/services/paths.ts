@@ -16,9 +16,14 @@ export const liveMapImageUrl = (boardId: string) =>
 export const bossSplashUrl = (guildBossUnitKey: string) =>
   `https://cdn.ezekiel.snowprintstudios.com/${guildBossUnitKey}_BattlePreviewPopUp.png`
 
-/** Unit portrait (character/summon/boss/npc) by image stem. Round is best for tokens. */
+/**
+ * Unit portrait (character/summon/boss/npc) by image stem. Round is best for tokens.
+ *
+ * TacticusDB moved portraits from `/images/characters/{name}.png` to
+ * `/images/generated/characters/{name}.webp` (2026-07); the stems are unchanged.
+ */
 export const unitPortraitUrl = (stem: string, round = false) =>
-  `https://tacticusdb.com/images/characters/${round ? 'RoundPortrait_' : 'portrait_'}${stem}.png`
+  `https://tacticusdb.com/images/generated/characters/${round ? 'RoundPortrait_' : 'portrait_'}${stem}.webp`
 
 /** Bundled keyword/tile-effect icon (e.g. "tile_effect_fire"). */
 export const keywordIconUrl = (name: string) => asset(`images/keywords/${name}.png`)

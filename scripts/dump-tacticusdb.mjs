@@ -16,7 +16,8 @@
  *   3. For each boardId: GET /images/board/{boardId}_Visual.jpeg -> map background.
  *   4. GET the /bosses page chunk -> extract the static unitId->portrait-stem map
  *      (nested by character/summon/boss/npc). Portraits live at
- *      /images/characters/portrait_{stem}.png and RoundPortrait_{stem}.png.
+ *      /images/generated/characters/portrait_{stem}.webp and RoundPortrait_{stem}.webp
+ *      (moved 2026-07 from /images/characters/{name}.png; stems unchanged).
  *   5. Build a boss picker index from the "Boss" encounters (distinct boss unit ->
  *      its maps, faction, image stem, size).
  *   6. Build per-unit spawn lists from ability `constants` (each character/boss ->
