@@ -11,7 +11,7 @@ import { RING_COLOR } from '../components/tokenColors'
 import { keywordIconUrl } from '../services/paths'
 import { UnitImage } from '../components/UnitImage'
 import { DataError } from '../components/DataError'
-import { BoardFooter, ReplayBadge, TurnSelector } from '../components/plan/TurnSelector'
+import { TurnSelector } from '../components/plan/TurnSelector'
 import { SavePlanSheet } from '../components/plan/SavePlanSheet'
 import { RoundsCounter } from '../components/plan/RoundsCounter'
 import {
@@ -397,20 +397,17 @@ export function BoardPage() {
           />
         )}
 
-        <BoardFooter>
-          {replayStep !== null && <ReplayBadge step={replayStep} total={stepCount(currentTurn)} />}
-          {canAddStep && (
-            <button
-              onClick={() => setStepArmed((a) => !a)}
-              aria-pressed={armed}
-              title={armed ? 'Cancel adding a step' : 'Make the next move a separate step'}
-              className={`pointer-events-auto flex items-center gap-1.5 rounded-full border px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] backdrop-blur transition-colors ${armed ? 'border-teal-bright bg-teal text-abyss' : 'border-teal/60 bg-abyss/90 text-teal-bright hover:border-teal-bright'}`}
-            >
-              <Plus size={16} />
-              {armed ? 'Next move adds a step' : 'Step'}
-            </button>
-          )}
-        </BoardFooter>
+        {canAddStep && (
+          <button
+            onClick={() => setStepArmed((a) => !a)}
+            aria-pressed={armed}
+            title={armed ? 'Cancel adding a step' : 'Make the next move a separate step'}
+            className={`absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-full border px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] backdrop-blur transition-colors ${armed ? 'border-teal-bright bg-teal text-abyss' : 'border-teal/60 bg-abyss/90 text-teal-bright hover:border-teal-bright'}`}
+          >
+            <Plus size={16} />
+            {armed ? 'Next move adds a step' : 'Step'}
+          </button>
+        )}
 
         {/* Edge rail: Paint (persistent tool) on top, then — clearly separated
             by the larger gap — the contextual actions for the selected unit:
