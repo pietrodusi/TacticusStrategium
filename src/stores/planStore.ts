@@ -335,7 +335,8 @@ export const usePlanStore = create<PlanState>()(
       resetPlan: () => set({ ...EMPTY_PLAN }),
 
       loadPlan: (data, cloudRef) =>
-        set({ ...data, history: [], cloudRef }),
+        // Always open on deployment, whichever turn the plan was saved on.
+        set({ ...data, currentTurn: 0, history: [], cloudRef }),
 
       setCloudRef: (cloudRef) => set({ cloudRef }),
     }),

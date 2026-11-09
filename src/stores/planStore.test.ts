@@ -302,6 +302,12 @@ describe('plan actions', () => {
       expect(store().seededBoard).toBe('GB_07')
     })
 
+    it('loadPlan opens on deployment regardless of the saved turn', () => {
+      store().setCurrentTurn(7)
+      store().loadPlan(cloudData, { id: 'doc1', name: 'Alpha' })
+      expect(store().currentTurn).toBe(0)
+    })
+
     it('changing the target or map unlinks the cloud doc', () => {
       store().loadPlan(cloudData, { id: 'doc1', name: 'Alpha' })
       store().selectBoard('GB_99')
