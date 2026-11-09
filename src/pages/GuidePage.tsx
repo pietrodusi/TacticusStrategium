@@ -66,7 +66,8 @@ export function GuidePage() {
         <P>
           A fight is six <B>rounds</B>, and each round is a <B>player turn</B> then an <B>enemy turn</B>. The
           selector shows <B>S</B> (deployment, green), then each round as <B>1…6</B> (blue = player turn,
-          red = enemy turn). The arrows step through the sequence, one turn at a time.
+          red = enemy turn). The double arrows jump one turn at a time; the single arrows replay the plan one
+          move at a time, in the order you made the moves.
         </P>
         <P>
           Positions carry forward until you change them, and a faint arrow shows each token&apos;s move from

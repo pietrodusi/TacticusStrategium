@@ -11,12 +11,14 @@ import { RING_COLOR } from '../components/tokenColors'
 import { keywordIconUrl } from '../services/paths'
 import { UnitImage } from '../components/UnitImage'
 import { DataError } from '../components/DataError'
-import { TurnSelector } from '../components/plan/TurnSelector'
+import { ReplayBadge, TurnSelector } from '../components/plan/TurnSelector'
 import { SavePlanSheet } from '../components/plan/SavePlanSheet'
 import { RoundsCounter } from '../components/plan/RoundsCounter'
 import {
   deriveBoardView,
   instanceTokenDefs,
+  phaseStepOrder,
+  stepCursor,
   targetDef,
   uniqueTokenDefs,
   visibleTokenDefs,
@@ -53,7 +55,7 @@ const ERASER = 'eraser'
 
 export function BoardPage() {
   const navigate = useNavigate()
-  const { bossUnitId, targetKind, boardId, team, machineOfWar, currentTurn, positions, waypoints, paint, instances } = usePlanStore()
+  const { bossUnitId, targetKind, boardId, team, machineOfWar, currentTurn, positions, waypoints, moveOrder, paint, instances } = usePlanStore()
   const { seededBoard, primesDefeated, history } = usePlanStore()
   const { setCurrentTurn, placeToken, moveToken, removeFromTurn, addInstance, setPaint, resetPlan } = usePlanStore()
   const { seedDeployment, setPrimesDefeated, checkpoint, undo } = usePlanStore()
@@ -68,6 +70,8 @@ export function BoardPage() {
   // The unit + Step applies to (last moved or tapped), and whether it's armed.
   const [stepUnitId, setStepUnitId] = useState<string | null>(null)
   const [stepArmed, setStepArmed] = useState(false)
+  // How many of this turn's moves the board is showing (null = all of them).
+  const [replayStep, setReplayStep] = useState<number | null>(null)
   const [pending, setPending] = useState<PaletteType | null>(null)
   const [paintOpen, setPaintOpen] = useState(false)
   const [paintSide, setPaintSide] = useState<Side>('left')
@@ -124,6 +128,7 @@ export function BoardPage() {
   const changeTurn = (next: number) => {
     if (currentTurn === 0 && next > 0) setDockOpen(false)
     clearStep()
+    setReplayStep(null)
     setCurrentTurn(next)
   }
 
@@ -182,8 +187,20 @@ export function BoardPage() {
   // the boss's primes are defeated (removeAtPrime ≤ primesDefeated).
   const visibleDefs = visibleTokenDefs(allDefs, primesDefeated)
   const { tokens: boardTokens, movements } = board.data
-    ? deriveBoardView(visibleDefs, positions, currentTurn, board.data, waypoints)
+    ? deriveBoardView(visibleDefs, positions, currentTurn, board.data, { waypoints, moveOrder, step: replayStep })
     : { tokens: [] as BoardToken[], movements: [] as BoardMovement[] }
+
+  const stepCount = (phase: number) =>
+    board.data ? phaseStepOrder(visibleDefs, positions, phase, board.data, { waypoints, moveOrder }).length : 0
+  const cursorFor = (dir: 1 | -1) => stepCursor({ phase: currentTurn, step: replayStep }, dir, stepCount)
+  const goToStep = (dir: 1 | -1) => {
+    const next = cursorFor(dir)
+    if (!next) return
+    changeTurn(next.phase)
+    setReplayStep(next.step)
+    setSelectedId(null)
+    setPending(null)
+  }
 
   const selectedDef = allDefs.find((d) => d.id === selectedId) ?? null
 
@@ -200,6 +217,7 @@ export function BoardPage() {
   const stepStart = stepUnitId ? turnStart(stepUnitId) : null
   const canAddStep =
     currentTurn > 0 &&
+    replayStep === null &&
     !paintOpen &&
     !pending &&
     !!stepEntry &&
@@ -309,7 +327,16 @@ export function BoardPage() {
 
       {/* Board — top-aligned so its unused vertical space pools at the bottom,
           where the tools dock overlays it instead of covering the map. */}
-      <div className="relative flex min-h-0 flex-1 items-start justify-center overflow-hidden">
+      <div
+        className="relative flex min-h-0 flex-1 items-start justify-center overflow-hidden"
+        onPointerDownCapture={(e) => {
+          // A replay is view-only: the first touch returns to the full turn, so a
+          // drag can't start from a position the unit doesn't really end on.
+          if (replayStep === null) return
+          e.stopPropagation()
+          setReplayStep(null)
+        }}
+      >
         {board.isLoading && <p className="font-mono text-sm text-ash">Acquiring auspex feed…</p>}
         {board.isError && (
           <div className="mt-8 max-w-xs">
@@ -363,6 +390,8 @@ export function BoardPage() {
             }}
           />
         )}
+
+        {replayStep !== null && <ReplayBadge step={replayStep} total={stepCount(currentTurn)} hint="Tap board to exit" />}
 
         {canAddStep && (
           <button
@@ -493,21 +522,28 @@ export function BoardPage() {
             className={`flex items-center gap-1.5 text-xs uppercase tracking-[0.1em] transition-colors ${dockOpen ? 'text-teal-bright' : 'text-ash hover:text-bone'}`}
           >
             <Cog size={16} />
-            Tools
+            <span className="max-[359px]:hidden">Tools</span>
           </button>
           <button
             onClick={() => {
               undo()
               clearStep()
+              setReplayStep(null)
             }}
             disabled={history.length === 0}
             title="Undo the last map action"
             className="flex items-center gap-1.5 text-xs uppercase tracking-[0.1em] text-ash transition-colors hover:text-bone disabled:pointer-events-none disabled:opacity-35"
           >
             <Undo2 size={16} />
-            Undo
+            <span className="max-[359px]:hidden">Undo</span>
           </button>
-          <TurnSelector phase={currentTurn} onChange={changeTurn} />
+          <TurnSelector
+            phase={currentTurn}
+            onChange={changeTurn}
+            onStep={goToStep}
+            canStepBack={cursorFor(-1) !== null}
+            canStepForward={cursorFor(1) !== null}
+          />
         </div>
       </div>
 

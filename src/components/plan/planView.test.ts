@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { deriveBoardView, type TokenDef } from './planView'
+import { deriveBoardView, phaseStepOrder, stepCursor, type TokenDef } from './planView'
+import { MAX_PHASE } from '../../stores/planStore'
 import type { ParsedBoard } from '../../services/boards/boardService'
 
 const board = { bossStart: { q: 9, r: 9 }, bossRotation: 0 } as unknown as ParsedBoard
@@ -10,7 +11,7 @@ const B = { q: 1, r: 0 }
 const C = { q: 2, r: 0 }
 
 const legs = (positions: Parameters<typeof deriveBoardView>[1], waypoints = {}, defs = [unit]) =>
-  deriveBoardView(defs, positions, 1, board, waypoints).movements
+  deriveBoardView(defs, positions, 1, board, { waypoints }).movements
 
 describe('deriveBoardView movement legs', () => {
   it('keeps a plain move as one straight arrow into the token', () => {
@@ -42,5 +43,60 @@ describe('deriveBoardView movement legs', () => {
 
   it('draws nothing for a unit that did not move', () => {
     expect(legs({ u: { 0: A } })).toEqual([])
+  })
+})
+
+describe('turn replay', () => {
+  const other: TokenDef = { id: 'v', type: 'character', stem: null, name: 'V', size: 1 }
+  const positions = { u: { 0: A, 1: C }, v: { 0: { q: 5, r: 5 }, 1: { q: 6, r: 5 } } }
+  const data = { waypoints: { u: { 1: [B] } }, moveOrder: { 1: ['u', 'v', 'u'] } }
+  const defs = [unit, other]
+  const at = (step: number | null) => {
+    const view = deriveBoardView(defs, positions, 1, board, { ...data, step })
+    return {
+      u: view.tokens.find((t) => t.id === 'u')!.pos,
+      v: view.tokens.find((t) => t.id === 'v')!.pos,
+      arrows: view.movements.length,
+    }
+  }
+
+  it('plays steps in the order they were made', () => {
+    expect(phaseStepOrder(defs, positions, 1, board, data)).toEqual(['u', 'v', 'u'])
+  })
+
+  it('moves one unit by one step per move shown', () => {
+    expect(at(1)).toMatchObject({ u: B, v: { q: 5, r: 5 }, arrows: 1 })
+    expect(at(2)).toMatchObject({ u: B, v: { q: 6, r: 5 }, arrows: 2 })
+    expect(at(null)).toMatchObject({ u: C, v: { q: 6, r: 5 }, arrows: 3 })
+  })
+
+  it('points the latest shown arrow at the token', () => {
+    const { movements } = deriveBoardView(defs, positions, 1, board, { ...data, step: 1 })
+    expect(movements).toMatchObject([{ to: B, endsAtToken: true }])
+  })
+
+  it('falls back to unit order for plans with no recorded order', () => {
+    expect(phaseStepOrder(defs, positions, 1, board, { waypoints: data.waypoints })).toEqual(['u', 'u', 'v'])
+  })
+
+  const counts: Record<number, number> = { 0: 0, 1: 3, 2: 0, 3: 1 }
+  const count = (p: number) => counts[p] ?? 0
+
+  it('walks forward through moves, then into the next turn', () => {
+    expect(stepCursor({ phase: 1, step: 1 }, 1, count)).toEqual({ phase: 1, step: 2 })
+    expect(stepCursor({ phase: 1, step: 2 }, 1, count)).toEqual({ phase: 1, step: null })
+    expect(stepCursor({ phase: 0, step: null }, 1, count)).toEqual({ phase: 1, step: 1 })
+    expect(stepCursor({ phase: 1, step: null }, 1, count)).toEqual({ phase: 2, step: null })
+  })
+
+  it('walks back to the previous turn from its first move', () => {
+    expect(stepCursor({ phase: 1, step: null }, -1, count)).toEqual({ phase: 1, step: 2 })
+    expect(stepCursor({ phase: 1, step: 1 }, -1, count)).toEqual({ phase: 0, step: null })
+    expect(stepCursor({ phase: 3, step: null }, -1, count)).toEqual({ phase: 2, step: null })
+  })
+
+  it('stops at both ends of the fight', () => {
+    expect(stepCursor({ phase: 0, step: null }, -1, count)).toBeNull()
+    expect(stepCursor({ phase: MAX_PHASE, step: null }, 1, count)).toBeNull()
   })
 })

@@ -13,7 +13,15 @@ export interface TokenPos {
 /** tokenId → (phase → hexes the token stopped on before its final position). */
 export type WaypointMap = Record<string, Record<number, HexCoord[]>>
 
+/** phase → token ids, one entry per step, in the order the steps were made. */
+export type MoveOrder = Record<number, string[]>
+
 const sameHex = (a: HexCoord, b: HexCoord) => a.q === b.q && a.r === b.r
+
+const legCount = (points: (HexCoord | null)[]) => {
+  const hexes = points.filter((p): p is HexCoord => !!p)
+  return hexes.slice(1).filter((p, i) => !sameHex(p, hexes[i])).length
+}
 
 /**
  * A token's route for one phase after moving it to `target`. With `addStep` the
@@ -123,6 +131,7 @@ interface MapSnapshot {
   currentTurn: number
   positions: Record<string, Record<number, TokenPos | null>>
   waypoints: WaypointMap
+  moveOrder: MoveOrder
   paint: Record<number, Record<string, string | null>>
   instances: InstanceMap
   instanceSeq: number
@@ -144,6 +153,8 @@ interface PlanState {
   positions: Record<string, Record<number, TokenPos | null>>
   /** Intermediate stops of multi-step moves; `positions` keeps the final hex. */
   waypoints: WaypointMap
+  /** The order steps were made in each phase, for replaying a turn move by move. */
+  moveOrder: MoveOrder
   /** phase → (hexKey → color). Per-phase hex annotations; null = manual erase
    *  marker (masks a hex inherited from the previous phase). See paintAtTurn. */
   paint: Record<number, Record<string, string | null>>
@@ -211,6 +222,7 @@ const EMPTY_PLAN = {
   currentTurn: 0,
   positions: {},
   waypoints: {} as WaypointMap,
+  moveOrder: {} as MoveOrder,
   paint: {},
   instances: {},
   instanceSeq: 0,
@@ -286,7 +298,16 @@ export const usePlanStore = create<PlanState>()(
       moveToken: (id, pos, start, addStep) =>
         set((s) => {
           const P = s.currentTurn
-          const route = nextRoute(start, s.waypoints[id]?.[P] ?? [], s.positions[id]?.[P] ?? null, pos, addStep)
+          const prevStops = s.waypoints[id]?.[P] ?? []
+          const prevEnd = s.positions[id]?.[P] ?? null
+          const route = nextRoute(start, prevStops, prevEnd, pos, addStep)
+
+          // One log entry per step: added or cancelled steps change it, corrections don't.
+          const order = [...(s.moveOrder[P] ?? [])]
+          const delta = legCount([start, ...route.stops, route.end]) - legCount([start, ...prevStops, prevEnd])
+          if (delta > 0) order.push(id)
+          if (delta < 0 && order.includes(id)) order.splice(order.lastIndexOf(id), 1)
+
           const stopsByTurn = { ...s.waypoints[id] }
           if (route.stops.length > 0) stopsByTurn[P] = route.stops
           else delete stopsByTurn[P]
@@ -302,6 +323,7 @@ export const usePlanStore = create<PlanState>()(
           return {
             positions: { ...s.positions, [id]: byTurn },
             waypoints: { ...s.waypoints, [id]: stopsByTurn },
+            moveOrder: { ...s.moveOrder, [P]: order },
           }
         }),
 
@@ -318,17 +340,23 @@ export const usePlanStore = create<PlanState>()(
             if (Number(k) >= s.currentTurn) delete stopsByTurn[Number(k)]
           }
           const waypoints = { ...s.waypoints, [id]: stopsByTurn }
+          const moveOrder = Object.fromEntries(
+            Object.entries(s.moveOrder).map(([k, ids]) => [
+              k,
+              Number(k) >= s.currentTurn ? ids.filter((x) => x !== id) : ids,
+            ]),
+          )
           const hasPast = Object.values(byTurn).some((p) => p !== null)
           if (hasPast) {
             byTurn[s.currentTurn] = null // "removed from here on" marker
-            return { positions: { ...s.positions, [id]: byTurn }, waypoints }
+            return { positions: { ...s.positions, [id]: byTurn }, waypoints, moveOrder }
           }
           const positions = { ...s.positions }
           delete positions[id]
           delete waypoints[id]
           const instances = { ...s.instances }
           delete instances[id]
-          return { positions, waypoints, instances }
+          return { positions, waypoints, moveOrder, instances }
         }),
 
       addInstance: (unitId, side) => {
@@ -379,6 +407,7 @@ export const usePlanStore = create<PlanState>()(
               currentTurn: s.currentTurn,
               positions: s.positions,
               waypoints: s.waypoints,
+              moveOrder: s.moveOrder,
               paint: s.paint,
               instances: s.instances,
               instanceSeq: s.instanceSeq,
@@ -396,8 +425,15 @@ export const usePlanStore = create<PlanState>()(
 
       loadPlan: (data, cloudRef) =>
         // Always open on deployment, whichever turn the plan was saved on.
-        // Plans saved before multi-step moves have no waypoints.
-        set({ ...data, waypoints: data.waypoints ?? {}, currentTurn: 0, history: [], cloudRef }),
+        // Plans saved before multi-step moves have no waypoints or move order.
+        set({
+          ...data,
+          waypoints: data.waypoints ?? {},
+          moveOrder: data.moveOrder ?? {},
+          currentTurn: 0,
+          history: [],
+          cloudRef,
+        }),
 
       setCloudRef: (cloudRef) => set({ cloudRef }),
     }),

@@ -5,11 +5,13 @@ import { useBosses, usePrimes, useRoster, useSpawns } from '../../hooks/useGameD
 import { useBoard } from '../../hooks/useBoards'
 import { HexGrid } from '../HexGrid'
 import { DataError } from '../DataError'
-import { TurnSelector } from './TurnSelector'
+import { ReplayBadge, TurnSelector } from './TurnSelector'
 import { RoundsCounter } from './RoundsCounter'
 import {
   deriveBoardView,
   instanceTokenDefs,
+  phaseStepOrder,
+  stepCursor,
   targetDef,
   uniqueTokenDefs,
   visibleTokenDefs,
@@ -30,6 +32,7 @@ export function PlanBoardView({ plan }: { plan: PlanData }) {
   const board = useBoard(plan.boardId)
 
   const [phase, setPhase] = useState(0)
+  const [step, setStep] = useState<number | null>(null)
   const [showElevation, setShowElevation] = useState(false)
 
   const unitById = useMemo(() => {
@@ -52,13 +55,28 @@ export function PlanBoardView({ plan }: { plan: PlanData }) {
     [target, plan.team, plan.instances, plan.primesDefeated, unitById, spawns.data],
   )
 
+  const { waypoints, moveOrder } = plan
   const { tokens, movements } = useMemo(
     () =>
       board.data
-        ? deriveBoardView(defs, plan.positions, phase, board.data, plan.waypoints)
+        ? deriveBoardView(defs, plan.positions, phase, board.data, { waypoints, moveOrder, step })
         : { tokens: [], movements: [] },
-    [defs, plan.positions, plan.waypoints, phase, board.data],
+    [defs, plan.positions, waypoints, moveOrder, step, phase, board.data],
   )
+
+  const stepCount = (p: number) =>
+    board.data ? phaseStepOrder(defs, plan.positions, p, board.data, { waypoints, moveOrder }).length : 0
+  const cursorFor = (dir: 1 | -1) => stepCursor({ phase, step }, dir, stepCount)
+  const goToStep = (dir: 1 | -1) => {
+    const next = cursorFor(dir)
+    if (!next) return
+    setPhase(next.phase)
+    setStep(next.step)
+  }
+  const goToTurn = (p: number) => {
+    setPhase(p)
+    setStep(null)
+  }
 
   const visiblePaint = useMemo(() => paintAtTurn(plan.paint, phase), [plan.paint, phase])
 
@@ -84,6 +102,7 @@ export function PlanBoardView({ plan }: { plan: PlanData }) {
             vAlign="center"
           />
         )}
+        {step !== null && <ReplayBadge step={step} total={stepCount(phase)} />}
       </div>
 
       <div
@@ -98,7 +117,13 @@ export function PlanBoardView({ plan }: { plan: PlanData }) {
           <Mountain size={16} />
           Elevation
         </button>
-        <TurnSelector phase={phase} onChange={setPhase} />
+        <TurnSelector
+          phase={phase}
+          onChange={goToTurn}
+          onStep={goToStep}
+          canStepBack={cursorFor(-1) !== null}
+          canStepForward={cursorFor(1) !== null}
+        />
       </div>
     </>
   )

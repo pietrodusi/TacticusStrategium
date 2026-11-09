@@ -118,6 +118,7 @@ describe('plan actions', () => {
       currentTurn: 0,
       positions: {},
       waypoints: {},
+      moveOrder: {},
       paint: {},
       instances: {},
       instanceSeq: 0,
@@ -199,6 +200,31 @@ describe('plan actions', () => {
       store().moveToken('u', D, C, false)
       expect(store().waypoints.u[1]).toEqual([B])
       expect(store().waypoints.u[2]).toBeUndefined()
+    })
+
+    it('logs one entry per step, in the order made', () => {
+      move(B)
+      store().moveToken('v', C, D, false)
+      move(C, true)
+      expect(store().moveOrder[1]).toEqual(['u', 'v', 'u'])
+    })
+
+    it('corrections keep the log and cancelling removes the step', () => {
+      move(B)
+      move(C, true)
+      move(D)
+      expect(store().moveOrder[1]).toEqual(['u', 'u'])
+      move(B)
+      expect(store().moveOrder[1]).toEqual(['u'])
+      move(A)
+      expect(store().moveOrder[1]).toEqual([])
+    })
+
+    it('removing a unit drops it from the move order', () => {
+      move(B)
+      store().moveToken('v', C, D, false)
+      store().removeFromTurn('u')
+      expect(store().moveOrder[1]).toEqual(['v'])
     })
 
     it('undo restores the previous route', () => {

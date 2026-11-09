@@ -1,7 +1,7 @@
 // Pure derivation of what's on the board at a phase — token definitions,
 // effective positions, movement arrows. Shared by the interactive BoardPage
 // and the read-only shared-plan viewer (PlanBoardView).
-import { posAtTurn, type TokenPos, type WaypointMap } from '../../stores/planStore'
+import { MAX_PHASE, posAtTurn, type MoveOrder, type TokenPos, type WaypointMap } from '../../stores/planStore'
 import { RING_COLOR, type TokenKind } from '../tokenColors'
 import { bossDisplayName } from '../../utils/format'
 import type { BossIndex, PrimeIndex, SpawnsData, Unit } from '../../types/units'
@@ -86,44 +86,110 @@ export const visibleTokenDefs = (defs: TokenDef[], primesDefeated: number): Toke
 
 /** One arrow per leg of a route. Legs sharing a hex pair (A→B→A) are curved so
  *  each stays visible; direction alone puts a return trip on the opposite side. */
-function routeLegs(points: HexCoord[], color: string): BoardMovement[] {
+function routeLegs(points: HexCoord[], color: string): Omit<BoardMovement, 'endsAtToken'>[] {
   const pair = (a: HexCoord, b: HexCoord) => `${a.q},${a.r}>${b.q},${b.r}`
   const legs = points
     .slice(1)
     .map((to, i) => ({ from: points[i], to }))
     .filter((l) => pair(l.from, l.to) !== pair(l.to, l.from))
   const repeats = new Map<string, number>()
-  return legs.map((leg, i) => {
+  return legs.map((leg) => {
     const forward = pair(leg.from, leg.to)
     const back = pair(leg.to, leg.from)
     const retraced = legs.some((o) => o !== leg && [forward, back].includes(pair(o.from, o.to)))
     const n = repeats.get(forward) ?? 0
     repeats.set(forward, n + 1)
-    return { ...leg, color, curve: retraced ? n + 1 : 0, endsAtToken: i === legs.length - 1 }
+    return { ...leg, color, curve: retraced ? n + 1 : 0 }
   })
 }
 
-/** Effective tokens + movement arrows at `phase`. The boss falls back to its
- *  board start hex until placed; arrows chain prev-phase → stops → current. */
+interface RouteData {
+  waypoints?: WaypointMap
+  moveOrder?: MoveOrder
+}
+
+/** A token's final position at `phase` and the legs that got it there. The boss
+ *  falls back to its board start hex until placed. */
+function tokenRoute(d: TokenDef, positions: PositionMap, phase: number, board: ParsedBoard, data: RouteData) {
+  const fallback =
+    d.type === 'boss' ? { q: board.bossStart.q, r: board.bossStart.r, rot: board.bossRotation } : null
+  const pos = posAtTurn(positions[d.id], phase) ?? fallback
+  if (phase === 0 || !pos) return { pos, legs: [] }
+  const prev = posAtTurn(positions[d.id], phase - 1) ?? fallback
+  const points = [...(prev ? [prev] : []), ...(data.waypoints?.[d.id]?.[phase] ?? []), pos]
+  return { pos, legs: routeLegs(points.map(({ q, r }) => ({ q, r })), RING_COLOR[d.type]) }
+}
+
+/** One token id per step of `phase`, in replay order: the order the steps were
+ *  made, then any with no recorded order (older plans) unit by unit. */
+export function phaseStepOrder(
+  defs: TokenDef[],
+  positions: PositionMap,
+  phase: number,
+  board: ParsedBoard,
+  data: RouteData,
+): string[] {
+  const left = new Map(defs.map((d) => [d.id, tokenRoute(d, positions, phase, board, data).legs.length]))
+  const order: string[] = []
+  const take = (id: string) => {
+    if (!left.get(id)) return false
+    left.set(id, left.get(id)! - 1)
+    order.push(id)
+    return true
+  }
+  for (const id of data.moveOrder?.[phase] ?? []) take(id)
+  for (const d of defs) while (take(d.id));
+  return order
+}
+
+/** Effective tokens + movement arrows at `phase`; arrows chain prev-phase →
+ *  stops → current. A `step` shows the turn after only that many moves. */
 export function deriveBoardView(
   defs: TokenDef[],
   positions: PositionMap,
   phase: number,
   board: ParsedBoard,
-  waypoints: WaypointMap = {},
+  data: RouteData & { step?: number | null } = {},
 ): { tokens: BoardToken[]; movements: BoardMovement[] } {
+  const replayed = data.step == null ? null : phaseStepOrder(defs, positions, phase, board, data).slice(0, data.step)
   const tokens: BoardToken[] = []
   const movements: BoardMovement[] = []
   for (const d of defs) {
-    const fallback =
-      d.type === 'boss' ? { q: board.bossStart.q, r: board.bossStart.r, rot: board.bossRotation } : null
-    const pos = posAtTurn(positions[d.id], phase) ?? fallback
-    if (pos) tokens.push({ ...d, pos, removable: d.removeAtPrime != null })
-    if (phase > 0 && pos) {
-      const prev = posAtTurn(positions[d.id], phase - 1) ?? fallback
-      const points = [...(prev ? [prev] : []), ...(waypoints[d.id]?.[phase] ?? []), pos]
-      movements.push(...routeLegs(points.map(({ q, r }) => ({ q, r })), RING_COLOR[d.type]))
+    const { pos, legs } = tokenRoute(d, positions, phase, board, data)
+    const shown = replayed ? legs.slice(0, replayed.filter((id) => id === d.id).length) : legs
+    if (pos) {
+      // Mid-replay a token sits at the end of its last shown leg (or where it began).
+      const at = replayed && legs.length > 0 ? (shown[shown.length - 1]?.to ?? legs[0].from) : pos
+      tokens.push({ ...d, pos: { ...pos, q: at.q, r: at.r }, removable: d.removeAtPrime != null })
     }
+    movements.push(...shown.map((leg, i) => ({ ...leg, endsAtToken: i === shown.length - 1 })))
   }
   return { tokens, movements }
+}
+
+/** Where the board is: a phase, and how many of its moves are shown (null = all). */
+export interface ReplayCursor {
+  phase: number
+  step: number | null
+}
+
+/**
+ * One move forward or back, crossing into the neighbouring turn at either end;
+ * null when there's nowhere left to go. Every press changes something: going
+ * forward lands on a turn's first move and going back on the previous turn's last.
+ */
+export function stepCursor(
+  { phase, step }: ReplayCursor,
+  dir: 1 | -1,
+  stepCount: (phase: number) => number,
+): ReplayCursor | null {
+  const total = stepCount(phase)
+  const shown = step ?? total
+  if (dir === 1) {
+    if (shown < total) return { phase, step: shown + 1 === total ? null : shown + 1 }
+    if (phase >= MAX_PHASE) return null
+    return { phase: phase + 1, step: stepCount(phase + 1) > 1 ? 1 : null }
+  }
+  if (shown > 1) return { phase, step: shown - 1 }
+  return phase > 0 ? { phase: phase - 1, step: null } : null
 }
