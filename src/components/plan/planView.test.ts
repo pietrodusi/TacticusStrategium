@@ -318,6 +318,14 @@ describe('placement as a replay action', () => {
     expect(v(null).movements).toHaveLength(1)
   })
 
+  it('leaves a ghost on the placement hex of a unit that only attacked', () => {
+    const fallen = { u: { 0: A }, v: { 1: null } }
+    const hit = attackEntry('v', 'u')
+    const route = { waypoints: { v: { 1: [D] } }, moveOrder: { 1: ['v', hit, 'v'] } }
+    const v = deriveBoardView(defs, fallen, 1, board, route).tokens.find((t) => t.id === 'v')
+    expect(v).toMatchObject({ pos: D, ghost: true, attacked: true })
+  })
+
   it('has no action on later turns', () => {
     expect(phaseStepOrder(defs, { v: { 1: D } }, 2, board, {})).toEqual([])
   })

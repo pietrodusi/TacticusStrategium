@@ -464,7 +464,8 @@ export const usePlanStore = create<PlanState>()(
 
       // Remove from the current turn onward. Earlier turns keep the token, and this
       // turn keeps the moves made before the removal (the steps on screen, during a
-      // replay). With no earlier presence, drop it entirely (and its instance, if any).
+      // replay). With no earlier presence and nothing done this turn, drop it entirely
+      // (and its instance, if any).
       removeFromTurn: (id, replay) => {
         const s = get()
         const P = s.currentTurn
@@ -479,11 +480,14 @@ export const usePlanStore = create<PlanState>()(
 
         // A unit placed this turn has an entry for that before its steps.
         const placed = P > 0 && !start && points.length > 0 ? 1 : 0
-        const legsKept = hasPast
-          ? Math.min(Math.max((replay?.shown ?? Infinity) - placed, 0), Math.max(points.length - 1, 0))
-          : 0
-        const entriesKept = hasPast ? Math.min(replay?.shown ?? Infinity, placed + legsKept) : 0
+        const stepsShown = Math.min(Math.max((replay?.shown ?? Infinity) - placed, 0), Math.max(points.length - 1, 0))
         const base = replay?.order ?? s.moveOrder[P] ?? []
+        const attacked = base.slice(0, replay?.step ?? base.length).some((e) => parseAttack(e)?.id === id)
+        // A unit that has done something this turn stays as a ghost; one only just
+        // placed is a correction, so it goes entirely.
+        const keep = hasPast || (P > 0 && (stepsShown > 0 || attacked))
+        const legsKept = keep ? stepsShown : 0
+        const entriesKept = keep ? Math.min(replay?.shown ?? Infinity, placed + legsKept) : 0
         const total = base.filter((x) => x === id).length
         const { order, dropped } = dropLegs(
           base,
@@ -491,13 +495,13 @@ export const usePlanStore = create<PlanState>()(
           Array.from({ length: Math.max(total - entriesKept, 0) }, (_, i) => entriesKept + i),
         )
         const at = replay ? replay.step - dropped.filter((i) => i < replay.step).length : order.length
-        if (hasPast) order.splice(at, 0, id)
+        if (keep) order.splice(at, 0, id)
         const moveOrder = Object.fromEntries(
           Object.entries(s.moveOrder).map(([k, ids]) => [k, Number(k) > P ? ids.filter((x) => x !== id) : ids]),
         )
         moveOrder[P] = order
 
-        if (hasPast) {
+        if (keep) {
           byTurn[P] = null // "removed from here on" marker
           const stops = points.slice(start ? 1 : 0, legsKept + 1).map(({ q, r }) => ({ q, r }))
           if (stops.length > 0) stopsByTurn[P] = stops
@@ -515,7 +519,7 @@ export const usePlanStore = create<PlanState>()(
           delete instances[id]
           set({ positions, waypoints, moveOrder, instances })
         }
-        return replay ? replayStepAfter(at + (hasPast ? 1 : 0), order.length) : null
+        return replay ? replayStepAfter(at + (keep ? 1 : 0), order.length) : null
       },
 
       toggleAttack: (id, target, base, step) => {

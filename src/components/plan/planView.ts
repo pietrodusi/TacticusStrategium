@@ -126,7 +126,7 @@ function tokenRoute(d: TokenDef, positions: PositionMap, phase: number, board: P
   const points = [...(prev ? [prev] : []), ...stops, ...(pos && phase > 0 ? [pos] : [])]
   return {
     pos,
-    from: prev,
+    from: prev ?? stops[0] ?? null,
     removedHere,
     placed: placedHere ? 1 : 0,
     legs: routeLegs(points.map(({ q, r }) => ({ q, r })), RING_COLOR[d.type]),

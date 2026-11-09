@@ -431,6 +431,41 @@ describe('plan actions', () => {
         expect(store().positions.w[1]).toEqual(C)
       })
 
+      it('a unit placed this turn that moved is kept as a removal', () => {
+        place('w', C)
+        store().moveToken('w', D, null, true)
+        store().removeFromTurn('w')
+        expect(store().positions.w[1]).toBeNull()
+        expect(store().waypoints.w[1]).toEqual([C, D])
+        expect(store().moveOrder[1]).toEqual(['w', 'w', 'w'])
+      })
+
+      it('a unit placed this turn that attacked is kept at its hex', () => {
+        place('w', C)
+        store().toggleAttack('w', 'u', store().moveOrder[1], null)
+        store().removeFromTurn('w')
+        expect(store().positions.w[1]).toBeNull()
+        expect(store().waypoints.w[1]).toEqual([C])
+        expect(store().moveOrder[1]).toEqual(['w', attackEntry('w', 'u'), 'w'])
+      })
+
+      it('restoring such a unit puts it back', () => {
+        place('w', C)
+        store().toggleAttack('w', 'u', store().moveOrder[1], null)
+        store().removeFromTurn('w')
+        store().restoreToken('w')
+        expect(store().positions.w[1]).toEqual(C)
+        expect(store().waypoints.w[1]).toBeUndefined()
+        expect(store().moveOrder[1]).toEqual(['w', attackEntry('w', 'u')])
+      })
+
+      it('an attack still to come in a replay does not keep the unit', () => {
+        place('w', C)
+        store().toggleAttack('w', 'u', store().moveOrder[1], null)
+        store().removeFromTurn('w', { order: store().moveOrder[1], step: 1, shown: 1 })
+        expect(store().positions.w).toBeUndefined()
+      })
+
       it('removing a unit with no earlier presence removes its placement too', () => {
         place('w', C)
         store().removeFromTurn('w')
