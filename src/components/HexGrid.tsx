@@ -474,35 +474,49 @@ function TokenMarker({
     <g
       data-token-id={token.id}
       className={token.ghost ? 'cursor-pointer' : 'cursor-grab'}
-      style={{ opacity: token.ghost ? 0.5 : dragging ? 0.85 : 1, filter: token.ghost ? 'grayscale(1)' : undefined }}
+      style={{ opacity: dragging ? 0.85 : 1 }}
     >
-      <circle cx={center.x} cy={center.y} r={r} fill="#0b0d11" />
-      {src && (
-        <>
-          <clipPath id={clipId}>
-            <circle cx={center.x} cy={center.y} r={r - 1} />
-          </clipPath>
-          <image
-            href={src}
-            onError={onError}
-            x={center.x - r}
-            y={center.y - r}
-            width={r * 2}
-            height={r * 2}
-            clipPath={`url(#${clipId})`}
-            preserveAspectRatio="xMidYMid slice"
-          />
-        </>
-      )}
-      <circle
-        cx={center.x}
-        cy={center.y}
-        r={r}
-        fill="none"
-        stroke={selected || dragging ? '#66f0f5' : ring}
-        strokeWidth={selected || dragging ? 4 : 2.5}
-      />
-      {(token.removable || token.ghost) && <RemovableBadge cx={center.x + r * 0.72} cy={center.y - r * 0.72} r={r * 0.4} />}
+      <g style={token.ghost ? { opacity: 0.5, filter: 'grayscale(1)' } : undefined}>
+        <circle cx={center.x} cy={center.y} r={r} fill="#0b0d11" />
+        {src && (
+          <>
+            <clipPath id={clipId}>
+              <circle cx={center.x} cy={center.y} r={r - 1} />
+            </clipPath>
+            <image
+              href={src}
+              onError={onError}
+              x={center.x - r}
+              y={center.y - r}
+              width={r * 2}
+              height={r * 2}
+              clipPath={`url(#${clipId})`}
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </>
+        )}
+        <circle
+          cx={center.x}
+          cy={center.y}
+          r={r}
+          fill="none"
+          stroke={selected || dragging ? '#66f0f5' : ring}
+          strokeWidth={selected || dragging ? 4 : 2.5}
+        />
+      </g>
+      {token.removable && !token.ghost && <RemovableBadge cx={center.x + r * 0.72} cy={center.y - r * 0.72} r={r * 0.4} />}
+      {token.ghost && <GhostCross center={center} r={r} />}
+    </g>
+  )
+}
+
+/** Full-size red X across the portrait of a unit removed this turn. */
+function GhostCross({ center: { x, y }, r }: { center: Point; r: number }) {
+  const d = r * 0.68 // keeps the arm ends inside the round token
+  return (
+    <g stroke="#ef4444" strokeWidth={r * 0.26} strokeLinecap="round">
+      <line x1={x - d} y1={y - d} x2={x + d} y2={y + d} />
+      <line x1={x + d} y1={y - d} x2={x - d} y2={y + d} />
     </g>
   )
 }
