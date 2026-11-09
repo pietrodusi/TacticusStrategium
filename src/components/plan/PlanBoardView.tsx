@@ -5,7 +5,7 @@ import { useBosses, usePrimes, useRoster, useSpawns } from '../../hooks/useGameD
 import { useBoard } from '../../hooks/useBoards'
 import { HexGrid } from '../HexGrid'
 import { DataError } from '../DataError'
-import { ReplayBadge, TurnSelector } from './TurnSelector'
+import { BoardFooter, ReplayBadge, TurnSelector } from './TurnSelector'
 import { RoundsCounter } from './RoundsCounter'
 import {
   deriveBoardView,
@@ -102,7 +102,11 @@ export function PlanBoardView({ plan }: { plan: PlanData }) {
             vAlign="center"
           />
         )}
-        {step !== null && <ReplayBadge step={step} total={stepCount(phase)} />}
+        {step !== null && (
+          <BoardFooter>
+            <ReplayBadge step={step} total={stepCount(phase)} />
+          </BoardFooter>
+        )}
       </div>
 
       <div

@@ -51,12 +51,20 @@ export function TurnSelector({
   )
 }
 
-/** Shown over the board while a turn is replayed part-way through its moves. */
-export function ReplayBadge({ step, total, hint }: { step: number; total: number; hint?: string }) {
+/** Bottom-centre stack over the board; only its buttons take touches. */
+export function BoardFooter({ children }: { children: React.ReactNode }) {
   return (
-    <div className="pointer-events-none absolute bottom-3 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-full border border-iron bg-abyss/90 px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] text-bone backdrop-blur">
+    <div className="pointer-events-none absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2">
+      {children}
+    </div>
+  )
+}
+
+/** Shown while a turn is replayed part-way through its moves. */
+export function ReplayBadge({ step, total }: { step: number; total: number }) {
+  return (
+    <div className="whitespace-nowrap rounded-full border border-iron bg-abyss/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-bone backdrop-blur">
       Move {step} of {total}
-      {hint && <span className="ml-2 font-normal normal-case tracking-normal text-ash">{hint}</span>}
     </div>
   )
 }

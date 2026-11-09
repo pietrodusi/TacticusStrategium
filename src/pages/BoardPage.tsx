@@ -11,7 +11,7 @@ import { RING_COLOR } from '../components/tokenColors'
 import { keywordIconUrl } from '../services/paths'
 import { UnitImage } from '../components/UnitImage'
 import { DataError } from '../components/DataError'
-import { ReplayBadge, TurnSelector } from '../components/plan/TurnSelector'
+import { BoardFooter, ReplayBadge, TurnSelector } from '../components/plan/TurnSelector'
 import { SavePlanSheet } from '../components/plan/SavePlanSheet'
 import { RoundsCounter } from '../components/plan/RoundsCounter'
 import {
@@ -190,8 +190,16 @@ export function BoardPage() {
     ? deriveBoardView(visibleDefs, positions, currentTurn, board.data, { waypoints, moveOrder, step: replayStep })
     : { tokens: [] as BoardToken[], movements: [] as BoardMovement[] }
 
-  const stepCount = (phase: number) =>
-    board.data ? phaseStepOrder(visibleDefs, positions, phase, board.data, { waypoints, moveOrder }).length : 0
+  const orderAt = (phase: number) =>
+    board.data ? phaseStepOrder(visibleDefs, positions, phase, board.data, { waypoints, moveOrder }) : []
+  const stepCount = (phase: number) => orderAt(phase).length
+  // During a replay: the order on screen and this unit's share of it.
+  const replayEditFor = (id: string) => {
+    if (replayStep === null) return undefined
+    const order = orderAt(currentTurn)
+    const countOf = (list: string[]) => list.filter((x) => x === id).length
+    return { order, step: replayStep, shown: countOf(order.slice(0, replayStep)), total: countOf(order) }
+  }
   const cursorFor = (dir: 1 | -1) => stepCursor({ phase: currentTurn, step: replayStep }, dir, stepCount)
   const goToStep = (dir: 1 | -1) => {
     const next = cursorFor(dir)
@@ -215,9 +223,10 @@ export function BoardPage() {
   // + Step needs a unit that has actually moved this turn. Deployment has no steps.
   const stepEntry = stepUnitId ? positions[stepUnitId]?.[currentTurn] : null
   const stepStart = stepUnitId ? turnStart(stepUnitId) : null
+  const stepReplay = stepUnitId ? replayEditFor(stepUnitId) : null
   const canAddStep =
     currentTurn > 0 &&
-    replayStep === null &&
+    (!stepReplay || (stepReplay.shown > 0 && stepReplay.shown === stepReplay.total)) &&
     !paintOpen &&
     !pending &&
     !!stepEntry &&
@@ -232,13 +241,19 @@ export function BoardPage() {
   const placeAt = (id: string, hex: HexCoord) => {
     if (!board.data) return
     const cur = posAtTurn(positions[id], currentTurn) ?? bossHome(id)
-    if (cur && cur.q === hex.q && cur.r === hex.r) {
-      setSelectedId(null) // dropped in place — nothing to record
+    const replay = replayEditFor(id)
+    // Mid-replay a unit can only edit a step on screen; one yet to move has none.
+    const locked = !!replay && replay.shown === 0 && !!cur
+    const shownAt = replay ? (boardTokens.find((t) => t.id === id)?.pos ?? cur) : cur
+    if (locked || (shownAt && shownAt.q === hex.q && shownAt.r === hex.r)) {
+      setSelectedId(null) // nothing to record
       return
     }
     const rot = cur?.rot
     checkpoint()
-    moveToken(id, { q: hex.q, r: hex.r, ...(rot !== undefined ? { rot } : {}) }, turnStart(id), armed && id === stepUnitId)
+    setReplayStep(
+      moveToken(id, { q: hex.q, r: hex.r, ...(rot !== undefined ? { rot } : {}) }, turnStart(id), armed && id === stepUnitId, replay),
+    )
     setSelectedId(null)
     setStepUnitId(id)
     setStepArmed(false)
@@ -327,16 +342,7 @@ export function BoardPage() {
 
       {/* Board — top-aligned so its unused vertical space pools at the bottom,
           where the tools dock overlays it instead of covering the map. */}
-      <div
-        className="relative flex min-h-0 flex-1 items-start justify-center overflow-hidden"
-        onPointerDownCapture={(e) => {
-          // A replay is view-only: the first touch returns to the full turn, so a
-          // drag can't start from a position the unit doesn't really end on.
-          if (replayStep === null) return
-          e.stopPropagation()
-          setReplayStep(null)
-        }}
-      >
+      <div className="relative flex min-h-0 flex-1 items-start justify-center overflow-hidden">
         {board.isLoading && <p className="font-mono text-sm text-ash">Acquiring auspex feed…</p>}
         {board.isError && (
           <div className="mt-8 max-w-xs">
@@ -391,19 +397,20 @@ export function BoardPage() {
           />
         )}
 
-        {replayStep !== null && <ReplayBadge step={replayStep} total={stepCount(currentTurn)} hint="Tap board to exit" />}
-
-        {canAddStep && (
-          <button
-            onClick={() => setStepArmed((a) => !a)}
-            aria-pressed={armed}
-            title={armed ? 'Cancel adding a step' : 'Make the next move a separate step'}
-            className={`absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-full border px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] backdrop-blur transition-colors ${armed ? 'border-teal-bright bg-teal text-abyss' : 'border-teal/60 bg-abyss/90 text-teal-bright hover:border-teal-bright'}`}
-          >
-            <Plus size={16} />
-            {armed ? 'Next move adds a step' : 'Step'}
-          </button>
-        )}
+        <BoardFooter>
+          {replayStep !== null && <ReplayBadge step={replayStep} total={stepCount(currentTurn)} />}
+          {canAddStep && (
+            <button
+              onClick={() => setStepArmed((a) => !a)}
+              aria-pressed={armed}
+              title={armed ? 'Cancel adding a step' : 'Make the next move a separate step'}
+              className={`pointer-events-auto flex items-center gap-1.5 rounded-full border px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] backdrop-blur transition-colors ${armed ? 'border-teal-bright bg-teal text-abyss' : 'border-teal/60 bg-abyss/90 text-teal-bright hover:border-teal-bright'}`}
+            >
+              <Plus size={16} />
+              {armed ? 'Next move adds a step' : 'Step'}
+            </button>
+          )}
+        </BoardFooter>
 
         {/* Edge rail: Paint (persistent tool) on top, then — clearly separated
             by the larger gap — the contextual actions for the selected unit:
@@ -432,6 +439,7 @@ export function BoardPage() {
                   removeFromTurn(selectedDef.id)
                   setSelectedId(null)
                   clearStep()
+                  setReplayStep(null)
                 }}
               />
             )}

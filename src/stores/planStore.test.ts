@@ -1,5 +1,36 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { paintAtTurn, parseHazard, posAtTurn, roundsLeftAt, usePlanStore } from './planStore'
+import { editRouteStep, paintAtTurn, parseHazard, posAtTurn, roundsLeftAt, usePlanStore } from './planStore'
+
+describe('editRouteStep', () => {
+  const A = { q: 0, r: 0 }
+  const B = { q: 1, r: 0 }
+  const C = { q: 2, r: 0 }
+  const D = { q: 3, r: 0 }
+
+  it('moves a middle stop', () => {
+    expect(editRouteStep(A, [B], C, 0, D)).toEqual({ stops: [D], end: C, removedLegs: [] })
+  })
+
+  it('cancels a step moved back to its origin', () => {
+    expect(editRouteStep(A, [B], C, 0, A)).toEqual({ stops: [], end: C, removedLegs: [0] })
+  })
+
+  it('removes the next step when the edit leaves it no distance', () => {
+    expect(editRouteStep(A, [B], C, 0, C)).toEqual({ stops: [], end: C, removedLegs: [1] })
+  })
+
+  it('cancels a whole return trip', () => {
+    expect(editRouteStep(A, [B], A, 0, A)).toEqual({ stops: [], end: null, removedLegs: [0, 1] })
+  })
+
+  it('edits routes with no starting hex (placed this turn)', () => {
+    expect(editRouteStep(null, [A, B], C, 0, D)).toEqual({ stops: [A, D], end: C, removedLegs: [] })
+  })
+
+  it('drops rotation from an edited stop', () => {
+    expect(editRouteStep(A, [B], C, 0, { ...D, rot: 90 } as typeof D).stops).toEqual([D])
+  })
+})
 
 describe('parseHazard', () => {
   it('parses kind@life values', () => {
@@ -225,6 +256,52 @@ describe('plan actions', () => {
       store().moveToken('v', C, D, false)
       store().removeFromTurn('u')
       expect(store().moveOrder[1]).toEqual(['v'])
+    })
+
+    describe('editing during a replay', () => {
+      const V = { q: 7, r: 7 }
+      // u: A→B→C, v moves in between.
+      beforeEach(() => {
+        move(B)
+        store().moveToken('v', C, V, false)
+        move(C, true)
+      })
+      const replay = (step: number, shown: number) => ({ order: store().moveOrder[1], step, shown })
+
+      it('changes the step on screen and keeps the later ones', () => {
+        const step = store().moveToken('u', D, A, false, replay(1, 1))
+        expect(stops()).toEqual([D])
+        expect(end()).toEqual(C)
+        expect(step).toBe(1)
+        expect(store().moveOrder[1]).toEqual(['u', 'v', 'u'])
+      })
+
+      it('cancels the step when moved back to where it began', () => {
+        const step = store().moveToken('u', A, A, false, replay(2, 1))
+        expect(stops()).toEqual([])
+        expect(end()).toEqual(C)
+        expect(store().moveOrder[1]).toEqual(['v', 'u'])
+        expect(step).toBe(1)
+      })
+
+      it('merges a step edited onto the next stop', () => {
+        store().moveToken('u', C, A, false, replay(1, 1))
+        expect(stops()).toEqual([])
+        expect(end()).toEqual(C)
+        expect(store().moveOrder[1]).toEqual(['u', 'v'])
+      })
+
+      it('adds on a final step, placing it after the shown moves', () => {
+        const step = store().moveToken('v', D, V, true, replay(2, 1))
+        expect(store().waypoints.v[1]).toEqual([C])
+        expect(store().moveOrder[1]).toEqual(['u', 'v', 'v', 'u'])
+        expect(step).toBe(3)
+      })
+
+      it('returns to the whole turn when no moves remain beyond the screen', () => {
+        expect(store().moveToken('u', D, A, false, replay(3, 2))).toBeNull()
+        expect(end()).toEqual(D)
+      })
     })
 
     it('undo restores the previous route', () => {
