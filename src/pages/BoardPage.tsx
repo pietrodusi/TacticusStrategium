@@ -17,14 +17,15 @@ import { RoundsCounter } from '../components/plan/RoundsCounter'
 import {
   deriveBoardView,
   instanceTokenDefs,
+  overlapsMultiHex,
   phaseStepOrder,
   stepCursor,
   targetDef,
+  tokenOccupying,
   uniqueTokenDefs,
   visibleTokenDefs,
   type TokenDef as TrayDef,
 } from '../components/plan/planView'
-import { getBossOccupiedHexes } from '../services/hex/hexUtils'
 import type { HexCoord } from '../types/strategium'
 import type { Unit } from '../types/units'
 
@@ -255,6 +256,8 @@ export function BoardPage() {
       return
     }
     const rot = cur?.rot
+    const size = allDefs.find((d) => d.id === id)?.size ?? 1
+    if (overlapsMultiHex(boardTokens, id, hex, size, rot ?? 0)) return
     checkpoint()
     setReplayStep(
       moveToken(id, { q: hex.q, r: hex.r, ...(rot !== undefined ? { rot } : {}) }, turnStart(id), armed && id === stepUnitId, replay),
@@ -268,12 +271,7 @@ export function BoardPage() {
   // turn 1 on it attacks instead: the attacker stays put, and doing it again
   // takes the attack back.
   const dropToken = (id: string, hex: HexCoord) => {
-    const target = boardTokens.find(
-      (t) =>
-        t.id !== id &&
-        !t.ghost &&
-        getBossOccupiedHexes(t.pos, t.size as 1 | 3 | 7, t.pos.rot ?? 0).some((h) => h.q === hex.q && h.r === hex.r),
-    )
+    const target = tokenOccupying(boardTokens, id, hex)
     if (!target) {
       placeAt(id, hex)
       return
@@ -295,6 +293,7 @@ export function BoardPage() {
   // Move-mode hex tap: drop a pending spawn (keeps adding), or move the selection.
   const handleHex = (hex: HexCoord) => {
     if (pending) {
+      if (overlapsMultiHex(boardTokens, null, hex, spawns.data?.units[pending.unitId]?.size ?? 1, 0)) return
       checkpoint()
       const id = addInstance(pending.unitId, pending.side)
       placeToken(id, { q: hex.q, r: hex.r })

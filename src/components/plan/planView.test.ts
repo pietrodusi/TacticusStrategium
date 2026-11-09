@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { deriveBoardView, phaseStepOrder, stepCursor, type TokenDef } from './planView'
+import { deriveBoardView, overlapsMultiHex, phaseStepOrder, stepCursor, tokenOccupying, type TokenDef } from './planView'
+import { getBossOccupiedHexes } from '../../services/hex/hexUtils'
+import type { BoardToken } from '../HexGrid'
 import { MAX_PHASE, attackEntry } from '../../stores/planStore'
 import type { ParsedBoard } from '../../services/boards/boardService'
 
@@ -203,5 +205,50 @@ describe('attacks', () => {
 
   it('drops an attack by a unit no longer in the plan', () => {
     expect(phaseStepOrder([unit], { u: { 0: A } }, 1, board, { moveOrder: { 1: [hit] } })).toEqual([])
+  })
+})
+
+describe('multi-hex occupancy', () => {
+  const token = (id: string, q: number, r: number, size: number, extra: Partial<BoardToken> = {}): BoardToken => ({
+    id,
+    type: 'character',
+    stem: null,
+    name: id,
+    size,
+    pos: { q, r, rot: 0 },
+    ...extra,
+  })
+  const big = token('big', 3, 3, 3)
+  const cover = getBossOccupiedHexes(big.pos, 3, 0)
+  const offAnchor = cover.find((h) => h.q !== 3 || h.r !== 3)!
+  const free = { q: 9, r: 9 }
+
+  it('refuses a single-hex unit on any hex of a multi-hex unit', () => {
+    expect(overlapsMultiHex([big], 'u', offAnchor, 1, 0)).toBe(true)
+    expect(overlapsMultiHex([big], 'u', big.pos, 1, 0)).toBe(true)
+    expect(overlapsMultiHex([big], 'u', free, 1, 0)).toBe(false)
+  })
+
+  it('refuses a multi-hex unit covering a single-hex unit', () => {
+    const small = token('s', offAnchor.q, offAnchor.r, 1)
+    expect(overlapsMultiHex([small], 'big', big.pos, 3, 0)).toBe(true)
+  })
+
+  it('ignores the moving unit itself', () => {
+    expect(overlapsMultiHex([big], 'big', offAnchor, 3, 0)).toBe(false)
+  })
+
+  it('does not treat two single-hex units as a multi-hex overlap', () => {
+    expect(overlapsMultiHex([token('s', 1, 1, 1)], 'u', { q: 1, r: 1 }, 1, 0)).toBe(false)
+  })
+
+  it('treats a ghost hex as free', () => {
+    expect(overlapsMultiHex([token('big', 3, 3, 3, { ghost: true })], 'u', offAnchor, 1, 0)).toBe(false)
+    expect(tokenOccupying([token('big', 3, 3, 3, { ghost: true })], 'u', offAnchor)).toBeUndefined()
+  })
+
+  it('finds the unit on any hex of its footprint', () => {
+    expect(tokenOccupying([big], 'u', offAnchor)?.id).toBe('big')
+    expect(tokenOccupying([big], 'big', offAnchor)).toBeUndefined()
   })
 })

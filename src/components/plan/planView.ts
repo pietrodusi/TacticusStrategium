@@ -7,6 +7,7 @@ import { bossDisplayName } from '../../utils/format'
 import type { BossIndex, PrimeIndex, SpawnsData, Unit } from '../../types/units'
 import type { ParsedBoard } from '../../services/boards/boardService'
 import type { BoardMovement, BoardToken } from '../HexGrid'
+import { getBossOccupiedHexes } from '../../services/hex/hexUtils'
 import type { HexCoord } from '../../types/strategium'
 
 /** A deployable token's identity (tray chip / board token, minus position). */
@@ -231,6 +232,37 @@ export function deriveBoardView(
   movements.push(...withCurves(attackLegs, ATTACK_COLOR).map((leg) => ({ ...leg, endsAtToken: true })))
   // Ghosts first, so a live unit sharing the hex stays on top and grabbable.
   return { tokens: [...ghosts, ...tokens], movements }
+}
+
+const footprintOf = (hex: HexCoord, size: number, rot: number) =>
+  getBossOccupiedHexes(hex, size as 1 | 3 | 7, rot)
+
+/** The live token (other than `id`) standing on `hex`, counting whole footprints. */
+export const tokenOccupying = (tokens: BoardToken[], id: string, hex: HexCoord) =>
+  tokens.find(
+    (t) =>
+      t.id !== id &&
+      !t.ghost &&
+      footprintOf(t.pos, t.size, t.pos.rot ?? 0).some((h) => h.q === hex.q && h.r === hex.r),
+  )
+
+/** Would a unit of `size` landing on `hex` share a hex with a multi-hex unit (or,
+ *  being multi-hex itself, with any unit)? `id` is the unit moving, if already placed. */
+export function overlapsMultiHex(
+  tokens: BoardToken[],
+  id: string | null,
+  hex: HexCoord,
+  size: number,
+  rot: number,
+): boolean {
+  const landing = footprintOf(hex, size, rot)
+  return tokens.some(
+    (t) =>
+      t.id !== id &&
+      !t.ghost &&
+      (size > 1 || t.size > 1) &&
+      footprintOf(t.pos, t.size, t.pos.rot ?? 0).some((h) => landing.some((l) => l.q === h.q && l.r === h.r)),
+  )
 }
 
 /** Where the board is: a phase, and how many of its moves are shown (null = all). */
