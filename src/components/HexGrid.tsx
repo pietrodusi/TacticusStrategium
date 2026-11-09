@@ -514,7 +514,7 @@ function TokenMarker({
 function GhostCross({ center: { x, y }, r }: { center: Point; r: number }) {
   const d = r * 0.68 // keeps the arm ends inside the round token
   return (
-    <g stroke="#ef4444" strokeWidth={r * 0.26} strokeLinecap="round">
+    <g stroke="#ef4444" strokeWidth={r * 0.26} strokeLinecap="round" opacity={0.65}>
       <line x1={x - d} y1={y - d} x2={x + d} y2={y + d} />
       <line x1={x + d} y1={y - d} x2={x - d} y2={y + d} />
     </g>
