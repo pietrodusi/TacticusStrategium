@@ -12,3 +12,14 @@ export const RING_COLOR: Record<TokenKind, string> = {
   summon: '#7dd3fc',
   npc: '#c4b5fd',
 }
+
+const ALLY_SELECTED = '#66f0f5'
+
+/** Ring colour while selected: bright teal for allies, a brighter purple for enemies. */
+export const SELECTED_RING_COLOR: Record<TokenKind, string> = {
+  character: ALLY_SELECTED,
+  mow: ALLY_SELECTED,
+  boss: '#d8b4fe',
+  summon: ALLY_SELECTED,
+  npc: '#ede9fe',
+}

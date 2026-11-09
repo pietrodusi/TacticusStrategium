@@ -7,7 +7,7 @@ import { elevationSeams, footprintPath } from '../services/boards/footprint'
 import { getBossOccupiedHexes, hexKey } from '../services/hex/hexUtils'
 import type { HexCoord, Point } from '../types/strategium'
 import { parseHazard, type TokenPos } from '../stores/planStore'
-import { RING_COLOR, type TokenKind } from './tokenColors'
+import { RING_COLOR, SELECTED_RING_COLOR, type TokenKind } from './tokenColors'
 import { EFFECT_FILL, EFFECT_ICON } from './hazards'
 
 export interface BoardToken {
@@ -503,7 +503,7 @@ function TokenMarker({
           cy={center.y}
           r={r}
           fill="none"
-          stroke={selected || dragging ? '#66f0f5' : ring}
+          stroke={selected || dragging ? SELECTED_RING_COLOR[token.type] : ring}
           strokeWidth={selected || dragging ? 4 : 2.5}
         />
       </g>
