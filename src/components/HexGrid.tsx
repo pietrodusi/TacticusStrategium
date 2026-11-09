@@ -24,6 +24,10 @@ export interface BoardMovement {
   from: HexCoord
   to: HexCoord
   color: string
+  /** How far to bow the arrow, so retraced legs stay visible (0 = straight). */
+  curve: number
+  /** False for a stop mid-route: the arrow runs to the hex centre, not a token. */
+  endsAtToken: boolean
 }
 
 interface Props {
@@ -321,7 +325,17 @@ export function HexGrid({
       {movements.map((m, i) => {
         const from = cellByAxial.get(hexKey(m.from))?.center
         const to = cellByAxial.get(hexKey(m.to))?.center
-        return from && to ? <Arrow key={`mv-${i}`} from={from} to={to} color={m.color} shorten={tokenR} /> : null
+        return from && to ? (
+          <Arrow
+            key={`mv-${i}`}
+            from={from}
+            to={to}
+            color={m.color}
+            size={tokenR}
+            curve={m.curve}
+            shorten={m.endsAtToken ? tokenR : 0}
+          />
+        ) : null
       })}
 
       {/* Tokens */}
@@ -400,24 +414,38 @@ function cornersToPoints(corners: Point[]): string {
   return corners.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')
 }
 
-function Arrow({ from, to, color, shorten }: { from: Point; to: Point; color: string; shorten: number }) {
+function Arrow({
+  from,
+  to,
+  color,
+  size,
+  curve,
+  shorten,
+}: {
+  from: Point
+  to: Point
+  color: string
+  size: number
+  curve: number
+  shorten: number
+}) {
   const dx = to.x - from.x
   const dy = to.y - from.y
   const len = Math.hypot(dx, dy) || 1
-  const ux = dx / len
-  const uy = dy / len
-  // Start at the (previous) hex centre; stop short of the target token.
-  const sx = from.x
-  const sy = from.y
-  const ex = to.x - ux * shorten
-  const ey = to.y - uy * shorten
-  const head = shorten * 0.95
-  const ang = Math.atan2(ey - sy, ex - sx)
+  // Control point: the midpoint, pushed sideways relative to the travel direction.
+  const bow = curve * size * 0.9
+  const cx = (from.x + to.x) / 2 - (dy / len) * bow
+  const cy = (from.y + to.y) / 2 + (dx / len) * bow
+  // Start at the hex centre; stop short of a token along the final direction.
+  const ang = Math.atan2(to.y - cy, to.x - cx)
+  const ex = to.x - Math.cos(ang) * shorten
+  const ey = to.y - Math.sin(ang) * shorten
+  const head = size * 0.95
   const p1 = `${ex - head * Math.cos(ang - 0.45)},${ey - head * Math.sin(ang - 0.45)}`
   const p2 = `${ex - head * Math.cos(ang + 0.45)},${ey - head * Math.sin(ang + 0.45)}`
   return (
     <g stroke={color} fill={color} opacity={0.92}>
-      <line x1={sx} y1={sy} x2={ex} y2={ey} strokeWidth={3.5} strokeLinecap="round" />
+      <path d={`M ${from.x} ${from.y} Q ${cx} ${cy} ${ex} ${ey}`} fill="none" strokeWidth={3.5} strokeLinecap="round" />
       <polygon points={`${ex},${ey} ${p1} ${p2}`} stroke="none" />
     </g>
   )

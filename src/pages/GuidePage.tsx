@@ -73,6 +73,11 @@ export function GuidePage() {
           the previous turn — so you can see the whole advance at a glance. The counter at the top of the
           map shows rounds remaining.
         </P>
+        <P>
+          Some units move more than once in a turn. After moving a unit, tap <B>+ Step</B> and move it again
+          to record another step; the arrows chain in order. Moving without tapping it corrects the latest
+          step, and moving back to where that step began cancels it.
+        </P>
       </Section>
 
       {/* 5 — Paint & hazards */}

@@ -1,4 +1,4 @@
-import type { TokenPos } from '../../stores/planStore'
+import type { TokenPos, WaypointMap } from '../../stores/planStore'
 
 /** Cloud payload format version (the `schemaVersion` field on plan docs).
  *  Bump together with a `deserializePlan` migration whenever the persisted
@@ -15,6 +15,8 @@ export interface PlanData {
   machineOfWar: string | null
   currentTurn: number
   positions: Record<string, Record<number, TokenPos | null>>
+  /** Absent on plans saved before multi-step moves. */
+  waypoints?: WaypointMap
   paint: Record<number, Record<string, string | null>>
   instances: Record<string, { unitId: string; side: 'ally' | 'enemy'; removeAtPrime?: number | null }>
   instanceSeq: number
@@ -24,7 +26,7 @@ export interface PlanData {
 
 const PLAN_KEYS: (keyof PlanData)[] = [
   'bossUnitId', 'targetKind', 'boardId', 'team', 'machineOfWar', 'currentTurn',
-  'positions', 'paint', 'instances', 'instanceSeq', 'seededBoard', 'primesDefeated',
+  'positions', 'waypoints', 'paint', 'instances', 'instanceSeq', 'seededBoard', 'primesDefeated',
 ]
 
 /** Serialize the plan slice of a (store) state to the cloud JSON payload.
@@ -61,6 +63,7 @@ export function deserializePlan(raw: string, schemaVersion: number): PlanData | 
     (p.machineOfWar === null || typeof p.machineOfWar === 'string') &&
     typeof p.currentTurn === 'number' &&
     isRecord(p.positions) &&
+    (p.waypoints === undefined || isRecord(p.waypoints)) &&
     isRecord(p.paint) &&
     isRecord(p.instances) &&
     typeof p.instanceSeq === 'number' &&

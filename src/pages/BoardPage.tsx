@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ArrowLeftRight, Brush, Cog, Eraser, LogOut, Mountain, Plus, RotateCw, Save, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
-import { usePlanStore, posAtTurn, paintAtTurn, parseHazard, hazardValue, HAZARD_LIFE, roundsLeftAt } from '../stores/planStore'
+import { usePlanStore, posAtTurn, paintAtTurn, parseHazard, hazardValue, HAZARD_LIFE, roundsLeftAt, type TokenPos } from '../stores/planStore'
 import { useBosses, usePrimes, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
 import { HexGrid, type BoardToken, type BoardMovement } from '../components/HexGrid'
@@ -53,9 +53,9 @@ const ERASER = 'eraser'
 
 export function BoardPage() {
   const navigate = useNavigate()
-  const { bossUnitId, targetKind, boardId, team, machineOfWar, currentTurn, positions, paint, instances } = usePlanStore()
+  const { bossUnitId, targetKind, boardId, team, machineOfWar, currentTurn, positions, waypoints, paint, instances } = usePlanStore()
   const { seededBoard, primesDefeated, history } = usePlanStore()
-  const { setCurrentTurn, placeToken, removeFromTurn, addInstance, setPaint, resetPlan } = usePlanStore()
+  const { setCurrentTurn, placeToken, moveToken, removeFromTurn, addInstance, setPaint, resetPlan } = usePlanStore()
   const { seedDeployment, setPrimesDefeated, checkpoint, undo } = usePlanStore()
 
   const bosses = useBosses()
@@ -65,6 +65,9 @@ export function BoardPage() {
   const board = useBoard(boardId)
 
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  // The unit + Step applies to (last moved or tapped), and whether it's armed.
+  const [stepUnitId, setStepUnitId] = useState<string | null>(null)
+  const [stepArmed, setStepArmed] = useState(false)
   const [pending, setPending] = useState<PaletteType | null>(null)
   const [paintOpen, setPaintOpen] = useState(false)
   const [paintSide, setPaintSide] = useState<Side>('left')
@@ -120,7 +123,13 @@ export function BoardPage() {
   // Leaving deployment (S → turn 1) collapses the dock to free up the board.
   const changeTurn = (next: number) => {
     if (currentTurn === 0 && next > 0) setDockOpen(false)
+    clearStep()
     setCurrentTurn(next)
+  }
+
+  const clearStep = () => {
+    setStepUnitId(null)
+    setStepArmed(false)
   }
 
   const unitById = useMemo(() => {
@@ -173,23 +182,48 @@ export function BoardPage() {
   // the boss's primes are defeated (removeAtPrime ≤ primesDefeated).
   const visibleDefs = visibleTokenDefs(allDefs, primesDefeated)
   const { tokens: boardTokens, movements } = board.data
-    ? deriveBoardView(visibleDefs, positions, currentTurn, board.data)
+    ? deriveBoardView(visibleDefs, positions, currentTurn, board.data, waypoints)
     : { tokens: [] as BoardToken[], movements: [] as BoardMovement[] }
 
   const selectedDef = allDefs.find((d) => d.id === selectedId) ?? null
 
+  // A boss sits on its board start hex until it's first placed.
+  const bossHome = (id: string): TokenPos | null =>
+    board.data && allDefs.find((d) => d.id === id)?.type === 'boss'
+      ? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation }
+      : null
+  const turnStart = (id: string): TokenPos | null =>
+    currentTurn === 0 ? null : posAtTurn(positions[id], currentTurn - 1) ?? bossHome(id)
+
+  // + Step needs a unit that has actually moved this turn. Deployment has no steps.
+  const stepEntry = stepUnitId ? positions[stepUnitId]?.[currentTurn] : null
+  const stepStart = stepUnitId ? turnStart(stepUnitId) : null
+  const canAddStep =
+    currentTurn > 0 &&
+    !paintOpen &&
+    !pending &&
+    !!stepEntry &&
+    (!!waypoints[stepUnitId!]?.[currentTurn]?.length ||
+      !stepStart ||
+      stepStart.q !== stepEntry.q ||
+      stepStart.r !== stepEntry.r)
+  const armed = stepArmed && canAddStep
+  // An armed unit behaves as selected: highlighted, and hex taps move it.
+  const activeId = selectedId ?? (armed ? stepUnitId : null)
+
   const placeAt = (id: string, hex: HexCoord) => {
     if (!board.data) return
-    const def = allDefs.find((d) => d.id === id)
-    const rot = def?.type === 'boss' ? posAtTurn(positions[id], currentTurn)?.rot ?? board.data.bossRotation : undefined
-    const cur = posAtTurn(positions[id], currentTurn)
-    if (cur && cur.q === hex.q && cur.r === hex.r && cur.rot === rot) {
+    const cur = posAtTurn(positions[id], currentTurn) ?? bossHome(id)
+    if (cur && cur.q === hex.q && cur.r === hex.r) {
       setSelectedId(null) // dropped in place — nothing to record
       return
     }
+    const rot = cur?.rot
     checkpoint()
-    placeToken(id, { q: hex.q, r: hex.r, ...(rot !== undefined ? { rot } : {}) })
+    moveToken(id, { q: hex.q, r: hex.r, ...(rot !== undefined ? { rot } : {}) }, turnStart(id), armed && id === stepUnitId)
     setSelectedId(null)
+    setStepUnitId(id)
+    setStepArmed(false)
   }
 
   // Move-mode hex tap: drop a pending spawn (keeps adding), or move the selection.
@@ -200,26 +234,31 @@ export function BoardPage() {
       placeToken(id, { q: hex.q, r: hex.r })
       return
     }
-    if (selectedId) placeAt(selectedId, hex)
+    if (activeId) placeAt(activeId, hex)
   }
 
   // Opening the Paint panel activates the paint tool (and clears any selection so
   // taps mark hexes instead of moving units); closing it returns to move mode.
-  const togglePaint = () =>
+  const togglePaint = () => {
+    setStepArmed(false)
     setPaintOpen((o) => {
       const next = !o
       if (next) { setSelectedId(null); setPending(null) }
       return next
     })
+  }
 
   const selectToken = (id: string) => {
     setPaintOpen(false)
     setPending(null)
+    if (id !== stepUnitId) setStepArmed(false)
+    setStepUnitId(id)
     setSelectedId((cur) => (cur === id ? null : id))
   }
   const selectPalette = (p: PaletteType) => {
     setPaintOpen(false)
     setSelectedId(null)
+    setStepArmed(false)
     setPending((cur) => (cur?.unitId === p.unitId && cur.side === p.side ? null : p))
   }
   // Count only instances actually present at the current turn — a spawn removed
@@ -302,7 +341,7 @@ export function BoardPage() {
             showStartHexes={currentTurn === 0}
             showElevation={showElevation}
             vAlign={dockOpen ? 'top' : 'center'}
-            selectedTokenId={selectedId}
+            selectedTokenId={activeId}
             painting={paintOpen}
             onHexClick={handleHex}
             onTokenClick={selectToken}
@@ -323,6 +362,18 @@ export function BoardPage() {
               else setPaint(key, erase ? null : paintColor)
             }}
           />
+        )}
+
+        {canAddStep && (
+          <button
+            onClick={() => setStepArmed((a) => !a)}
+            aria-pressed={armed}
+            title={armed ? 'Cancel adding a step' : 'Make the next move a separate step'}
+            className={`absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-full border px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] backdrop-blur transition-colors ${armed ? 'border-teal-bright bg-teal text-abyss' : 'border-teal/60 bg-abyss/90 text-teal-bright hover:border-teal-bright'}`}
+          >
+            <Plus size={16} />
+            {armed ? 'Next move adds a step' : 'Step'}
+          </button>
         )}
 
         {/* Edge rail: Paint (persistent tool) on top, then — clearly separated
@@ -351,6 +402,7 @@ export function BoardPage() {
                   checkpoint()
                   removeFromTurn(selectedDef.id)
                   setSelectedId(null)
+                  clearStep()
                 }}
               />
             )}
@@ -444,7 +496,10 @@ export function BoardPage() {
             Tools
           </button>
           <button
-            onClick={undo}
+            onClick={() => {
+              undo()
+              clearStep()
+            }}
             disabled={history.length === 0}
             title="Undo the last map action"
             className="flex items-center gap-1.5 text-xs uppercase tracking-[0.1em] text-ash transition-colors hover:text-bone disabled:pointer-events-none disabled:opacity-35"

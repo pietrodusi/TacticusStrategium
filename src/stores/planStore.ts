@@ -1,12 +1,37 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { PlanData } from '../services/plans/serialize'
+import type { HexCoord } from '../types/strategium'
 
 /** A token position at one turn (rot = boss rotation in degrees). */
 export interface TokenPos {
   q: number
   r: number
   rot?: number
+}
+
+/** tokenId → (phase → hexes the token stopped on before its final position). */
+export type WaypointMap = Record<string, Record<number, HexCoord[]>>
+
+const sameHex = (a: HexCoord, b: HexCoord) => a.q === b.q && a.r === b.r
+
+/**
+ * A token's route for one phase after moving it to `target`. With `addStep` the
+ * move is a new step, even back onto an earlier hex. Without it the move edits
+ * the current step, and ending where that step began cancels the step. A null
+ * `end` means no movement is left this phase.
+ */
+export function nextRoute(
+  start: HexCoord | null,
+  stops: HexCoord[],
+  end: HexCoord | null,
+  target: HexCoord,
+  addStep: boolean,
+): { stops: HexCoord[]; end: HexCoord | null } {
+  if (addStep && end) return { stops: [...stops, { q: end.q, r: end.r }], end: target }
+  const origin = stops[stops.length - 1] ?? start
+  if (!origin || !sameHex(origin, target)) return { stops, end: target }
+  return stops.length > 0 ? { stops: stops.slice(0, -1), end: origin } : { stops: [], end: null }
 }
 
 const TEAM_SIZE = 5
@@ -97,6 +122,7 @@ type InstanceMap = Record<
 interface MapSnapshot {
   currentTurn: number
   positions: Record<string, Record<number, TokenPos | null>>
+  waypoints: WaypointMap
   paint: Record<number, Record<string, string | null>>
   instances: InstanceMap
   instanceSeq: number
@@ -116,6 +142,8 @@ interface PlanState {
   currentTurn: number
   /** tokenId → (turn → position | null). Sparse; null = removed from that turn on. */
   positions: Record<string, Record<number, TokenPos | null>>
+  /** Intermediate stops of multi-step moves; `positions` keeps the final hex. */
+  waypoints: WaypointMap
   /** phase → (hexKey → color). Per-phase hex annotations; null = manual erase
    *  marker (masks a hex inherited from the previous phase). See paintAtTurn. */
   paint: Record<number, Record<string, string | null>>
@@ -150,6 +178,8 @@ interface PlanState {
   nextTurn: () => void
   prevTurn: () => void
   placeToken: (id: string, pos: TokenPos) => void
+  /** Move a token per `nextRoute`; `start` is where it began this phase, if anywhere. */
+  moveToken: (id: string, pos: TokenPos, start: HexCoord | null, addStep: boolean) => void
   /** Remove a token from the current turn onward; earlier turns keep it. */
   removeFromTurn: (id: string) => void
   /** Create a spawn instance; returns its instanceId. */
@@ -180,6 +210,7 @@ interface PlanState {
 const EMPTY_PLAN = {
   currentTurn: 0,
   positions: {},
+  waypoints: {} as WaypointMap,
   paint: {},
   instances: {},
   instanceSeq: 0,
@@ -252,6 +283,28 @@ export const usePlanStore = create<PlanState>()(
           positions: { ...s.positions, [id]: { ...s.positions[id], [s.currentTurn]: pos } },
         })),
 
+      moveToken: (id, pos, start, addStep) =>
+        set((s) => {
+          const P = s.currentTurn
+          const route = nextRoute(start, s.waypoints[id]?.[P] ?? [], s.positions[id]?.[P] ?? null, pos, addStep)
+          const stopsByTurn = { ...s.waypoints[id] }
+          if (route.stops.length > 0) stopsByTurn[P] = route.stops
+          else delete stopsByTurn[P]
+
+          const byTurn = { ...s.positions[id] }
+          if (route.end) {
+            byTurn[P] = { ...pos, ...route.end }
+          } else if (pos.rot !== posAtTurn(byTurn, P - 1)?.rot) {
+            byTurn[P] = pos // movement cancelled, but keep a rotation made this phase
+          } else {
+            delete byTurn[P]
+          }
+          return {
+            positions: { ...s.positions, [id]: byTurn },
+            waypoints: { ...s.waypoints, [id]: stopsByTurn },
+          }
+        }),
+
       // Remove from the current turn onward. Earlier turns keep the token; if it
       // has no earlier presence, drop it entirely (and its instance, if any).
       removeFromTurn: (id) =>
@@ -260,16 +313,22 @@ export const usePlanStore = create<PlanState>()(
           for (const k of Object.keys(byTurn)) {
             if (Number(k) >= s.currentTurn) delete byTurn[Number(k)]
           }
+          const stopsByTurn = { ...s.waypoints[id] }
+          for (const k of Object.keys(stopsByTurn)) {
+            if (Number(k) >= s.currentTurn) delete stopsByTurn[Number(k)]
+          }
+          const waypoints = { ...s.waypoints, [id]: stopsByTurn }
           const hasPast = Object.values(byTurn).some((p) => p !== null)
           if (hasPast) {
             byTurn[s.currentTurn] = null // "removed from here on" marker
-            return { positions: { ...s.positions, [id]: byTurn } }
+            return { positions: { ...s.positions, [id]: byTurn }, waypoints }
           }
           const positions = { ...s.positions }
           delete positions[id]
+          delete waypoints[id]
           const instances = { ...s.instances }
           delete instances[id]
-          return { positions, instances }
+          return { positions, waypoints, instances }
         }),
 
       addInstance: (unitId, side) => {
@@ -319,6 +378,7 @@ export const usePlanStore = create<PlanState>()(
             {
               currentTurn: s.currentTurn,
               positions: s.positions,
+              waypoints: s.waypoints,
               paint: s.paint,
               instances: s.instances,
               instanceSeq: s.instanceSeq,
@@ -336,7 +396,8 @@ export const usePlanStore = create<PlanState>()(
 
       loadPlan: (data, cloudRef) =>
         // Always open on deployment, whichever turn the plan was saved on.
-        set({ ...data, currentTurn: 0, history: [], cloudRef }),
+        // Plans saved before multi-step moves have no waypoints.
+        set({ ...data, waypoints: data.waypoints ?? {}, currentTurn: 0, history: [], cloudRef }),
 
       setCloudRef: (cloudRef) => set({ cloudRef }),
     }),

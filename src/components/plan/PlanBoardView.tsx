@@ -55,9 +55,9 @@ export function PlanBoardView({ plan }: { plan: PlanData }) {
   const { tokens, movements } = useMemo(
     () =>
       board.data
-        ? deriveBoardView(defs, plan.positions, phase, board.data)
+        ? deriveBoardView(defs, plan.positions, phase, board.data, plan.waypoints)
         : { tokens: [], movements: [] },
-    [defs, plan.positions, phase, board.data],
+    [defs, plan.positions, plan.waypoints, phase, board.data],
   )
 
   const visiblePaint = useMemo(() => paintAtTurn(plan.paint, phase), [plan.paint, phase])

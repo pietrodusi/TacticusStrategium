@@ -117,6 +117,7 @@ describe('plan actions', () => {
     usePlanStore.setState({
       currentTurn: 0,
       positions: {},
+      waypoints: {},
       paint: {},
       instances: {},
       instanceSeq: 0,
@@ -126,6 +127,119 @@ describe('plan actions', () => {
     }),
   )
   const store = () => usePlanStore.getState()
+
+  describe('multi-step moves', () => {
+    const A = { q: 0, r: 0 }
+    const B = { q: 1, r: 0 }
+    const C = { q: 2, r: 0 }
+    const D = { q: 3, r: 0 }
+    const stops = () => store().waypoints.u?.[1] ?? []
+    const end = () => store().positions.u?.[1]
+    const move = (hex: { q: number; r: number }, addStep = false) => store().moveToken('u', hex, A, addStep)
+
+    beforeEach(() => {
+      usePlanStore.setState({ currentTurn: 1, positions: { u: { 0: A } } })
+    })
+
+    it('records A→B→C→A, including a step back to the start', () => {
+      move(B)
+      move(C, true)
+      move(A, true)
+      expect(stops()).toEqual([B, C])
+      expect(end()).toEqual(A)
+    })
+
+    it('a move without + corrects the current step', () => {
+      move(B)
+      move(C, true)
+      move(D)
+      expect(stops()).toEqual([B])
+      expect(end()).toEqual(D)
+    })
+
+    it('moving back without + cancels steps one at a time', () => {
+      move(B)
+      move(C, true)
+      move(B)
+      expect(stops()).toEqual([])
+      expect(end()).toEqual(B)
+      move(A)
+      expect(end()).toBeUndefined()
+      expect(posAtTurn(store().positions.u, 1)).toEqual(A)
+    })
+
+    it('a return trip can still be cancelled by moving back without +', () => {
+      move(B)
+      move(A, true)
+      move(B)
+      expect(stops()).toEqual([])
+      expect(end()).toEqual(B)
+    })
+
+    it('cancelling keeps a rotation made this phase', () => {
+      usePlanStore.setState({ positions: { u: { 0: { ...A, rot: 0 }, 1: { ...B, rot: 90 } } } })
+      store().moveToken('u', { ...A, rot: 90 }, A, false)
+      expect(end()).toEqual({ ...A, rot: 90 })
+    })
+
+    it('cancelling a step keeps the current rotation, not the stop\'s', () => {
+      store().moveToken('u', { ...B, rot: 0 }, A, false)
+      store().moveToken('u', { ...C, rot: 0 }, A, true)
+      usePlanStore.setState({
+        positions: { u: { ...store().positions.u, 1: { ...C, rot: 90 } } },
+      })
+      store().moveToken('u', { ...B, rot: 90 }, A, false)
+      expect(end()).toEqual({ ...B, rot: 90 })
+    })
+
+    it('only keeps the steps of the phase they were made on', () => {
+      move(B)
+      move(C, true)
+      usePlanStore.setState({ currentTurn: 2 })
+      store().moveToken('u', D, C, false)
+      expect(store().waypoints.u[1]).toEqual([B])
+      expect(store().waypoints.u[2]).toBeUndefined()
+    })
+
+    it('undo restores the previous route', () => {
+      move(B)
+      store().checkpoint()
+      move(C, true)
+      store().undo()
+      expect(stops()).toEqual([])
+      expect(end()).toEqual(B)
+    })
+
+    it('removing a unit clears steps from the current turn onward', () => {
+      move(B)
+      move(C, true)
+      store().removeFromTurn('u')
+      expect(stops()).toEqual([])
+    })
+
+    it('loading an older plan does not inherit the previous steps', () => {
+      move(B)
+      move(C, true)
+      store().loadPlan(
+        {
+          bossUnitId: 'b',
+          targetKind: 'boss',
+          boardId: 'GB_01',
+          team: [],
+          machineOfWar: null,
+          currentTurn: 0,
+          positions: {},
+          paint: {},
+          instances: {},
+          instanceSeq: 0,
+          seededBoard: null,
+          primesDefeated: 0,
+        },
+        null,
+      )
+      expect(store().waypoints).toEqual({})
+    })
+  })
 
   it('placeToken records the position at the current turn', () => {
     store().setCurrentTurn(3)

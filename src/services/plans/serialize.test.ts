@@ -13,6 +13,7 @@ const samplePlan = (): PlanData => ({
     'inst-1': { 1: { q: 4, r: 4 }, 2: null }, // removed-from-here-on marker
     boss: { 0: { q: 5, r: 5, rot: 90 } },
   },
+  waypoints: { ultraTigurius: { 3: [{ q: 3, r: 2 }] } },
   paint: { 1: { '3,-2': 'rgba(207,70,50,0.5)', '4,-2': null }, 2: { '0,0': 'fire@2' } },
   instances: {
     'inst-1': { unitId: 'tyranTermagant', side: 'enemy', removeAtPrime: 1 },
@@ -28,6 +29,12 @@ describe('serializePlan / deserializePlan', () => {
     const plan = samplePlan()
     const restored = deserializePlan(serializePlan(plan), PLAN_SCHEMA_VERSION)
     expect(restored).toEqual(plan)
+  })
+
+  it('accepts plans saved before multi-step moves', () => {
+    const older = samplePlan()
+    delete older.waypoints
+    expect(deserializePlan(JSON.stringify(older), PLAN_SCHEMA_VERSION)).toEqual(older)
   })
 
   it('only serializes the plan payload fields', () => {
