@@ -264,23 +264,29 @@ export function BoardPage() {
     setStepArmed(false)
   }
 
-  // Dragging a unit onto another live unit attacks it (from turn 1 on); the
-  // attacker stays where it is. Doing it again takes the attack back.
+  // Dragging a unit onto another live unit swaps them during deployment. From
+  // turn 1 on it attacks instead: the attacker stays put, and doing it again
+  // takes the attack back.
   const dropToken = (id: string, hex: HexCoord) => {
-    const target =
-      currentTurn > 0
-        ? boardTokens.find(
-            (t) =>
-              t.id !== id &&
-              !t.ghost &&
-              getBossOccupiedHexes(t.pos, t.size as 1 | 3 | 7, t.pos.rot ?? 0).some((h) => h.q === hex.q && h.r === hex.r),
-          )
-        : undefined
+    const target = boardTokens.find(
+      (t) =>
+        t.id !== id &&
+        !t.ghost &&
+        getBossOccupiedHexes(t.pos, t.size as 1 | 3 | 7, t.pos.rot ?? 0).some((h) => h.q === hex.q && h.r === hex.r),
+    )
     if (!target) {
       placeAt(id, hex)
       return
     }
     checkpoint()
+    if (currentTurn === 0) {
+      const dragged = boardTokens.find((t) => t.id === id)
+      if (!dragged) return
+      placeToken(id, { ...dragged.pos, q: target.pos.q, r: target.pos.r })
+      placeToken(target.id, { ...target.pos, q: dragged.pos.q, r: dragged.pos.r })
+      setSelectedId(null)
+      return
+    }
     setReplayStep(toggleAttack(id, target.id, orderAt(currentTurn), replayStep))
     setSelectedId(null)
     setStepUnitId(id)

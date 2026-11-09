@@ -52,7 +52,8 @@ export function GuidePage() {
       <Section n="III" title="Deploy & maneuver">
         <P>
           Tap a unit chip in the dock, then tap a hex to place it. Drag a placed token to move it — the
-          boss&apos;s multi-hex footprint previews where it will land. Selecting a unit reveals edge actions:
+          boss&apos;s multi-hex footprint previews where it will land. During deployment, dragging a unit onto
+          another swaps their places. Selecting a unit reveals edge actions:
           <B> Remove</B>, and <B>Rotate</B> for multi-hex units.
         </P>
         <P>
