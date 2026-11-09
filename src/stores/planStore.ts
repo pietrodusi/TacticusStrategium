@@ -13,9 +13,9 @@ export interface TokenPos {
 /** tokenId → (phase → hexes the token stopped on before its final position). */
 export type WaypointMap = Record<string, Record<number, HexCoord[]>>
 
-/** phase → one entry per action, in the order they were made. A move or removal
- *  is the unit's id (a unit removed that phase has one more entry than it has
- *  steps: the last is the removal); an attack is an `attackEntry`. */
+/** phase → one entry per action, in the order they were made. A placement, move
+ *  or removal is the unit's id: a unit's entries are its placement (if placed that
+ *  phase), then its steps, then its removal. An attack is an `attackEntry`. */
 export type MoveOrder = Record<number, string[]>
 
 export const attackEntry = (id: string, target: string) => `attack|${id}|${target}`
@@ -401,21 +401,37 @@ export const usePlanStore = create<PlanState>()(
         const prevStops = beforeRemoval ? rawStops.slice(0, -1) : rawStops
         const prevEnd = beforeRemoval ? (rawStops[rawStops.length - 1] ?? null) : (s.positions[id]?.[P] ?? null)
         const prevLegs = legCount([start, ...prevStops, prevEnd])
-        const inserting = !!replay && !!prevEnd && prevLegs > 0 && replay.shown === 0
+        // A unit placed this turn has an entry for that placement before its steps.
+        const placedEarlier = P > 0 && !start && (!!prevEnd || prevStops.length > 0)
+        const placing = P > 0 && !start && !placedEarlier
+        const entryOffset = placedEarlier ? 1 : 0
+        const shownLegs = replay ? Math.max(replay.shown - entryOffset, 0) : 0
+        // Mid-replay, moving a unit with no steps on screen yet re-places it; if its
+        // placement is still to come, the placement happens at this point instead.
+        const movesPlacement = !!replay && placedEarlier && shownLegs === 0
+        const pulledForward = movesPlacement && replay?.shown === 0
+        const inserting = !!replay && !!prevEnd && prevLegs > 0 && shownLegs === 0 && !movesPlacement
         const edit =
-          !replay || !prevEnd || replay.shown >= prevLegs
+          movesPlacement || !replay || !prevEnd || shownLegs >= prevLegs
             ? null
             : inserting
               ? insertRouteStep(start, prevStops, prevEnd, pos)
-              : editRouteStep(start, prevStops, prevEnd, replay.shown - 1, pos)
-        const route = edit ?? nextRoute(start, prevStops, prevEnd, pos, addStep)
+              : editRouteStep(start, prevStops, prevEnd, shownLegs - 1, pos)
+        const hex = { q: pos.q, r: pos.r }
+        const route = movesPlacement
+          ? prevStops.length > 0
+            ? { stops: [hex, ...prevStops.slice(1)], end: prevEnd }
+            : { stops: [], end: hex }
+          : (edit ?? nextRoute(start, prevStops, prevEnd, pos, addStep))
         const nextLegs = legCount([start, ...route.stops, route.end])
-        const added = inserting || nextLegs > prevLegs
+        const added = inserting || pulledForward || (placing && !!route.end) || nextLegs > prevLegs
 
-        // One log entry per step: added or cancelled steps change it, corrections
-        // don't. During a replay a new step goes right after the moves on screen.
+        // One log entry per action: added or cancelled ones change it, corrections
+        // don't. During a replay a new one goes right after the actions on screen.
         const base = replay?.order ?? s.moveOrder[P] ?? []
-        const removedLegs = edit ? edit.removedLegs : nextLegs < prevLegs ? [prevLegs - 1] : []
+        const removedLegs = pulledForward
+          ? [0]
+          : (edit ? edit.removedLegs : nextLegs < prevLegs ? [prevLegs - 1] : []).map((leg) => leg + entryOffset)
         const { order, dropped } = dropLegs(base, id, removedLegs)
         const at = replay ? replay.step - dropped.filter((i) => i < replay.step).length : order.length
         if (added) order.splice(at, 0, id)
@@ -461,13 +477,18 @@ export const usePlanStore = create<PlanState>()(
         for (const k of Object.keys(stopsByTurn)) if (Number(k) >= P) delete stopsByTurn[Number(k)]
         const hasPast = Object.values(byTurn).some((p) => p !== null)
 
-        const legsKept = hasPast ? Math.min(replay?.shown ?? Infinity, Math.max(points.length - 1, 0)) : 0
+        // A unit placed this turn has an entry for that before its steps.
+        const placed = P > 0 && !start && points.length > 0 ? 1 : 0
+        const legsKept = hasPast
+          ? Math.min(Math.max((replay?.shown ?? Infinity) - placed, 0), Math.max(points.length - 1, 0))
+          : 0
+        const entriesKept = hasPast ? Math.min(replay?.shown ?? Infinity, placed + legsKept) : 0
         const base = replay?.order ?? s.moveOrder[P] ?? []
         const total = base.filter((x) => x === id).length
         const { order, dropped } = dropLegs(
           base,
           id,
-          Array.from({ length: Math.max(total - legsKept, 0) }, (_, i) => legsKept + i),
+          Array.from({ length: Math.max(total - entriesKept, 0) }, (_, i) => entriesKept + i),
         )
         const at = replay ? replay.step - dropped.filter((i) => i < replay.step).length : order.length
         if (hasPast) order.splice(at, 0, id)

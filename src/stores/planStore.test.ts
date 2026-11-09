@@ -355,6 +355,90 @@ describe('plan actions', () => {
       expect(end()).toEqual(B)
     })
 
+    describe('placing after deployment', () => {
+      const place = (id: string, hex: { q: number; r: number }, replay?: Parameters<ReturnType<typeof store>['moveToken']>[4]) =>
+        store().moveToken(id, hex, null, false, replay)
+
+      it('records the placement as an action', () => {
+        move(B)
+        place('w', C)
+        expect(store().moveOrder[1]).toEqual(['u', 'w'])
+        expect(store().positions.w[1]).toEqual(C)
+      })
+
+      it('does not record placements during deployment', () => {
+        usePlanStore.setState({ currentTurn: 0 })
+        place('w', C)
+        expect(store().moveOrder[0] ?? []).toEqual([])
+      })
+
+      it('correcting a placement keeps one entry', () => {
+        place('w', C)
+        place('w', D)
+        expect(store().moveOrder[1]).toEqual(['w'])
+        expect(store().positions.w[1]).toEqual(D)
+      })
+
+      it('counts the placement before the unit\'s steps', () => {
+        place('w', C)
+        store().moveToken('w', D, null, true)
+        expect(store().waypoints.w[1]).toEqual([C])
+        expect(store().moveOrder[1]).toEqual(['w', 'w'])
+      })
+
+      it('cancelling a step keeps the placement', () => {
+        place('w', C)
+        store().moveToken('w', D, null, true)
+        store().moveToken('w', C, null, false)
+        expect(store().moveOrder[1]).toEqual(['w'])
+        expect(store().positions.w[1]).toEqual(C)
+      })
+
+      it('inserts at the replay position', () => {
+        move(B)
+        store().moveToken('v', C, D, false)
+        const step = place('w', A, { order: store().moveOrder[1], step: 1, shown: 0 })
+        expect(store().moveOrder[1]).toEqual(['u', 'w', 'v'])
+        expect(step).toBe(2)
+      })
+
+      it('moving a placement still to come makes it happen at this point', () => {
+        move(B)
+        store().moveToken('v', C, D, false)
+        place('w', A)
+        const step = place('w', D, { order: store().moveOrder[1], step: 1, shown: 0 })
+        expect(store().moveOrder[1]).toEqual(['u', 'w', 'v'])
+        expect(store().positions.w[1]).toEqual(D)
+        expect(step).toBe(2)
+      })
+
+      it('moving a unit just placed in a replay re-places it, keeping its steps', () => {
+        place('w', C)
+        store().moveToken('w', D, null, true)
+        const step = place('w', A, { order: store().moveOrder[1], step: 1, shown: 1 })
+        expect(store().waypoints.w[1]).toEqual([A])
+        expect(store().positions.w[1]).toEqual(D)
+        expect(store().moveOrder[1]).toEqual(['w', 'w'])
+        expect(step).toBe(1)
+      })
+
+      it('editing a step of a unit placed this turn targets that step', () => {
+        place('w', A)
+        store().moveToken('w', B, null, true)
+        store().moveToken('w', C, null, true)
+        store().moveToken('w', D, null, false, { order: store().moveOrder[1], step: 2, shown: 2 })
+        expect(store().waypoints.w[1]).toEqual([A, D])
+        expect(store().positions.w[1]).toEqual(C)
+      })
+
+      it('removing a unit with no earlier presence removes its placement too', () => {
+        place('w', C)
+        store().removeFromTurn('w')
+        expect(store().positions.w).toBeUndefined()
+        expect(store().moveOrder[1]).toEqual([])
+      })
+    })
+
     describe('attacks', () => {
       const hit = attackEntry('u', 'v')
 

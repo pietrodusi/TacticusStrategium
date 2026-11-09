@@ -304,7 +304,7 @@ export function BoardPage() {
       if (!board.data || overlapsMultiHex(boardTokens, null, hex, size, 0) || !isValidFootprint(board.data, hex, size, 0)) return
       checkpoint()
       const id = addInstance(pending.unitId, pending.side)
-      placeToken(id, { q: hex.q, r: hex.r })
+      setReplayStep(moveToken(id, { q: hex.q, r: hex.r }, null, false, replayEditFor(id)))
       return
     }
     if (activeId) placeAt(activeId, hex)

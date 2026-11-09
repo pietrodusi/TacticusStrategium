@@ -98,6 +98,9 @@ export function GuidePage() {
             <B>Remove</B> — for a unit defeated mid-turn. Its moves are kept and it stays on its last hex as a
             faded ghost with a red X, for that turn only. Tap the ghost, then <B>Restore</B> to bring it back.
           </li>
+          <li>
+            <B>Placing</B> a unit or summon after deployment counts too: it appears at that point in the turn.
+          </li>
         </UL>
         <P>
           Use the <B>single arrows</B> to watch the turn play out one action at a time, in the order you made

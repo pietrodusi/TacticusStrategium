@@ -285,3 +285,50 @@ describe('multi-hex occupancy', () => {
     expect(tokenOccupying([big], 'big', offAnchor)).toBeUndefined()
   })
 })
+
+describe('placement as a replay action', () => {
+  const other: TokenDef = { id: 'v', type: 'character', stem: null, name: 'V', size: 1 }
+  const D = { q: 5, r: 5 }
+  const defs = [unit, other]
+  const positions = { u: { 0: A, 1: B }, v: { 1: D } }
+  const data = { moveOrder: { 1: ['u', 'v'] } }
+  const present = (step: number | null) =>
+    deriveBoardView(defs, positions, 1, board, { ...data, step }).tokens.map((t) => t.id)
+
+  it('counts the placement as an action', () => {
+    expect(phaseStepOrder(defs, positions, 1, board, data)).toEqual(['u', 'v'])
+  })
+
+  it('shows the unit only once its placement is played', () => {
+    expect(present(1)).toEqual(['u'])
+    expect(present(null)).toEqual(['u', 'v'])
+  })
+
+  it('draws no arrow for a placement', () => {
+    expect(deriveBoardView(defs, positions, 1, board, data).movements).toHaveLength(1)
+  })
+
+  it('offsets later steps by the placement', () => {
+    const moved = { v: { 1: B } }
+    const route = { waypoints: { v: { 1: [A] } }, moveOrder: { 1: ['v', 'v'] } }
+    const v = (step: number | null) => deriveBoardView([other], moved, 1, board, { ...route, step })
+    expect(v(1).tokens[0].pos).toMatchObject(A)
+    expect(v(1).movements).toHaveLength(0)
+    expect(v(null).tokens[0].pos).toMatchObject(B)
+    expect(v(null).movements).toHaveLength(1)
+  })
+
+  it('has no action on later turns', () => {
+    expect(phaseStepOrder(defs, { v: { 1: D } }, 2, board, {})).toEqual([])
+  })
+
+  it('does not count deployment placements', () => {
+    expect(phaseStepOrder(defs, { v: { 0: D } }, 0, board, {})).toEqual([])
+  })
+
+  it('drops an attack on a unit not yet placed', () => {
+    const hit = attackEntry('u', 'v')
+    expect(phaseStepOrder(defs, positions, 1, board, { moveOrder: { 1: [hit, 'u', 'v'] } })).toEqual(['u', 'v'])
+    expect(phaseStepOrder(defs, positions, 1, board, { moveOrder: { 1: ['v', hit, 'u'] } })).toEqual(['v', hit, 'u'])
+  })
+})

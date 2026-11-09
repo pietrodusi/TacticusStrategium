@@ -122,11 +122,13 @@ function tokenRoute(d: TokenDef, positions: PositionMap, phase: number, board: P
   const prev = phase > 0 ? (posAtTurn(positions[d.id], phase - 1) ?? fallback) : null
   const stops = phase > 0 ? (data.waypoints?.[d.id]?.[phase] ?? []) : []
   const removedHere = phase > 0 && positions[d.id]?.[phase] === null && (!!prev || stops.length > 0)
+  const placedHere = phase > 0 && !prev && (positions[d.id]?.[phase] != null || stops.length > 0)
   const points = [...(prev ? [prev] : []), ...stops, ...(pos && phase > 0 ? [pos] : [])]
   return {
     pos,
     from: prev,
     removedHere,
+    placed: placedHere ? 1 : 0,
     legs: routeLegs(points.map(({ q, r }) => ({ q, r })), RING_COLOR[d.type]),
   }
 }
@@ -138,11 +140,13 @@ const tokenRoutes = (defs: TokenDef[], positions: PositionMap, phase: number, bo
 
 /** Where a unit stands after `actions` of its actions; null once it's gone. */
 function hexAfter(route: TokenRoute, actions: number): HexCoord | null {
-  if (route.removedHere && actions > route.legs.length) return null
-  return route.legs[Math.min(actions, route.legs.length) - 1]?.to ?? route.legs[0]?.from ?? route.pos ?? route.from
+  if (route.placed && actions === 0) return null
+  const steps = actions - route.placed
+  if (route.removedHere && steps > route.legs.length) return null
+  return route.legs[Math.min(steps, route.legs.length) - 1]?.to ?? route.legs[0]?.from ?? route.pos ?? route.from
 }
 
-/** One entry per action of `phase` (steps, removals, attacks), in replay order: the
+/** One entry per action of `phase` (placements, steps, removals, attacks), in replay order: the
  *  order they were made, then any unrecorded (older plans) unit by unit. */
 export function phaseStepOrder(
   defs: TokenDef[],
@@ -152,7 +156,7 @@ export function phaseStepOrder(
   data: RouteData,
 ): string[] {
   const routes = tokenRoutes(defs, positions, phase, board, data)
-  const left = new Map([...routes].map(([id, r]) => [id, r.legs.length + (r.removedHere ? 1 : 0)]))
+  const left = new Map([...routes].map(([id, r]) => [id, r.placed + r.legs.length + (r.removedHere ? 1 : 0)]))
   const done = new Map<string, number>()
   const order: string[] = []
   const take = (id: string) => {
@@ -209,14 +213,15 @@ export function deriveBoardView(
   const ghosts: BoardToken[] = []
   const movements: BoardMovement[] = []
   for (const d of defs) {
-    const { pos, from, legs, removedHere } = routes.get(d.id)!
+    const { pos, from, legs, removedHere, placed } = routes.get(d.id)!
     const actions = counts.get(d.id) ?? 0
-    const shown = legs.slice(0, actions)
-    const ghost = removedHere && actions > legs.length
+    const steps = Math.max(actions - placed, 0)
+    const shown = legs.slice(0, steps)
+    const ghost = removedHere && steps > legs.length
     const base = pos ?? from
     // A token sits at the end of its last shown leg (or where it began).
     const at = shown[shown.length - 1]?.to ?? legs[0]?.from ?? base
-    if (at && (pos || removedHere)) {
+    if (at && (pos || removedHere) && !(placed && actions === 0)) {
       const token = {
         ...d,
         pos: { ...base, q: at.q, r: at.r },
