@@ -158,29 +158,30 @@ async function readJson(path) {
 
 /**
  * Extract the static `unitId -> portrait stem` map that TacticusDB embeds in
- * the /bosses page chunk (`JSON.parse('{...}')`, nested by character/summon/
- * boss/npc). The chunk hash changes between deploys, so discover it from the
- * page HTML rather than hard-coding it.
+ * a /bosses page chunk (`JSON.parse('{...}')`, nested by character/summon/
+ * boss/npc). Chunk names change between deploys, so scan every chunk on the
+ * page. The app has the same lookup in services/tacticusdb/imageStems.ts.
  */
 async function fetchImageStems() {
   const html = await fetchText(`${BASE}/bosses`);
-  const chunk = html.match(/static\/chunks\/app\/bosses\/page-[a-f0-9]+\.js/);
-  if (!chunk) throw new Error('could not locate the /bosses page chunk in HTML');
-  const js = await fetchText(`${BASE}/_next/${chunk[0]}`);
-  // Each embedded map is a JS string literal: JSON.parse('{...}'). Single quotes
-  // inside are escaped as \'. Pick the object that has both `character` and `boss`.
-  const re = /JSON\.parse\('(\{(?:[^'\\]|\\.)*\})'\)/g;
-  let m;
-  while ((m = re.exec(js)) !== null) {
-    let obj;
-    try {
-      obj = JSON.parse(m[1].replace(/\\'/g, "'").replace(/\\\\/g, '\\'));
-    } catch {
-      continue;
+  const chunks = [...new Set(html.match(/static\/chunks\/[^"'\\\s]+?\.js/g) ?? [])];
+  for (const chunk of chunks) {
+    const js = await fetchText(`${BASE}/_next/${chunk}`);
+    // Each embedded map is a JS string literal: JSON.parse('{...}'). Single quotes
+    // inside are escaped as \'. Pick the object that has both `character` and `boss`.
+    const re = /JSON\.parse\('(\{(?:[^'\\]|\\.)*\})'\)/g;
+    let m;
+    while ((m = re.exec(js)) !== null) {
+      let obj;
+      try {
+        obj = JSON.parse(m[1].replace(/\\'/g, "'").replace(/\\\\/g, '\\'));
+      } catch {
+        continue;
+      }
+      if (obj && obj.character && obj.boss) return obj;
     }
-    if (obj && obj.character && obj.boss) return obj;
   }
-  throw new Error('image-stem map not found in /bosses chunk');
+  throw new Error('image-stem map not found on the /bosses page');
 }
 
 /** "TervigonLeviathan" -> "Tervigon Leviathan". */

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { ParsedBoard, ParsedCell, TileEffectKind } from '../services/boards/boardService'
-import { keywordIconUrl, mapImageUrl, unitPortraitUrl } from '../services/paths'
+import { usePortraitSource } from '../hooks/usePortraitSource'
+import { keywordIconUrl, mapImageUrl } from '../services/paths'
 import { elevationSeams, footprintPath } from '../services/boards/footprint'
 import { getBossOccupiedHexes, hexKey } from '../services/hex/hexUtils'
 import type { HexCoord, Point } from '../types/strategium'
@@ -437,16 +438,18 @@ function TokenMarker({
 }) {
   const clipId = `clip-${token.id.replace(/[^a-zA-Z0-9]/g, '')}`
   const ring = RING_COLOR[token.type]
+  const { src, onError } = usePortraitSource(token.stem)
   return (
     <g data-token-id={token.id} className="cursor-grab" style={{ opacity: dragging ? 0.85 : 1 }}>
       <circle cx={center.x} cy={center.y} r={r} fill="#0b0d11" />
-      {token.stem && (
+      {src && (
         <>
           <clipPath id={clipId}>
             <circle cx={center.x} cy={center.y} r={r - 1} />
           </clipPath>
           <image
-            href={unitPortraitUrl(token.stem, false)}
+            href={src}
+            onError={onError}
             x={center.x - r}
             y={center.y - r}
             width={r * 2}

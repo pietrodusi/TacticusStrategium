@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { asset } from '../services/paths'
+import { fetchLiveImageStems } from '../services/tacticusdb/imageStems'
 import type { BossIndex, ImageStems, PrimeIndex, SpawnsData, Unit } from '../types/units'
 import type { TacticusCharacter } from '../services/tacticusdb/client'
 import { useCharacters } from './useTacticusData'
@@ -48,8 +49,23 @@ export const useImageStems = () =>
     },
   })
 
-function toUnit(id: string, c: TacticusCharacter, stems: ImageStems): Unit {
-  return { id, name: c.name, faction: c.FactionId ?? null, stem: stems.character[id] ?? null }
+/** TacticusDB's current stem map; only fetched when `enabled`. */
+const useLiveImageStems = (enabled: boolean) =>
+  useQuery({
+    queryKey: ['liveImageStems'],
+    queryFn: fetchLiveImageStems,
+    enabled,
+    staleTime: Infinity,
+    retry: 1,
+  })
+
+function toUnit(id: string, c: TacticusCharacter, stems: ImageStems, live?: ImageStems): Unit {
+  return {
+    id,
+    name: c.name,
+    faction: c.FactionId ?? null,
+    stem: stems.character[id] ?? live?.character[id] ?? null,
+  }
 }
 
 const isMachineOfWar = (c: TacticusCharacter) => (c.traits ?? []).includes('MachineOfWar')
@@ -61,6 +77,11 @@ const isMachineOfWar = (c: TacticusCharacter) => (c.traits ?? []).includes('Mach
 export function useRoster() {
   const chars = useCharacters()
   const stems = useImageStems()
+  // New characters appear in the live catalog before the bundled stem map knows
+  // them. A failure here is non-fatal: those units just show their initial.
+  const hasUnknownStem =
+    !!chars.data && !!stems.data && Object.keys(chars.data).some((id) => !stems.data.character[id])
+  const live = useLiveImageStems(hasUnknownStem)
 
   let roster: Unit[] = []
   let machinesOfWar: Unit[] = []
@@ -69,11 +90,11 @@ export function useRoster() {
     const byName = (a: Unit, b: Unit) => a.name.localeCompare(b.name)
     roster = all
       .filter(([, c]) => !isMachineOfWar(c))
-      .map(([id, c]) => toUnit(id, c, stems.data))
+      .map(([id, c]) => toUnit(id, c, stems.data, live.data))
       .sort(byName)
     machinesOfWar = all
       .filter(([, c]) => isMachineOfWar(c))
-      .map(([id, c]) => toUnit(id, c, stems.data))
+      .map(([id, c]) => toUnit(id, c, stems.data, live.data))
       .sort(byName)
   }
 

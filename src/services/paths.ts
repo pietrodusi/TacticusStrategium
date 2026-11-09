@@ -25,5 +25,19 @@ export const bossSplashUrl = (guildBossUnitKey: string) =>
 export const unitPortraitUrl = (stem: string, round = false) =>
   `https://tacticusdb.com/images/generated/characters/${round ? 'RoundPortrait_' : 'portrait_'}${stem}.webp`
 
+/** Character/summon/boss headshot on the Snowprint CDN (175×230 PNG, square-ish crop needed). */
+export const cdnPortraitUrl = (stem: string) =>
+  `https://cdn.ezekiel.snowprintstudios.com/ui_image_portrait_${stem}_01.png`
+
+/**
+ * Portrait URLs to try, best first. The CDN has every character but only ~80%
+ * of summons/bosses/NPCs, so TacticusDB stays as the fallback.
+ */
+export const unitPortraitSources = (stem: string, round = false) => [
+  cdnPortraitUrl(stem),
+  ...(round ? [unitPortraitUrl(stem, true)] : []),
+  unitPortraitUrl(stem, false),
+]
+
 /** Bundled keyword/tile-effect icon (e.g. "tile_effect_fire"). */
 export const keywordIconUrl = (name: string) => asset(`images/keywords/${name}.png`)
