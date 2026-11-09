@@ -165,21 +165,25 @@ export function deriveBoardView(
 ): { tokens: BoardToken[]; movements: BoardMovement[] } {
   const replayed = data.step == null ? null : phaseStepOrder(defs, positions, phase, board, data).slice(0, data.step)
   const tokens: BoardToken[] = []
+  const ghosts: BoardToken[] = []
   const movements: BoardMovement[] = []
   for (const d of defs) {
     const { pos, from, legs, removedHere } = tokenRoute(d, positions, phase, board, data)
     const actions = replayed ? replayed.filter((id) => id === d.id).length : Infinity
     const shown = legs.slice(0, actions)
-    const onBoard = removedHere ? actions <= legs.length : !!pos
+    const ghost = removedHere && actions > legs.length
     const base = pos ?? from
-    if (onBoard && base) {
-      // Mid-replay a token sits at the end of its last shown leg (or where it began).
-      const at = replayed && (legs.length > 0 || removedHere) ? (shown[shown.length - 1]?.to ?? legs[0]?.from ?? base) : base
-      tokens.push({ ...d, pos: { ...base, q: at.q, r: at.r }, removable: d.removeAtPrime != null })
+    // A token sits at the end of its last shown leg (or where it began).
+    const at = shown[shown.length - 1]?.to ?? legs[0]?.from ?? base
+    if (at && (pos || removedHere)) {
+      const token = { ...d, pos: { ...base, q: at.q, r: at.r }, removable: d.removeAtPrime != null, ghost }
+      if (ghost) ghosts.push(token)
+      else tokens.push(token)
     }
-    movements.push(...shown.map((leg, i) => ({ ...leg, endsAtToken: onBoard && i === shown.length - 1 })))
+    movements.push(...shown.map((leg, i) => ({ ...leg, endsAtToken: i === shown.length - 1 })))
   }
-  return { tokens, movements }
+  // Ghosts first, so a live unit sharing the hex stays on top and grabbable.
+  return { tokens: [...ghosts, ...tokens], movements }
 }
 
 /** Where the board is: a phase, and how many of its moves are shown (null = all). */

@@ -69,7 +69,8 @@ export function GuidePage() {
           red = enemy turn). The double arrows jump one turn at a time; the single arrows replay the plan one
           move at a time, in the order you made the moves. Moving a unit during a replay edits the step on
           screen, and any later steps carry on from there. <B>Remove</B> is recorded the same way, so a unit
-          defeated mid-turn disappears at that point in the replay.
+          defeated mid-turn disappears at that point in the replay, leaving a faded ghost for that turn. Tap
+          the ghost to <B>Restore</B> the unit.
         </P>
         <P>
           Positions carry forward until you change them, and a faint arrow shows each token&apos;s move from

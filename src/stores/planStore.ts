@@ -78,6 +78,25 @@ export function editRouteStep(
   }
 }
 
+/**
+ * Give a unit that hasn't acted yet a move ahead of its existing steps, which
+ * carry on from the new hex. Moving straight onto its next stop means that step
+ * simply happens now, so it's replaced rather than repeated.
+ */
+export function insertRouteStep(
+  start: HexCoord | null,
+  stops: HexCoord[],
+  end: HexCoord,
+  target: HexCoord,
+): { stops: HexCoord[]; end: HexCoord | null; removedLegs: number[] } {
+  const firstStop = start ? 1 : 0
+  const [origin, ...rest] = [...(start ? [start] : []), ...stops, end]
+  const hex = { q: target.q, r: target.r }
+  const repeatsNext = sameHex(rest[0], hex)
+  const kept = [origin, ...(repeatsNext ? [] : [hex]), ...rest]
+  return { stops: kept.slice(firstStop, -1), end: kept[kept.length - 1], removedLegs: repeatsNext ? [0] : [] }
+}
+
 /** Drop the given legs (nth occurrences of `id`) from a move order. */
 function dropLegs(order: string[], id: string, legs: number[]) {
   const occurrences = order.flatMap((x, i) => (x === id ? [i] : []))
@@ -255,6 +274,9 @@ interface PlanState {
   /** Remove a token from the current turn onward, recorded as an action after the
    *  moves it made; earlier turns keep it. Returns the replay step, as moveToken. */
   removeFromTurn: (id: string, replay?: ReplayEdit) => number | null
+  /** Take back this turn's removal of a token, keeping its route. Returns the
+   *  replay step, as moveToken. */
+  restoreToken: (id: string, replay?: ReplayEdit) => number | null
   /** Create a spawn instance; returns its instanceId. */
   addInstance: (unitId: string, side: 'ally' | 'enemy') => string
   /** Seed a board's initial enemy deployment as turn-0 enemy instances (once). */
@@ -361,32 +383,27 @@ export const usePlanStore = create<PlanState>()(
         const s = get()
         const P = s.currentTurn
         const rawStops = s.waypoints[id]?.[P] ?? []
-        const wasRemoved = s.positions[id]?.[P] === null
-        // Mid-replay, a unit removed later this turn is still on the board: its
-        // last stop is its position. Once it's gone, placing it again undoes that.
-        const beforeRemoval = wasRemoved && !!replay && replay.shown <= legCount([start, ...rawStops])
-        const reinstated = wasRemoved && !beforeRemoval
-        const prevStops = beforeRemoval ? rawStops.slice(0, -1) : reinstated ? [] : rawStops
+        // Mid-replay, a unit removed later this turn is still on the board: its last
+        // stop is its position.
+        const beforeRemoval = s.positions[id]?.[P] === null
+        const prevStops = beforeRemoval ? rawStops.slice(0, -1) : rawStops
         const prevEnd = beforeRemoval ? (rawStops[rawStops.length - 1] ?? null) : (s.positions[id]?.[P] ?? null)
         const prevLegs = legCount([start, ...prevStops, prevEnd])
+        const inserting = !!replay && !!prevEnd && prevLegs > 0 && replay.shown === 0
         const edit =
-          replay && prevEnd && replay.shown < prevLegs
-            ? editRouteStep(start, prevStops, prevEnd, replay.shown - 1, pos)
-            : null
+          !replay || !prevEnd || replay.shown >= prevLegs
+            ? null
+            : inserting
+              ? insertRouteStep(start, prevStops, prevEnd, pos)
+              : editRouteStep(start, prevStops, prevEnd, replay.shown - 1, pos)
         const route = edit ?? nextRoute(start, prevStops, prevEnd, pos, addStep)
         const nextLegs = legCount([start, ...route.stops, route.end])
-        const added = nextLegs > prevLegs
+        const added = inserting || nextLegs > prevLegs
 
         // One log entry per step: added or cancelled steps change it, corrections
         // don't. During a replay a new step goes right after the moves on screen.
         const base = replay?.order ?? s.moveOrder[P] ?? []
-        const removedLegs = reinstated
-          ? base.filter((x) => x === id).map((_, i) => i)
-          : edit
-            ? edit.removedLegs
-            : nextLegs < prevLegs
-              ? [prevLegs - 1]
-              : []
+        const removedLegs = edit ? edit.removedLegs : nextLegs < prevLegs ? [prevLegs - 1] : []
         const { order, dropped } = dropLegs(base, id, removedLegs)
         const at = replay ? replay.step - dropped.filter((i) => i < replay.step).length : order.length
         if (added) order.splice(at, 0, id)
@@ -466,6 +483,34 @@ export const usePlanStore = create<PlanState>()(
           set({ positions, waypoints, moveOrder, instances })
         }
         return replay ? replayStepAfter(at + (hasPast ? 1 : 0), order.length) : null
+      },
+
+      restoreToken: (id, replay) => {
+        const s = get()
+        const P = s.currentTurn
+        const byTurn = { ...s.positions[id] }
+        const stopsByTurn = { ...s.waypoints[id] }
+        const stops = stopsByTurn[P] ?? []
+        const last = stops[stops.length - 1]
+        if (last) {
+          const rot = posAtTurn(byTurn, P - 1)?.rot
+          byTurn[P] = { ...last, ...(rot !== undefined ? { rot } : {}) }
+        } else {
+          delete byTurn[P] // never moved this turn: carries on from where it was
+        }
+        if (stops.length > 1) stopsByTurn[P] = stops.slice(0, -1)
+        else delete stopsByTurn[P]
+
+        // The removal is this unit's last entry in the order.
+        const base = replay?.order ?? s.moveOrder[P] ?? []
+        const { order, dropped } = dropLegs(base, id, [base.filter((x) => x === id).length - 1])
+        set({
+          positions: { ...s.positions, [id]: byTurn },
+          waypoints: { ...s.waypoints, [id]: stopsByTurn },
+          moveOrder: { ...s.moveOrder, [P]: order },
+        })
+        if (!replay) return null
+        return replayStepAfter(replay.step - dropped.filter((i) => i < replay.step).length, order.length)
       },
 
       addInstance: (unitId, side) => {

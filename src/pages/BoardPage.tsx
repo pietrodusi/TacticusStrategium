@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeftRight, Brush, Cog, Eraser, LogOut, Mountain, Plus, RotateCw, Save, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
+import { ArrowLeftRight, Brush, Cog, Eraser, LogOut, Mountain, Plus, RotateCcw, RotateCw, Save, Skull, SlidersHorizontal, Trash2, Undo2 } from 'lucide-react'
 import { usePlanStore, posAtTurn, paintAtTurn, parseHazard, hazardValue, HAZARD_LIFE, roundsLeftAt, type TokenPos } from '../stores/planStore'
 import { useBosses, usePrimes, useRoster, useSpawns } from '../hooks/useGameData'
 import { useBoard } from '../hooks/useBoards'
@@ -57,7 +57,7 @@ export function BoardPage() {
   const navigate = useNavigate()
   const { bossUnitId, targetKind, boardId, team, machineOfWar, currentTurn, positions, waypoints, moveOrder, paint, instances } = usePlanStore()
   const { seededBoard, primesDefeated, history } = usePlanStore()
-  const { setCurrentTurn, placeToken, moveToken, removeFromTurn, addInstance, setPaint, resetPlan } = usePlanStore()
+  const { setCurrentTurn, placeToken, moveToken, removeFromTurn, restoreToken, addInstance, setPaint, resetPlan } = usePlanStore()
   const { seedDeployment, setPrimesDefeated, checkpoint, undo } = usePlanStore()
 
   const bosses = useBosses()
@@ -212,6 +212,8 @@ export function BoardPage() {
 
   const selectedDef = allDefs.find((d) => d.id === selectedId) ?? null
 
+  const isGhost = (id: string) => boardTokens.some((t) => t.id === id && t.ghost)
+
   // A boss sits on its board start hex until it's first placed.
   const bossHome = (id: string): TokenPos | null =>
     board.data && allDefs.find((d) => d.id === id)?.type === 'boss'
@@ -224,16 +226,20 @@ export function BoardPage() {
   const stepEntry = stepUnitId ? positions[stepUnitId]?.[currentTurn] : null
   const stepStart = stepUnitId ? turnStart(stepUnitId) : null
   const stepReplay = stepUnitId ? replayEditFor(stepUnitId) : null
+  // Removed later this turn: still on the board mid-replay, and not counted as a step.
+  const stepRemoved = !!stepUnitId && stepEntry === null
+  const stepLegs = stepReplay ? stepReplay.total - (stepRemoved ? 1 : 0) : 0
   const canAddStep =
     currentTurn > 0 &&
-    (!stepReplay || (stepReplay.shown > 0 && stepReplay.shown === stepReplay.total)) &&
+    (!stepReplay || (stepReplay.shown > 0 && stepReplay.shown === stepLegs)) &&
     !paintOpen &&
     !pending &&
-    !!stepEntry &&
-    (!!waypoints[stepUnitId!]?.[currentTurn]?.length ||
+    (!!stepEntry || (stepRemoved && !!stepReplay)) &&
+    (stepRemoved ||
+      !!waypoints[stepUnitId!]?.[currentTurn]?.length ||
       !stepStart ||
-      stepStart.q !== stepEntry.q ||
-      stepStart.r !== stepEntry.r)
+      stepStart.q !== stepEntry?.q ||
+      stepStart.r !== stepEntry?.r)
   const armed = stepArmed && canAddStep
   // An armed unit behaves as selected: highlighted, and hex taps move it.
   const activeId = selectedId ?? (armed ? stepUnitId : null)
@@ -242,12 +248,9 @@ export function BoardPage() {
     if (!board.data) return
     const cur = posAtTurn(positions[id], currentTurn) ?? bossHome(id)
     const replay = replayEditFor(id)
-    // Mid-replay a unit can only edit a step on screen; one yet to move has none.
-    const onBoardAt = boardTokens.find((t) => t.id === id)?.pos ?? null
-    const locked = !!replay && replay.shown === 0 && !!onBoardAt
-    const shownAt = replay ? onBoardAt : cur
-    if (locked || (shownAt && shownAt.q === hex.q && shownAt.r === hex.r)) {
-      setSelectedId(null) // nothing to record
+    const shownAt = replay ? (boardTokens.find((t) => t.id === id && !t.ghost)?.pos ?? null) : cur
+    if (isGhost(id) || (shownAt && shownAt.q === hex.q && shownAt.r === hex.r)) {
+      setSelectedId(null) // nothing to record; a ghost comes back through Restore
       return
     }
     const rot = cur?.rot
@@ -288,6 +291,12 @@ export function BoardPage() {
     if (id !== stepUnitId) setStepArmed(false)
     setStepUnitId(id)
     setSelectedId((cur) => (cur === id ? null : id))
+  }
+  // A ghost's hex is free: with a unit or spawn in hand, tapping it means that hex.
+  const tapToken = (id: string) => {
+    const ghost = boardTokens.find((t) => t.id === id && t.ghost)
+    if (ghost && (pending || (activeId && activeId !== id))) handleHex(ghost.pos)
+    else selectToken(id)
   }
   const selectPalette = (p: PaletteType) => {
     setPaintOpen(false)
@@ -378,7 +387,7 @@ export function BoardPage() {
             selectedTokenId={activeId}
             painting={paintOpen}
             onHexClick={handleHex}
-            onTokenClick={selectToken}
+            onTokenClick={tapToken}
             onTokenMove={(id, hex) => placeAt(id, hex)}
             onPaintStart={() => {
               strokeNeedsCheckpoint.current = true
@@ -425,7 +434,21 @@ export function BoardPage() {
 
           {selectedDef && !paintOpen && (
             <div className="flex flex-col gap-2.5">
-              {selectedDef.type !== 'boss' && (
+              {isGhost(selectedDef.id) && (
+                <SideAction
+                  side={paintSide}
+                  label="Restore"
+                  icon={<RotateCcw size={16} />}
+                  title={`Restore ${selectedDef.name}`}
+                  onClick={() => {
+                    checkpoint()
+                    setReplayStep(restoreToken(selectedDef.id, replayEditFor(selectedDef.id)))
+                    setSelectedId(null)
+                    clearStep()
+                  }}
+                />
+              )}
+              {selectedDef.type !== 'boss' && !isGhost(selectedDef.id) && (
               <SideAction
                 side={paintSide}
                 danger
@@ -440,7 +463,7 @@ export function BoardPage() {
                 }}
               />
             )}
-            {selectedDef.size === 3 && (
+            {selectedDef.size === 3 && !isGhost(selectedDef.id) && (
               <SideAction
                 side={paintSide}
                 label="Rotate"

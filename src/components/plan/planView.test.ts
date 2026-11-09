@@ -116,15 +116,24 @@ describe('removal as a replay action', () => {
     expect(phaseStepOrder(defs, positions, 1, board, data)).toEqual(['u', 'v', 'u'])
   })
 
-  it('keeps the unit on the board until its removal is played', () => {
-    expect(u(1)?.pos).toMatchObject(B)
-    expect(u(2)?.pos).toMatchObject(B)
-    expect(u(null)).toBeUndefined()
+  it('keeps the unit live until its removal is played, then leaves a ghost', () => {
+    expect(u(1)).toMatchObject({ pos: B, ghost: false })
+    expect(u(2)).toMatchObject({ pos: B, ghost: false })
+    expect(u(null)).toMatchObject({ pos: B, ghost: true })
   })
 
-  it('shows the route of a removed unit, with no token at its end', () => {
+  it('draws ghosts first so live units stay on top', () => {
+    expect(view(null).tokens.map((t) => t.id)).toEqual(['u', 'v'])
+    expect(deriveBoardView([other, unit], positions, 1, board, data).tokens[0].id).toBe('u')
+  })
+
+  it('shows no ghost on later turns', () => {
+    expect(deriveBoardView(defs, positions, 2, board, data).tokens.map((t) => t.id)).toEqual(['v'])
+  })
+
+  it('keeps the route of a removed unit, ending at its ghost', () => {
     expect(view(null).movements.filter((m) => m.to.q === B.q && m.to.r === B.r)).toMatchObject([
-      { from: A, to: B, endsAtToken: false },
+      { from: A, to: B, endsAtToken: true },
     ])
   })
 
@@ -132,8 +141,8 @@ describe('removal as a replay action', () => {
     const still = { u: { 0: A, 1: null } }
     const order = { moveOrder: { 1: ['u'] } }
     expect(phaseStepOrder([unit], still, 1, board, order)).toEqual(['u'])
-    expect(deriveBoardView([unit], still, 1, board, { ...order, step: 0 }).tokens[0].pos).toMatchObject(A)
-    expect(deriveBoardView([unit], still, 1, board, order).tokens).toEqual([])
+    expect(deriveBoardView([unit], still, 1, board, { ...order, step: 0 }).tokens[0]).toMatchObject({ pos: A, ghost: false })
+    expect(deriveBoardView([unit], still, 1, board, order).tokens[0]).toMatchObject({ pos: A, ghost: true })
   })
 
   it('treats a removal from an older plan as the last action of that unit', () => {

@@ -18,6 +18,8 @@ export interface BoardToken {
   pos: TokenPos
   /** Initial add that disappears once the boss's primes are defeated. */
   removable?: boolean
+  /** Removed this turn: drawn faded where it fell; can be tapped, not dragged. */
+  ghost?: boolean
 }
 
 export interface BoardMovement {
@@ -171,7 +173,8 @@ export function HexGrid({
       return
     }
     if (!drag) return
-    const moved = drag.moved || Math.hypot(p.x - drag.sx, p.y - drag.sy) > board.tileSize * 0.35
+    const isGhost = tokens.some((t) => t.id === drag.id && t.ghost)
+    const moved = !isGhost && (drag.moved || Math.hypot(p.x - drag.sx, p.y - drag.sy) > board.tileSize * 0.35)
     setDrag({ ...drag, ix: p.x, iy: p.y, moved })
   }
 
@@ -292,7 +295,7 @@ export function HexGrid({
           if (cells.length === 0) return null
           const color = RING_COLOR[t.type]
           return (
-            <g key={`bf-${t.id}`}>
+            <g key={`bf-${t.id}`} opacity={t.ghost ? 0.4 : 1}>
               <path
                 d={footprintPath(cells)}
                 fill={color}
@@ -468,7 +471,11 @@ function TokenMarker({
   const ring = RING_COLOR[token.type]
   const { src, onError } = usePortraitSource(token.stem)
   return (
-    <g data-token-id={token.id} className="cursor-grab" style={{ opacity: dragging ? 0.85 : 1 }}>
+    <g
+      data-token-id={token.id}
+      className={token.ghost ? 'cursor-pointer' : 'cursor-grab'}
+      style={{ opacity: token.ghost ? 0.5 : dragging ? 0.85 : 1, filter: token.ghost ? 'grayscale(1)' : undefined }}
+    >
       <circle cx={center.x} cy={center.y} r={r} fill="#0b0d11" />
       {src && (
         <>
@@ -495,7 +502,7 @@ function TokenMarker({
         stroke={selected || dragging ? '#66f0f5' : ring}
         strokeWidth={selected || dragging ? 4 : 2.5}
       />
-      {token.removable && <RemovableBadge cx={center.x + r * 0.72} cy={center.y - r * 0.72} r={r * 0.4} />}
+      {(token.removable || token.ghost) && <RemovableBadge cx={center.x + r * 0.72} cy={center.y - r * 0.72} r={r * 0.4} />}
     </g>
   )
 }

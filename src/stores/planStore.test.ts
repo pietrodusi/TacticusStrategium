@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { editRouteStep, paintAtTurn, parseHazard, posAtTurn, roundsLeftAt, usePlanStore } from './planStore'
+import { editRouteStep, insertRouteStep, paintAtTurn, parseHazard, posAtTurn, roundsLeftAt, usePlanStore } from './planStore'
 
 describe('editRouteStep', () => {
   const A = { q: 0, r: 0 }
@@ -29,6 +29,24 @@ describe('editRouteStep', () => {
 
   it('drops rotation from an edited stop', () => {
     expect(editRouteStep(A, [B], C, 0, { ...D, rot: 90 } as typeof D).stops).toEqual([D])
+  })
+})
+
+describe('insertRouteStep', () => {
+  const A = { q: 0, r: 0 }
+  const B = { q: 1, r: 0 }
+  const C = { q: 2, r: 0 }
+
+  it('adds a stop ahead of the existing route', () => {
+    expect(insertRouteStep(A, [], B, C)).toEqual({ stops: [C], end: B, removedLegs: [] })
+  })
+
+  it('replaces the first step when moving onto its hex', () => {
+    expect(insertRouteStep(A, [B], C, B)).toEqual({ stops: [B], end: C, removedLegs: [0] })
+  })
+
+  it('handles a unit placed this turn', () => {
+    expect(insertRouteStep(null, [A], B, C)).toEqual({ stops: [A, C], end: B, removedLegs: [] })
   })
 })
 
@@ -290,6 +308,31 @@ describe('plan actions', () => {
         expect(store().moveOrder[1]).toEqual(['u', 'v'])
       })
 
+      it('gives a unit that has not acted a move at this point', () => {
+        const step = store().moveToken('w', D, V, false, { order: store().moveOrder[1], step: 1, shown: 0 })
+        expect(store().positions.w[1]).toEqual(D)
+        expect(store().moveOrder[1]).toEqual(['u', 'w', 'v', 'u'])
+        expect(step).toBe(2)
+      })
+
+      it('inserts ahead of a unit\'s later steps, which carry on from the new hex', () => {
+        usePlanStore.setState({ moveOrder: { 1: ['v', 'u', 'u'] } })
+        const step = store().moveToken('u', D, A, false, replay(1, 0))
+        expect(stops()).toEqual([D, B])
+        expect(end()).toEqual(C)
+        expect(store().moveOrder[1]).toEqual(['v', 'u', 'u', 'u'])
+        expect(step).toBe(2)
+      })
+
+      it('moving onto the next stop makes that step happen now', () => {
+        usePlanStore.setState({ moveOrder: { 1: ['v', 'u', 'u'] } })
+        const step = store().moveToken('u', B, A, false, replay(1, 0))
+        expect(stops()).toEqual([B])
+        expect(end()).toEqual(C)
+        expect(store().moveOrder[1]).toEqual(['v', 'u', 'u'])
+        expect(step).toBe(2)
+      })
+
       it('adds on a final step, placing it after the shown moves', () => {
         const step = store().moveToken('v', D, V, true, replay(2, 1))
         expect(store().waypoints.v[1]).toEqual([C])
@@ -381,13 +424,47 @@ describe('plan actions', () => {
         expect(store().positions.u[1]).toBeNull()
       })
 
-      it('placing a removed unit again undoes the removal', () => {
+      it('adds a step before a removal that is still to come', () => {
         move(B)
         store().removeFromTurn('u')
-        store().moveToken('u', C, A, false)
+        const step = store().moveToken('u', C, A, true, { order: store().moveOrder[1], step: 1, shown: 1 })
+        expect(stops()).toEqual([B, C])
+        expect(store().positions.u[1]).toBeNull()
+        expect(store().moveOrder[1]).toEqual(['u', 'u', 'u'])
+        expect(step).toBe(2)
+      })
+
+      it('restores a unit with its route', () => {
+        move(B)
+        move(C, true)
+        store().removeFromTurn('u')
+        store().restoreToken('u')
+        expect(stops()).toEqual([B])
         expect(end()).toEqual(C)
-        expect(stops()).toEqual([])
-        expect(store().moveOrder[1]).toEqual(['u'])
+        expect(store().moveOrder[1]).toEqual(['u', 'u'])
+      })
+
+      it('restores a unit that never moved to where it was', () => {
+        store().removeFromTurn('u')
+        store().restoreToken('u')
+        expect(end()).toBeUndefined()
+        expect(posAtTurn(store().positions.u, 1)).toEqual(A)
+        expect(store().moveOrder[1]).toEqual([])
+      })
+
+      it('restoring during a replay takes only the removal out of the order', () => {
+        move(B)
+        store().moveToken('v', C, D, false)
+        store().removeFromTurn('u')
+        const step = store().restoreToken('u', { order: ['u', 'u', 'v'], step: 2, shown: 2 })
+        expect(store().moveOrder[1]).toEqual(['u', 'v'])
+        expect(step).toBe(1)
+      })
+
+      it('restoring keeps the rotation it had', () => {
+        usePlanStore.setState({ positions: { u: { 0: { ...A, rot: 90 }, 1: null } }, waypoints: { u: { 1: [B] } } })
+        store().restoreToken('u')
+        expect(end()).toEqual({ ...B, rot: 90 })
       })
     })
 
