@@ -52,13 +52,17 @@ export function GuidePage() {
       <Section n="III" title="Deploy & maneuver">
         <P>
           Tap a unit chip in the dock, then tap a hex to place it. Drag a placed token to move it — the
-          boss&apos;s multi-hex footprint previews where it will land. During deployment, dragging a unit onto
-          another swaps their places. Selecting a unit reveals edge actions:
-          <B> Remove</B>, and <B>Rotate</B> for multi-hex units.
+          boss&apos;s multi-hex footprint previews where it will land. During deployment (<B>S</B>), dragging a
+          unit onto another swaps their places. Selecting a unit reveals edge actions: <B>Remove</B>, and
+          <B> Rotate</B> for multi-hex units.
         </P>
         <P>
           Tap a palette chip (the dashed ones) to drop summons or extra adds — each tap creates one, so you
           can place several. Everything you do is undoable from the <B>Undo</B> button.
+        </P>
+        <P>
+          <B>Multi-hex units</B> follow the game&apos;s rules: every hex must be on the map and at the same
+          height, and nothing can share a hex with them. A move that breaks these rules just doesn&apos;t happen.
         </P>
       </Section>
 
@@ -67,31 +71,45 @@ export function GuidePage() {
         <P>
           A fight is six <B>rounds</B>, and each round is a <B>player turn</B> then an <B>enemy turn</B>. The
           selector shows <B>S</B> (deployment, green), then each round as <B>1…6</B> (blue = player turn,
-          red = enemy turn). The double arrows jump one turn at a time; the single arrows replay the plan one
-          move at a time, in the order you made the moves. Moving a unit during a replay edits the step on
-          screen, and any later steps carry on from there. <B>Remove</B> is recorded the same way, so a unit
-          defeated mid-turn disappears at that point in the replay, leaving a faded ghost for that turn. Tap
-          the ghost to <B>Restore</B> the unit.
-        </P>
-        <P>
-          Drag a unit onto another unit to record an <B>attack</B>: a red arrow points at the target and the
-          attacker gets a crossed-swords icon, without moving. Attacks replay in order too; drag onto the same
-          target again to take the attack back.
+          red = enemy turn). The <B>double arrows</B> jump a whole turn; the <B>single arrows</B> replay the
+          plan one action at a time.
         </P>
         <P>
           Positions carry forward until you change them, and a faint arrow shows each token&apos;s move from
           the previous turn — so you can see the whole advance at a glance. The counter at the top of the
           map shows rounds remaining.
         </P>
-        <P>
-          Some units move more than once in a turn. After moving a unit, tap <B>+ Step</B> and move it again
-          to record another step; the arrows chain in order. Moving without tapping it corrects the latest
-          step, and moving back to where that step began cancels it.
-        </P>
       </Section>
 
-      {/* 5 — Paint & hazards */}
-      <Section n="V" title="Paint zones & hazards">
+      {/* 5 — Actions within a turn */}
+      <Section n="V" title="Record every action">
+        <P>From round 1 on, you can record what each unit does in a turn, in order:</P>
+        <UL>
+          <li>
+            <B>+ Step</B> — for units that move more than once. After moving a unit, tap <B>+ Step</B> and move
+            it again; the arrows chain in order. Moving without tapping it corrects the latest step, and moving
+            back to where that step began cancels it. Tap a unit that already moved to bring the button back.
+          </li>
+          <li>
+            <B>Attack</B> — drag a unit onto another. It stays where it is, a red arrow points at the target
+            and it gets a crossed-swords icon. Drag onto the same target again to take the attack back.
+          </li>
+          <li>
+            <B>Remove</B> — for a unit defeated mid-turn. Its moves are kept and it stays on its last hex as a
+            faded ghost with a red X, for that turn only. Tap the ghost, then <B>Restore</B> to bring it back.
+          </li>
+        </UL>
+        <P>
+          Use the <B>single arrows</B> to watch the turn play out one action at a time, in the order you made
+          them. You can edit during a replay too: moving a unit that has already acted changes what it just did,
+          and its later steps carry on from there. Moving one that hasn&apos;t acted yet adds its move at that
+          point, and new attacks or removals land at that point as well.
+        </P>
+        <Shot src="actions.png" alt="A recorded turn: chained moves, an attack on the boss and a removed unit" />
+      </Section>
+
+      {/* 6 — Paint & hazards */}
+      <Section n="VI" title="Paint zones & hazards">
         <P>
           The <B>Paint</B> panel on the board edge marks the map. Pick a colour to highlight zones (paint
           lives for the turn you draw it on plus the next), or a hazard stamp — <B>fire</B>, <B>ice</B>,
@@ -101,8 +119,8 @@ export function GuidePage() {
         <Shot src="paint.png" alt="The paint panel with colours, hazard stamps and the rubber" />
       </Section>
 
-      {/* 6 — Save & share */}
-      <Section n="VI" title="Save & share">
+      {/* 7 — Save & share */}
+      <Section n="VII" title="Save & share">
         <P>
           Without an account your plan lives in this browser. Sign in (Google, email, or Discord) and you
           can <B>Save</B> named plans to the cloud, reopen them from <Lnk to="/plans">My Plans</Lnk>, and

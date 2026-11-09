@@ -1,7 +1,7 @@
 // Regenerate the Guide & FAQ screenshots (public/images/guide/*.png) against
 // the current UI. Scene: Belisarius Cawl on GB_Belisarius_01, first three
 // roster units (picked through the real UnitPickerModal), three tokens placed,
-// phase advanced to turn 5, paint panel open for the last shot.
+// phase advanced to turn 5, paint panel open; then a seeded turn for actions.png.
 // Run `npm run build && npx vite preview` first, then: node scripts/shot-guide.mjs
 import puppeteer from 'puppeteer-core'
 
@@ -106,7 +106,7 @@ for (let i = 0; i < Math.min(3, chips.length); i++) {
   }
 }
 for (let i = 0; i < 9; i++) {
-  await page.click('[aria-label="Next phase"]')
+  await page.click('[aria-label="Next turn"]')
   await sleep(120)
 }
 await sleep(600)
@@ -123,5 +123,44 @@ for (const b of await page.$$('button')) {
 await sleep(500)
 await page.screenshot({ path: `${OUT}/paint.png` })
 console.log('wrote paint.png')
+
+// ── actions.png — a recorded turn: chained moves, an attack, a removed unit ──
+const BOSS = 'GuildBoss10Boss1AdmecBelisarius'
+const MOVER = 'ultraCalgar'
+const FALLEN = 'ultraTigurius'
+await page.evaluate(
+  (BOSS, MOVER, FALLEN) => {
+    localStorage.setItem(
+      'tacticus-strategium-plan',
+      JSON.stringify({
+        state: {
+          bossUnitId: BOSS,
+          targetKind: 'boss',
+          boardId: 'GB_Belisarius_01',
+          team: [MOVER, FALLEN, null, null, null],
+          machineOfWar: null,
+          currentTurn: 1,
+          positions: { [MOVER]: { 0: { q: 3, r: 3 }, 1: { q: 5, r: 0 } }, [FALLEN]: { 0: { q: 3, r: 5 }, 1: null } },
+          waypoints: { [MOVER]: { 1: [{ q: 5, r: 2 }] }, [FALLEN]: { 1: [{ q: 1, r: 4 }] } },
+          moveOrder: { 1: [MOVER, `attack|${MOVER}|${BOSS}`, MOVER, FALLEN, FALLEN] },
+          paint: {},
+          instances: {},
+          instanceSeq: 0,
+          seededBoard: 'GB_Belisarius_01',
+          primesDefeated: 2,
+          cloudRef: null,
+        },
+        version: 2,
+      }),
+    )
+  },
+  BOSS,
+  MOVER,
+  FALLEN,
+)
+await page.reload({ waitUntil: 'networkidle0' })
+await sleep(2200)
+await page.screenshot({ path: `${OUT}/actions.png` })
+console.log('wrote actions.png')
 
 await browser.close()
