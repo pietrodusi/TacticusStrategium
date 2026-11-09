@@ -19,7 +19,7 @@ const ALLY_SELECTED = '#66f0f5'
 export const SELECTED_RING_COLOR: Record<TokenKind, string> = {
   character: ALLY_SELECTED,
   mow: ALLY_SELECTED,
-  boss: '#d8b4fe',
+  boss: '#c77dff',
   summon: ALLY_SELECTED,
-  npc: '#ede9fe',
+  npc: '#b388ff',
 }
