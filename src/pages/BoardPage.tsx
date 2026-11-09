@@ -243,8 +243,9 @@ export function BoardPage() {
     const cur = posAtTurn(positions[id], currentTurn) ?? bossHome(id)
     const replay = replayEditFor(id)
     // Mid-replay a unit can only edit a step on screen; one yet to move has none.
-    const locked = !!replay && replay.shown === 0 && !!cur
-    const shownAt = replay ? (boardTokens.find((t) => t.id === id)?.pos ?? cur) : cur
+    const onBoardAt = boardTokens.find((t) => t.id === id)?.pos ?? null
+    const locked = !!replay && replay.shown === 0 && !!onBoardAt
+    const shownAt = replay ? onBoardAt : cur
     if (locked || (shownAt && shownAt.q === hex.q && shownAt.r === hex.r)) {
       setSelectedId(null) // nothing to record
       return
@@ -433,10 +434,9 @@ export function BoardPage() {
                 title={`Remove ${selectedDef.name}`}
                 onClick={() => {
                   checkpoint()
-                  removeFromTurn(selectedDef.id)
+                  setReplayStep(removeFromTurn(selectedDef.id, replayEditFor(selectedDef.id)))
                   setSelectedId(null)
                   clearStep()
-                  setReplayStep(null)
                 }}
               />
             )}

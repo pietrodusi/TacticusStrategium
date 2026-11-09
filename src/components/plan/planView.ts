@@ -108,20 +108,27 @@ interface RouteData {
   moveOrder?: MoveOrder
 }
 
-/** A token's final position at `phase` and the legs that got it there. The boss
- *  falls back to its board start hex until placed. */
+/** A token's final position at `phase` (null once removed), the legs that got it
+ *  there, and whether it was removed this phase. `from` is where it began. The
+ *  boss falls back to its board start hex until placed. */
 function tokenRoute(d: TokenDef, positions: PositionMap, phase: number, board: ParsedBoard, data: RouteData) {
   const fallback =
     d.type === 'boss' ? { q: board.bossStart.q, r: board.bossStart.r, rot: board.bossRotation } : null
   const pos = posAtTurn(positions[d.id], phase) ?? fallback
-  if (phase === 0 || !pos) return { pos, legs: [] }
-  const prev = posAtTurn(positions[d.id], phase - 1) ?? fallback
-  const points = [...(prev ? [prev] : []), ...(data.waypoints?.[d.id]?.[phase] ?? []), pos]
-  return { pos, legs: routeLegs(points.map(({ q, r }) => ({ q, r })), RING_COLOR[d.type]) }
+  const prev = phase > 0 ? (posAtTurn(positions[d.id], phase - 1) ?? fallback) : null
+  const stops = phase > 0 ? (data.waypoints?.[d.id]?.[phase] ?? []) : []
+  const removedHere = phase > 0 && positions[d.id]?.[phase] === null && (!!prev || stops.length > 0)
+  const points = [...(prev ? [prev] : []), ...stops, ...(pos && phase > 0 ? [pos] : [])]
+  return {
+    pos,
+    from: prev,
+    removedHere,
+    legs: routeLegs(points.map(({ q, r }) => ({ q, r })), RING_COLOR[d.type]),
+  }
 }
 
-/** One token id per step of `phase`, in replay order: the order the steps were
- *  made, then any with no recorded order (older plans) unit by unit. */
+/** One token id per action of `phase` (each step, then any removal), in replay
+ *  order: the order they were made, then any unrecorded (older plans) unit by unit. */
 export function phaseStepOrder(
   defs: TokenDef[],
   positions: PositionMap,
@@ -129,7 +136,12 @@ export function phaseStepOrder(
   board: ParsedBoard,
   data: RouteData,
 ): string[] {
-  const left = new Map(defs.map((d) => [d.id, tokenRoute(d, positions, phase, board, data).legs.length]))
+  const left = new Map(
+    defs.map((d) => {
+      const { legs, removedHere } = tokenRoute(d, positions, phase, board, data)
+      return [d.id, legs.length + (removedHere ? 1 : 0)]
+    }),
+  )
   const order: string[] = []
   const take = (id: string) => {
     if (!left.get(id)) return false
@@ -155,14 +167,17 @@ export function deriveBoardView(
   const tokens: BoardToken[] = []
   const movements: BoardMovement[] = []
   for (const d of defs) {
-    const { pos, legs } = tokenRoute(d, positions, phase, board, data)
-    const shown = replayed ? legs.slice(0, replayed.filter((id) => id === d.id).length) : legs
-    if (pos) {
+    const { pos, from, legs, removedHere } = tokenRoute(d, positions, phase, board, data)
+    const actions = replayed ? replayed.filter((id) => id === d.id).length : Infinity
+    const shown = legs.slice(0, actions)
+    const onBoard = removedHere ? actions <= legs.length : !!pos
+    const base = pos ?? from
+    if (onBoard && base) {
       // Mid-replay a token sits at the end of its last shown leg (or where it began).
-      const at = replayed && legs.length > 0 ? (shown[shown.length - 1]?.to ?? legs[0].from) : pos
-      tokens.push({ ...d, pos: { ...pos, q: at.q, r: at.r }, removable: d.removeAtPrime != null })
+      const at = replayed && (legs.length > 0 || removedHere) ? (shown[shown.length - 1]?.to ?? legs[0]?.from ?? base) : base
+      tokens.push({ ...d, pos: { ...base, q: at.q, r: at.r }, removable: d.removeAtPrime != null })
     }
-    movements.push(...shown.map((leg, i) => ({ ...leg, endsAtToken: i === shown.length - 1 })))
+    movements.push(...shown.map((leg, i) => ({ ...leg, endsAtToken: onBoard && i === shown.length - 1 })))
   }
   return { tokens, movements }
 }

@@ -100,3 +100,47 @@ describe('turn replay', () => {
     expect(stepCursor({ phase: MAX_PHASE, step: null }, 1, count)).toBeNull()
   })
 })
+
+describe('removal as a replay action', () => {
+  // u moves A→B, then v moves, then u is removed.
+  const other: TokenDef = { id: 'v', type: 'character', stem: null, name: 'V', size: 1 }
+  const D = { q: 5, r: 5 }
+  const E = { q: 6, r: 5 }
+  const positions = { u: { 0: A, 1: null }, v: { 0: D, 1: E } }
+  const data = { waypoints: { u: { 1: [B] } }, moveOrder: { 1: ['u', 'v', 'u'] } }
+  const defs = [unit, other]
+  const view = (step: number | null) => deriveBoardView(defs, positions, 1, board, { ...data, step })
+  const u = (step: number | null) => view(step).tokens.find((t) => t.id === 'u')
+
+  it('counts the removal as an action', () => {
+    expect(phaseStepOrder(defs, positions, 1, board, data)).toEqual(['u', 'v', 'u'])
+  })
+
+  it('keeps the unit on the board until its removal is played', () => {
+    expect(u(1)?.pos).toMatchObject(B)
+    expect(u(2)?.pos).toMatchObject(B)
+    expect(u(null)).toBeUndefined()
+  })
+
+  it('shows the route of a removed unit, with no token at its end', () => {
+    expect(view(null).movements.filter((m) => m.to.q === B.q && m.to.r === B.r)).toMatchObject([
+      { from: A, to: B, endsAtToken: false },
+    ])
+  })
+
+  it('shows a unit removed without moving at its start until the removal', () => {
+    const still = { u: { 0: A, 1: null } }
+    const order = { moveOrder: { 1: ['u'] } }
+    expect(phaseStepOrder([unit], still, 1, board, order)).toEqual(['u'])
+    expect(deriveBoardView([unit], still, 1, board, { ...order, step: 0 }).tokens[0].pos).toMatchObject(A)
+    expect(deriveBoardView([unit], still, 1, board, order).tokens).toEqual([])
+  })
+
+  it('treats a removal from an older plan as the last action of that unit', () => {
+    expect(phaseStepOrder(defs, positions, 1, board, { waypoints: data.waypoints })).toEqual(['u', 'u', 'v'])
+  })
+
+  it('ignores a unit that was already gone', () => {
+    expect(phaseStepOrder([unit], { u: { 0: null, 1: null } }, 1, board, {})).toEqual([])
+  })
+})

@@ -251,11 +251,10 @@ describe('plan actions', () => {
       expect(store().moveOrder[1]).toEqual([])
     })
 
-    it('removing a unit drops it from the move order', () => {
-      move(B)
-      store().moveToken('v', C, D, false)
+    it('removing a unit clears it from later turns', () => {
+      usePlanStore.setState({ moveOrder: { 1: [], 2: ['u', 'v'] } })
       store().removeFromTurn('u')
-      expect(store().moveOrder[1]).toEqual(['v'])
+      expect(store().moveOrder[2]).toEqual(['v'])
     })
 
     describe('editing during a replay', () => {
@@ -313,11 +312,83 @@ describe('plan actions', () => {
       expect(end()).toEqual(B)
     })
 
-    it('removing a unit clears steps from the current turn onward', () => {
-      move(B)
-      move(C, true)
-      store().removeFromTurn('u')
-      expect(stops()).toEqual([])
+    describe('removing as an action', () => {
+      it('keeps the moves made before the removal', () => {
+        move(B)
+        move(C, true)
+        store().removeFromTurn('u')
+        expect(store().positions.u[1]).toBeNull()
+        expect(stops()).toEqual([B, C])
+        expect(store().moveOrder[1]).toEqual(['u', 'u', 'u'])
+      })
+
+      it('records a removal with no moves', () => {
+        store().moveToken('v', C, D, false)
+        store().removeFromTurn('u')
+        expect(stops()).toEqual([])
+        expect(store().moveOrder[1]).toEqual(['v', 'u'])
+      })
+
+      it('drops later moves when removed mid-replay', () => {
+        move(B)
+        store().moveToken('v', C, D, false)
+        move(C, true)
+        const step = store().removeFromTurn('u', { order: store().moveOrder[1], step: 2, shown: 1 })
+        expect(stops()).toEqual([B])
+        expect(store().moveOrder[1]).toEqual(['u', 'v', 'u'])
+        expect(step).toBeNull() // the removal is now the last action
+      })
+
+      it('inserts the removal at the replay position and stays in the replay', () => {
+        store().moveToken('v', C, D, false)
+        store().moveToken('w', B, A, false)
+        const step = store().removeFromTurn('u', { order: store().moveOrder[1], step: 1, shown: 0 })
+        expect(store().moveOrder[1]).toEqual(['v', 'u', 'w'])
+        expect(step).toBe(2)
+      })
+
+      it('still drops a unit with no earlier presence entirely', () => {
+        usePlanStore.setState({ positions: { u: { 1: B } }, moveOrder: { 1: ['v'] } })
+        store().removeFromTurn('u')
+        expect(store().positions.u).toBeUndefined()
+        expect(store().moveOrder[1]).toEqual(['v'])
+      })
+
+      it('undo brings the unit and its route back', () => {
+        move(B)
+        store().checkpoint()
+        store().removeFromTurn('u')
+        store().undo()
+        expect(end()).toEqual(B)
+        expect(store().moveOrder[1]).toEqual(['u'])
+      })
+
+      it('editing an earlier step keeps the removal', () => {
+        move(B)
+        move(C, true)
+        store().removeFromTurn('u')
+        store().moveToken('u', D, A, false, { order: store().moveOrder[1], step: 1, shown: 1 })
+        expect(stops()).toEqual([D, C])
+        expect(store().positions.u[1]).toBeNull()
+        expect(store().moveOrder[1]).toEqual(['u', 'u', 'u'])
+      })
+
+      it('correcting the last step before the removal keeps the removal', () => {
+        move(B)
+        store().removeFromTurn('u')
+        store().moveToken('u', C, A, false, { order: store().moveOrder[1], step: 1, shown: 1 })
+        expect(stops()).toEqual([C])
+        expect(store().positions.u[1]).toBeNull()
+      })
+
+      it('placing a removed unit again undoes the removal', () => {
+        move(B)
+        store().removeFromTurn('u')
+        store().moveToken('u', C, A, false)
+        expect(end()).toEqual(C)
+        expect(stops()).toEqual([])
+        expect(store().moveOrder[1]).toEqual(['u'])
+      })
     })
 
     it('loading an older plan does not inherit the previous steps', () => {
