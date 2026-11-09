@@ -13,9 +13,17 @@ export interface TokenPos {
 /** tokenId → (phase → hexes the token stopped on before its final position). */
 export type WaypointMap = Record<string, Record<number, HexCoord[]>>
 
-/** phase → token ids, one entry per action, in the order they were made. A unit
- *  removed that phase has one more entry than it has steps: the last is the removal. */
+/** phase → one entry per action, in the order they were made. A move or removal
+ *  is the unit's id (a unit removed that phase has one more entry than it has
+ *  steps: the last is the removal); an attack is an `attackEntry`. */
 export type MoveOrder = Record<number, string[]>
+
+export const attackEntry = (id: string, target: string) => `attack|${id}|${target}`
+
+export function parseAttack(entry: string): { id: string; target: string } | null {
+  const [kind, id, target] = entry.split('|')
+  return kind === 'attack' && target ? { id, target } : null
+}
 
 const sameHex = (a: HexCoord, b: HexCoord) => a.q === b.q && a.r === b.r
 
@@ -274,6 +282,10 @@ interface PlanState {
   /** Remove a token from the current turn onward, recorded as an action after the
    *  moves it made; earlier turns keep it. Returns the replay step, as moveToken. */
   removeFromTurn: (id: string, replay?: ReplayEdit) => number | null
+  /** Record `id` attacking `target` after the first `step` actions of `order` (null
+   *  = after all of them), or take back the latest such attack if there is one.
+   *  Returns the replay step, as moveToken. */
+  toggleAttack: (id: string, target: string, order: string[], step: number | null) => number | null
   /** Take back this turn's removal of a token, keeping its route. Returns the
    *  replay step, as moveToken. */
   restoreToken: (id: string, replay?: ReplayEdit) => number | null
@@ -483,6 +495,18 @@ export const usePlanStore = create<PlanState>()(
           set({ positions, waypoints, moveOrder, instances })
         }
         return replay ? replayStepAfter(at + (hasPast ? 1 : 0), order.length) : null
+      },
+
+      toggleAttack: (id, target, base, step) => {
+        const s = get()
+        const entry = attackEntry(id, target)
+        const shown = base.slice(0, step ?? base.length)
+        const existing = shown.lastIndexOf(entry)
+        const order = [...base]
+        if (existing >= 0) order.splice(existing, 1)
+        else order.splice(shown.length, 0, entry)
+        set({ moveOrder: { ...s.moveOrder, [s.currentTurn]: order } })
+        return step === null ? null : replayStepAfter(step + (existing >= 0 ? -1 : 1), order.length)
       },
 
       restoreToken: (id, replay) => {

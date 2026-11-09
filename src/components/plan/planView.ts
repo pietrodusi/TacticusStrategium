@@ -1,7 +1,7 @@
 // Pure derivation of what's on the board at a phase — token definitions,
 // effective positions, movement arrows. Shared by the interactive BoardPage
 // and the read-only shared-plan viewer (PlanBoardView).
-import { MAX_PHASE, posAtTurn, type MoveOrder, type TokenPos, type WaypointMap } from '../../stores/planStore'
+import { MAX_PHASE, parseAttack, posAtTurn, type MoveOrder, type TokenPos, type WaypointMap } from '../../stores/planStore'
 import { RING_COLOR, type TokenKind } from '../tokenColors'
 import { bossDisplayName } from '../../utils/format'
 import type { BossIndex, PrimeIndex, SpawnsData, Unit } from '../../types/units'
@@ -87,11 +87,12 @@ export const visibleTokenDefs = (defs: TokenDef[], primesDefeated: number): Toke
 /** One arrow per leg of a route. Legs sharing a hex pair (A→B→A) are curved so
  *  each stays visible; direction alone puts a return trip on the opposite side. */
 function routeLegs(points: HexCoord[], color: string): Omit<BoardMovement, 'endsAtToken'>[] {
+  const legs = points.slice(1).map((to, i) => ({ from: points[i], to }))
+  return withCurves(legs.filter((l) => l.from.q !== l.to.q || l.from.r !== l.to.r), color)
+}
+
+function withCurves(legs: { from: HexCoord; to: HexCoord }[], color: string): Omit<BoardMovement, 'endsAtToken'>[] {
   const pair = (a: HexCoord, b: HexCoord) => `${a.q},${a.r}>${b.q},${b.r}`
-  const legs = points
-    .slice(1)
-    .map((to, i) => ({ from: points[i], to }))
-    .filter((l) => pair(l.from, l.to) !== pair(l.to, l.from))
   const repeats = new Map<string, number>()
   return legs.map((leg) => {
     const forward = pair(leg.from, leg.to)
@@ -102,6 +103,8 @@ function routeLegs(points: HexCoord[], color: string): Omit<BoardMovement, 'ends
     return { ...leg, color, curve: retraced ? n + 1 : 0 }
   })
 }
+
+const ATTACK_COLOR = '#ef4444'
 
 interface RouteData {
   waypoints?: WaypointMap
@@ -127,8 +130,19 @@ function tokenRoute(d: TokenDef, positions: PositionMap, phase: number, board: P
   }
 }
 
-/** One token id per action of `phase` (each step, then any removal), in replay
- *  order: the order they were made, then any unrecorded (older plans) unit by unit. */
+type TokenRoute = ReturnType<typeof tokenRoute>
+
+const tokenRoutes = (defs: TokenDef[], positions: PositionMap, phase: number, board: ParsedBoard, data: RouteData) =>
+  new Map(defs.map((d) => [d.id, tokenRoute(d, positions, phase, board, data)]))
+
+/** Where a unit stands after `actions` of its actions; null once it's gone. */
+function hexAfter(route: TokenRoute, actions: number): HexCoord | null {
+  if (route.removedHere && actions > route.legs.length) return null
+  return route.legs[Math.min(actions, route.legs.length) - 1]?.to ?? route.legs[0]?.from ?? route.pos ?? route.from
+}
+
+/** One entry per action of `phase` (steps, removals, attacks), in replay order: the
+ *  order they were made, then any unrecorded (older plans) unit by unit. */
 export function phaseStepOrder(
   defs: TokenDef[],
   positions: PositionMap,
@@ -136,20 +150,27 @@ export function phaseStepOrder(
   board: ParsedBoard,
   data: RouteData,
 ): string[] {
-  const left = new Map(
-    defs.map((d) => {
-      const { legs, removedHere } = tokenRoute(d, positions, phase, board, data)
-      return [d.id, legs.length + (removedHere ? 1 : 0)]
-    }),
-  )
+  const routes = tokenRoutes(defs, positions, phase, board, data)
+  const left = new Map([...routes].map(([id, r]) => [id, r.legs.length + (r.removedHere ? 1 : 0)]))
+  const done = new Map<string, number>()
   const order: string[] = []
   const take = (id: string) => {
     if (!left.get(id)) return false
     left.set(id, left.get(id)! - 1)
+    done.set(id, (done.get(id) ?? 0) + 1)
     order.push(id)
     return true
   }
-  for (const id of data.moveOrder?.[phase] ?? []) take(id)
+  const onBoard = (id: string) => {
+    const route = routes.get(id)
+    return !!route && !!hexAfter(route, done.get(id) ?? 0)
+  }
+  for (const entry of data.moveOrder?.[phase] ?? []) {
+    const attack = parseAttack(entry)
+    if (!attack) take(entry)
+    // An attack only happens if both units are still on the board at that point.
+    else if (onBoard(attack.id) && onBoard(attack.target)) order.push(entry)
+  }
   for (const d of defs) while (take(d.id));
   return order
 }
@@ -163,25 +184,51 @@ export function deriveBoardView(
   board: ParsedBoard,
   data: RouteData & { step?: number | null } = {},
 ): { tokens: BoardToken[]; movements: BoardMovement[] } {
-  const replayed = data.step == null ? null : phaseStepOrder(defs, positions, phase, board, data).slice(0, data.step)
+  const routes = tokenRoutes(defs, positions, phase, board, data)
+  const order = phaseStepOrder(defs, positions, phase, board, data)
+  const replayed = data.step == null ? order : order.slice(0, data.step)
+
+  // Walk the actions on screen: unit positions at each attack, and who has attacked.
+  const counts = new Map<string, number>()
+  const attackers = new Set<string>()
+  const attackLegs: { from: HexCoord; to: HexCoord }[] = []
+  for (const entry of replayed) {
+    const attack = parseAttack(entry)
+    if (!attack) {
+      counts.set(entry, (counts.get(entry) ?? 0) + 1)
+      continue
+    }
+    const from = hexAfter(routes.get(attack.id)!, counts.get(attack.id) ?? 0)
+    const to = hexAfter(routes.get(attack.target)!, counts.get(attack.target) ?? 0)
+    attackers.add(attack.id)
+    if (from && to) attackLegs.push({ from: { q: from.q, r: from.r }, to: { q: to.q, r: to.r } })
+  }
+
   const tokens: BoardToken[] = []
   const ghosts: BoardToken[] = []
   const movements: BoardMovement[] = []
   for (const d of defs) {
-    const { pos, from, legs, removedHere } = tokenRoute(d, positions, phase, board, data)
-    const actions = replayed ? replayed.filter((id) => id === d.id).length : Infinity
+    const { pos, from, legs, removedHere } = routes.get(d.id)!
+    const actions = counts.get(d.id) ?? 0
     const shown = legs.slice(0, actions)
     const ghost = removedHere && actions > legs.length
     const base = pos ?? from
     // A token sits at the end of its last shown leg (or where it began).
     const at = shown[shown.length - 1]?.to ?? legs[0]?.from ?? base
     if (at && (pos || removedHere)) {
-      const token = { ...d, pos: { ...base, q: at.q, r: at.r }, removable: d.removeAtPrime != null, ghost }
+      const token = {
+        ...d,
+        pos: { ...base, q: at.q, r: at.r },
+        removable: d.removeAtPrime != null,
+        ghost,
+        attacked: attackers.has(d.id),
+      }
       if (ghost) ghosts.push(token)
       else tokens.push(token)
     }
     movements.push(...shown.map((leg, i) => ({ ...leg, endsAtToken: i === shown.length - 1 })))
   }
+  movements.push(...withCurves(attackLegs, ATTACK_COLOR).map((leg) => ({ ...leg, endsAtToken: true })))
   // Ghosts first, so a live unit sharing the hex stays on top and grabbable.
   return { tokens: [...ghosts, ...tokens], movements }
 }

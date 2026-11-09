@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { editRouteStep, insertRouteStep, paintAtTurn, parseHazard, posAtTurn, roundsLeftAt, usePlanStore } from './planStore'
+import { attackEntry, editRouteStep, insertRouteStep, paintAtTurn, parseHazard, posAtTurn, roundsLeftAt, usePlanStore } from './planStore'
 
 describe('editRouteStep', () => {
   const A = { q: 0, r: 0 }
@@ -353,6 +353,58 @@ describe('plan actions', () => {
       store().undo()
       expect(stops()).toEqual([])
       expect(end()).toEqual(B)
+    })
+
+    describe('attacks', () => {
+      const hit = attackEntry('u', 'v')
+
+      it('adds an attack after all the actions on the whole turn', () => {
+        move(B)
+        const step = store().toggleAttack('u', 'v', store().moveOrder[1], null)
+        expect(store().moveOrder[1]).toEqual(['u', hit])
+        expect(step).toBeNull()
+      })
+
+      it('inserts at the replay position and advances the replay', () => {
+        const step = store().toggleAttack('u', 'v', ['u', 'w'], 1)
+        expect(store().moveOrder[1]).toEqual(['u', hit, 'w'])
+        expect(step).toBe(2)
+      })
+
+      it('takes the attack back when repeated', () => {
+        store().toggleAttack('u', 'v', ['u'], null)
+        store().toggleAttack('u', 'v', store().moveOrder[1], null)
+        expect(store().moveOrder[1]).toEqual(['u'])
+      })
+
+      it('does not touch an attack beyond the replay position', () => {
+        const step = store().toggleAttack('u', 'v', ['w', 'u', hit], 1)
+        expect(store().moveOrder[1]).toEqual(['w', hit, 'u', hit])
+        expect(step).toBe(2)
+      })
+
+      it('leaves the unit where it is', () => {
+        move(B)
+        store().toggleAttack('u', 'v', store().moveOrder[1], null)
+        expect(end()).toEqual(B)
+        expect(stops()).toEqual([])
+      })
+
+      it('survives moves, which only count the unit\'s own entries', () => {
+        move(B)
+        store().toggleAttack('u', 'v', store().moveOrder[1], null)
+        move(C, true)
+        expect(store().moveOrder[1]).toEqual(['u', hit, 'u'])
+        move(B)
+        expect(store().moveOrder[1]).toEqual(['u', hit])
+      })
+
+      it('undo takes an attack back', () => {
+        store().checkpoint()
+        store().toggleAttack('u', 'v', [], null)
+        store().undo()
+        expect(store().moveOrder[1] ?? []).toEqual([])
+      })
     })
 
     describe('removing as an action', () => {

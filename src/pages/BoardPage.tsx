@@ -24,6 +24,7 @@ import {
   visibleTokenDefs,
   type TokenDef as TrayDef,
 } from '../components/plan/planView'
+import { getBossOccupiedHexes } from '../services/hex/hexUtils'
 import type { HexCoord } from '../types/strategium'
 import type { Unit } from '../types/units'
 
@@ -57,7 +58,7 @@ export function BoardPage() {
   const navigate = useNavigate()
   const { bossUnitId, targetKind, boardId, team, machineOfWar, currentTurn, positions, waypoints, moveOrder, paint, instances } = usePlanStore()
   const { seededBoard, primesDefeated, history } = usePlanStore()
-  const { setCurrentTurn, placeToken, moveToken, removeFromTurn, restoreToken, addInstance, setPaint, resetPlan } = usePlanStore()
+  const { setCurrentTurn, placeToken, moveToken, removeFromTurn, restoreToken, toggleAttack, addInstance, setPaint, resetPlan } = usePlanStore()
   const { seedDeployment, setPrimesDefeated, checkpoint, undo } = usePlanStore()
 
   const bosses = useBosses()
@@ -263,6 +264,28 @@ export function BoardPage() {
     setStepArmed(false)
   }
 
+  // Dragging a unit onto another live unit attacks it (from turn 1 on); the
+  // attacker stays where it is. Doing it again takes the attack back.
+  const dropToken = (id: string, hex: HexCoord) => {
+    const target =
+      currentTurn > 0
+        ? boardTokens.find(
+            (t) =>
+              t.id !== id &&
+              !t.ghost &&
+              getBossOccupiedHexes(t.pos, t.size as 1 | 3 | 7, t.pos.rot ?? 0).some((h) => h.q === hex.q && h.r === hex.r),
+          )
+        : undefined
+    if (!target) {
+      placeAt(id, hex)
+      return
+    }
+    checkpoint()
+    setReplayStep(toggleAttack(id, target.id, orderAt(currentTurn), replayStep))
+    setSelectedId(null)
+    setStepUnitId(id)
+  }
+
   // Move-mode hex tap: drop a pending spawn (keeps adding), or move the selection.
   const handleHex = (hex: HexCoord) => {
     if (pending) {
@@ -388,7 +411,7 @@ export function BoardPage() {
             painting={paintOpen}
             onHexClick={handleHex}
             onTokenClick={tapToken}
-            onTokenMove={(id, hex) => placeAt(id, hex)}
+            onTokenMove={dropToken}
             onPaintStart={() => {
               strokeNeedsCheckpoint.current = true
             }}

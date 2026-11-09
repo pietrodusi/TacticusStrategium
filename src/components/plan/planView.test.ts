@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { deriveBoardView, phaseStepOrder, stepCursor, type TokenDef } from './planView'
-import { MAX_PHASE } from '../../stores/planStore'
+import { MAX_PHASE, attackEntry } from '../../stores/planStore'
 import type { ParsedBoard } from '../../services/boards/boardService'
 
 const board = { bossStart: { q: 9, r: 9 }, bossRotation: 0 } as unknown as ParsedBoard
@@ -151,5 +151,57 @@ describe('removal as a replay action', () => {
 
   it('ignores a unit that was already gone', () => {
     expect(phaseStepOrder([unit], { u: { 0: null, 1: null } }, 1, board, {})).toEqual([])
+  })
+})
+
+describe('attacks', () => {
+  const other: TokenDef = { id: 'v', type: 'npc', stem: null, name: 'V', size: 1 }
+  const D = { q: 5, r: 5 }
+  const E = { q: 6, r: 5 }
+  const defs = [unit, other]
+  const hit = attackEntry('u', 'v')
+  const red = '#ef4444'
+  const positions = { u: { 0: A, 1: B }, v: { 0: D } }
+  const view = (order: string[], step: number | null = null, pos: Parameters<typeof deriveBoardView>[1] = positions) =>
+    deriveBoardView(defs, pos, 1, board, { moveOrder: { 1: order }, step })
+  const attacks = (order: string[], step: number | null = null, pos?: Parameters<typeof deriveBoardView>[1]) =>
+    view(order, step, pos).movements.filter((m) => m.color === red)
+
+  it('draws a red arrow to the target and marks the attacker', () => {
+    expect(attacks(['u', hit])).toMatchObject([{ from: B, to: D, endsAtToken: true }])
+    const v = view(['u', hit])
+    expect(v.tokens.find((t) => t.id === 'u')?.attacked).toBe(true)
+    expect(v.tokens.find((t) => t.id === 'v')?.attacked).toBe(false)
+  })
+
+  it('starts from where the attacker stood when it attacked', () => {
+    expect(attacks([hit, 'u'])).toMatchObject([{ from: A, to: D }])
+  })
+
+  it('points at where the target stood at that moment', () => {
+    const moved = { u: { 0: A }, v: { 0: D, 1: E } }
+    expect(attacks([hit, 'v'], null, moved)).toMatchObject([{ from: A, to: D }])
+    expect(attacks(['v', hit], null, moved)).toMatchObject([{ from: A, to: E }])
+  })
+
+  it('counts as its own replay action', () => {
+    expect(phaseStepOrder(defs, positions, 1, board, { moveOrder: { 1: ['u', hit] } })).toEqual(['u', hit])
+    expect(attacks(['u', hit, 'v'], 1)).toEqual([])
+    expect(view(['u', hit, 'v'], 1).tokens.find((t) => t.id === 'u')?.attacked).toBe(false)
+    expect(attacks(['u', hit, 'v'], 2)).toHaveLength(1)
+  })
+
+  it('curves repeated attacks along the same line apart', () => {
+    expect(attacks([hit, hit]).map((m) => m.curve)).toEqual([1, 2])
+  })
+
+  it('drops an attack on a target already removed at that point', () => {
+    const gone = { u: { 0: A }, v: { 0: D, 1: null } }
+    expect(phaseStepOrder(defs, gone, 1, board, { moveOrder: { 1: [hit, 'v'] } })).toEqual([hit, 'v'])
+    expect(phaseStepOrder(defs, gone, 1, board, { moveOrder: { 1: ['v', hit] } })).toEqual(['v'])
+  })
+
+  it('drops an attack by a unit no longer in the plan', () => {
+    expect(phaseStepOrder([unit], { u: { 0: A } }, 1, board, { moveOrder: { 1: [hit] } })).toEqual([])
   })
 })

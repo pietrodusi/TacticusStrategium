@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Swords } from 'lucide-react'
 import type { ParsedBoard, ParsedCell, TileEffectKind } from '../services/boards/boardService'
 import { usePortraitSource } from '../hooks/usePortraitSource'
 import { keywordIconUrl, mapImageUrl } from '../services/paths'
@@ -20,6 +21,8 @@ export interface BoardToken {
   removable?: boolean
   /** Removed this turn: drawn faded where it fell; can be tapped, not dragged. */
   ghost?: boolean
+  /** Has attacked this turn (as far as the board is showing). */
+  attacked?: boolean
 }
 
 export interface BoardMovement {
@@ -506,6 +509,18 @@ function TokenMarker({
       </g>
       {token.removable && !token.ghost && <RemovableBadge cx={center.x + r * 0.72} cy={center.y - r * 0.72} r={r * 0.4} />}
       {token.ghost && <GhostCross center={center} r={r} />}
+      {token.attacked && <AttackBadge cx={center.x - r * 0.72} cy={center.y - r * 0.72} r={r * 0.46} />}
+    </g>
+  )
+}
+
+/** Red crossed swords marking a unit that has attacked this turn. */
+function AttackBadge({ cx, cy, r }: { cx: number; cy: number; r: number }) {
+  const size = r * 1.45
+  return (
+    <g>
+      <circle cx={cx} cy={cy} r={r} fill="#0b0d11" stroke="#ef4444" strokeWidth={r * 0.14} />
+      <Swords x={cx - size / 2} y={cy - size / 2} size={size} color="#ef4444" strokeWidth={2.75} />
     </g>
   )
 }

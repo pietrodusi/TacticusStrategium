@@ -73,6 +73,11 @@ export function GuidePage() {
           the ghost to <B>Restore</B> the unit.
         </P>
         <P>
+          Drag a unit onto another unit to record an <B>attack</B>: a red arrow points at the target and the
+          attacker gets a crossed-swords icon, without moving. Attacks replay in order too; drag onto the same
+          target again to take the attack back.
+        </P>
+        <P>
           Positions carry forward until you change them, and a faint arrow shows each token&apos;s move from
           the previous turn — so you can see the whole advance at a glance. The counter at the top of the
           map shows rounds remaining.
