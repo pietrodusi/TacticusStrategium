@@ -246,6 +246,14 @@ export const tokenOccupying = (tokens: BoardToken[], id: string, hex: HexCoord) 
       footprintOf(t.pos, t.size, t.pos.rot ?? 0).some((h) => h.q === hex.q && h.r === hex.r),
   )
 
+/** Can a unit of `size` stand on `hex`? A multi-hex unit needs every hex on the
+ *  playable map and all at the same height. */
+export function isValidFootprint(board: Pick<ParsedBoard, 'cells'>, hex: HexCoord, size: number, rot: number): boolean {
+  if (size <= 1) return true
+  const cells = footprintOf(hex, size, rot).map((h) => board.cells.find((c) => c.q === h.q && c.r === h.r))
+  return cells.every((c) => c?.isPlayable && c.elevation === cells[0]?.elevation)
+}
+
 /** Would a unit of `size` landing on `hex` share a hex with a multi-hex unit (or,
  *  being multi-hex itself, with any unit)? `id` is the unit moving, if already placed. */
 export function overlapsMultiHex(

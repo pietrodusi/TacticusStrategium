@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { deriveBoardView, overlapsMultiHex, phaseStepOrder, stepCursor, tokenOccupying, type TokenDef } from './planView'
+import { deriveBoardView, isValidFootprint, overlapsMultiHex, phaseStepOrder, stepCursor, tokenOccupying, type TokenDef } from './planView'
 import { getBossOccupiedHexes } from '../../services/hex/hexUtils'
 import type { BoardToken } from '../HexGrid'
 import { MAX_PHASE, attackEntry } from '../../stores/planStore'
@@ -245,6 +245,39 @@ describe('multi-hex occupancy', () => {
   it('treats a ghost hex as free', () => {
     expect(overlapsMultiHex([token('big', 3, 3, 3, { ghost: true })], 'u', offAnchor, 1, 0)).toBe(false)
     expect(tokenOccupying([token('big', 3, 3, 3, { ghost: true })], 'u', offAnchor)).toBeUndefined()
+  })
+
+  describe('isValidFootprint', () => {
+    const cell = (q: number, r: number, elevation = 0, isPlayable = true) => ({ q, r, elevation, isPlayable })
+    const onCover = (overrides: Record<string, Partial<ReturnType<typeof cell>>> = {}) => ({
+      cells: cover.map((h) => ({ ...cell(h.q, h.r), ...overrides[`${h.q},${h.r}`] })),
+    }) as unknown as Pick<ParsedBoard, 'cells'>
+    const key = `${offAnchor.q},${offAnchor.r}`
+
+    it('accepts a footprint fully on the map at one height', () => {
+      expect(isValidFootprint(onCover(), big.pos, 3, 0)).toBe(true)
+    })
+
+    it('accepts raised ground as long as every hex matches', () => {
+      const raised = Object.fromEntries(cover.map((h) => [`${h.q},${h.r}`, { elevation: 2 }]))
+      expect(isValidFootprint(onCover(raised), big.pos, 3, 0)).toBe(true)
+    })
+
+    it('refuses a footprint across different heights', () => {
+      expect(isValidFootprint(onCover({ [key]: { elevation: 1 } }), big.pos, 3, 0)).toBe(false)
+    })
+
+    it('refuses a footprint on an unplayable hex', () => {
+      expect(isValidFootprint(onCover({ [key]: { isPlayable: false } }), big.pos, 3, 0)).toBe(false)
+    })
+
+    it('refuses a footprint running off the map', () => {
+      expect(isValidFootprint({ cells: onCover().cells.slice(0, 2) }, big.pos, 3, 0)).toBe(false)
+    })
+
+    it('does not constrain single-hex units', () => {
+      expect(isValidFootprint({ cells: [] }, free, 1, 0)).toBe(true)
+    })
   })
 
   it('finds the unit on any hex of its footprint', () => {

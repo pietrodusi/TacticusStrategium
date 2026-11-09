@@ -17,6 +17,7 @@ import { RoundsCounter } from '../components/plan/RoundsCounter'
 import {
   deriveBoardView,
   instanceTokenDefs,
+  isValidFootprint,
   overlapsMultiHex,
   phaseStepOrder,
   stepCursor,
@@ -257,7 +258,7 @@ export function BoardPage() {
     }
     const rot = cur?.rot
     const size = allDefs.find((d) => d.id === id)?.size ?? 1
-    if (overlapsMultiHex(boardTokens, id, hex, size, rot ?? 0)) return
+    if (overlapsMultiHex(boardTokens, id, hex, size, rot ?? 0) || !isValidFootprint(board.data, hex, size, rot ?? 0)) return
     checkpoint()
     setReplayStep(
       moveToken(id, { q: hex.q, r: hex.r, ...(rot !== undefined ? { rot } : {}) }, turnStart(id), armed && id === stepUnitId, replay),
@@ -276,15 +277,21 @@ export function BoardPage() {
       placeAt(id, hex)
       return
     }
-    checkpoint()
     if (currentTurn === 0) {
       const dragged = boardTokens.find((t) => t.id === id)
-      if (!dragged) return
+      const map = board.data
+      if (!dragged || !map) return
+      const others = boardTokens.filter((t) => t.id !== id && t.id !== target.id)
+      const fits = (t: BoardToken, at: HexCoord) =>
+        isValidFootprint(map, at, t.size, t.pos.rot ?? 0) && !overlapsMultiHex(others, null, at, t.size, t.pos.rot ?? 0)
+      setSelectedId(null)
+      if (!fits(dragged, target.pos) || !fits(target, dragged.pos)) return
+      checkpoint()
       placeToken(id, { ...dragged.pos, q: target.pos.q, r: target.pos.r })
       placeToken(target.id, { ...target.pos, q: dragged.pos.q, r: dragged.pos.r })
-      setSelectedId(null)
       return
     }
+    checkpoint()
     setReplayStep(toggleAttack(id, target.id, orderAt(currentTurn), replayStep))
     setSelectedId(null)
     setStepUnitId(id)
@@ -293,7 +300,8 @@ export function BoardPage() {
   // Move-mode hex tap: drop a pending spawn (keeps adding), or move the selection.
   const handleHex = (hex: HexCoord) => {
     if (pending) {
-      if (overlapsMultiHex(boardTokens, null, hex, spawns.data?.units[pending.unitId]?.size ?? 1, 0)) return
+      const size = spawns.data?.units[pending.unitId]?.size ?? 1
+      if (!board.data || overlapsMultiHex(boardTokens, null, hex, size, 0) || !isValidFootprint(board.data, hex, size, 0)) return
       checkpoint()
       const id = addInstance(pending.unitId, pending.side)
       placeToken(id, { q: hex.q, r: hex.r })
@@ -503,9 +511,15 @@ export function BoardPage() {
                     (selectedDef.type === 'boss' && board.data
                       ? { q: board.data.bossStart.q, r: board.data.bossStart.r, rot: board.data.bossRotation }
                       : null)
-                  if (!cur) return
+                  if (!cur || !board.data) return
+                  const rot = (cur.rot ?? 0) % 180 === 0 ? 90 : 0
+                  if (
+                    overlapsMultiHex(boardTokens, selectedDef.id, cur, selectedDef.size, rot) ||
+                    !isValidFootprint(board.data, cur, selectedDef.size, rot)
+                  )
+                    return
                   checkpoint()
-                  placeToken(selectedDef.id, { q: cur.q, r: cur.r, rot: (cur.rot ?? 0) % 180 === 0 ? 90 : 0 })
+                  placeToken(selectedDef.id, { q: cur.q, r: cur.r, rot })
                 }}
               />
               )}
